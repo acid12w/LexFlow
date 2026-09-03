@@ -1,0 +1,127 @@
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { matterService } from "../app/services/matter.Service";
+import { useAlertStore } from "@/app/store/use-alert"; // Import your Zustand bridge
+
+export function useGetAllMatters() {
+  const result = useQuery({
+    queryKey: ["case"],
+    queryFn: () => matterService.getMatter(),
+  });
+  return result;
+}
+
+export function useGetAllMattersByUserId() {
+  const result = useQuery({
+    queryKey: ["case"],
+    queryFn: (caseId) => matterService.getMatter(caseId),
+  });
+  return result;
+}
+
+export function useGetMatterById(caseId) {
+  return useQuery({
+    // 1. Dynamic query keys guarantee unique state caches per case
+    queryKey: ["case", caseId],
+
+    // 2. JavaScript scope safely reads caseId from the function parameters
+    queryFn: () => matterService.getMatterbyId(caseId),
+
+    // 3. Safety Net: Prevents firing a broken API call if caseId is missing/null
+    enabled: !!caseId,
+  });
+}
+
+export function useCreateMatters() {
+  const queryClient = useQueryClient();
+  const showAlert = useAlertStore((state) => state.showAlert);
+
+  return useMutation({
+    mutationFn: (newCaseData: Record<string, unknown>) =>
+      matterService.createCase(newCaseData),
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["case"] });
+      showAlert("success!", "You have created a case", "success");
+    },
+
+    onError: (error) => {
+      console.error("Mutation Error:", error);
+      const serverMessage =
+        error?.response?.data?.error ||
+        error?.response?.data?.message ||
+        "Operation failed! Please try again.";
+      showAlert("Operation failed!", serverMessage, "error");
+    },
+  });
+}
+
+export function useUpdateCase() {
+  const queryClient = useQueryClient();
+  const showAlert = useAlertStore((state) => state.showAlert);
+
+  return useMutation({
+    mutationFn: (newcaseData) =>
+      matterService.updateCase(newcaseData, newcaseData._id),
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["case"] });
+      // Fire success notification
+      showAlert("success!", "You case has been updated", "success");
+    },
+
+    onError: (error) => {
+      console.error("Mutation Error:", error);
+      const serverMessage =
+        error?.response?.data?.error ||
+        error?.response?.data?.message ||
+        "Operation failed! Please try again.";
+      showAlert("Operation failed!", serverMessage, "error");
+    },
+  });
+}
+
+export function useBulkUpdateCases() {
+  const queryClient = useQueryClient();
+  const showAlert = useAlertStore((state) => state.showAlert);
+
+  return useMutation({
+    mutationFn: (newcaseData) => matterService.bulkUpdateCase(newcaseData),
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["case"] });
+      showAlert("success!", "Your cases has been updated", "success");
+    },
+
+    onError: (error) => {
+      console.error("Mutation Error:", error);
+      const serverMessage =
+        error?.response?.data?.error ||
+        error?.response?.data?.message ||
+        "Operation failed! Please try again.";
+      showAlert("Operation failed!", serverMessage, "error");
+    },
+  });
+}
+
+export function useRemoveCases(caseId: string) {
+  const queryClient = useQueryClient();
+  const showAlert = useAlertStore((state) => state.showAlert);
+
+  return useMutation({
+    mutationFn: (caseId) => matterService.removeCase(caseId),
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["case"] });
+      showAlert("success!", "Your case has been removed", "success");
+    },
+
+    onError: (error) => {
+      console.error("Mutation Error:", error);
+      const serverMessage =
+        error?.response?.data?.error ||
+        error?.response?.data?.message ||
+        "Operation failed! Please try again.";
+      showAlert("Operation failed!", serverMessage, "error");
+    },
+  });
+}

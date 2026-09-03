@@ -1,0 +1,40 @@
+import { api } from "../api/api";
+
+export const clientService = {
+  createUser: async (data: {
+    userName: string;
+    password: string;
+    company?: string;
+    inviteFirmId?: string;
+    profile: {
+      firstName: string;
+      lastName: string;
+      email: string;
+    };
+    billing?: { defaultHourlyRate: number };
+    role?: string;
+  }) => {
+    const response = await api.post("/user/sign-up", data);
+    return response;
+  },
+
+  getAllClients: async () => {
+    const response = await api.get(`/client/`);
+    return response;
+  },
+
+  getMilestone: async (id) => {
+    const response = await api.get(`/client/mile-stone/${id}`);
+    return response;
+  },
+
+  deleteTeamMember: async (userId) => {
+    const response = await api.delete(`/user/removeTeamMember/${userId}`);
+    return response;
+  },
+
+  updateFirmMember: async (data) => {
+    const response = await api.patch(`/user/update-user`, data);
+    return response;
+  },
+};

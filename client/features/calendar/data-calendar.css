@@ -1,0 +1,15 @@
+.rbc-header {
+  /* @apply text-sm; */
+  /* @apply font-medium;
+  @apply pb-4;
+  @apply text-muted-foreground;
+  @apply border-b-0; */
+}
+
+.rbc-off-range-bg {
+}
+
+.rbc-event,
+.rbc-day-slot .rbc-background-event {
+  background: #fff;
+}
