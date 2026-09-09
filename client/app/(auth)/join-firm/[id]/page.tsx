@@ -62,9 +62,9 @@ function JoinFirm() {
   const onSubmit = async (values: FormValues) => {
     try {
       const user = await mutateAsync({
-        token: token,
         userName: values?.userName,
         password: values?.password,
+        token: token,
       });
 
       setUserCredentials(user.data.user);

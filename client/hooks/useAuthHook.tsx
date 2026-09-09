@@ -162,12 +162,18 @@ export function useUpdateFirmMember() {
   });
 }
 
+interface JoinFirmPayload {
+  userName?: string;
+  password?: string;
+  token?: string; // Or string if it is always guaranteed
+}
+
 export function useJoinfirmMember() {
   const queryClient = useQueryClient();
   const showAlert = useAlertStore((state) => state.showAlert);
 
   return useMutation({
-    mutationFn: (newuserData: []) =>
+    mutationFn: (newuserData: JoinFirmPayload) =>
       authService.joinFirm(newuserData, newuserData?.token),
 
     onSuccess: () => {
