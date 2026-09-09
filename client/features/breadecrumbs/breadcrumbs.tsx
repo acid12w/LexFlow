@@ -23,15 +23,6 @@ export function BreadcrumbWithCustomSeparator({
   return (
     <Breadcrumb>
       <BreadcrumbList>
-        {/* Base Home Node */}
-        <BreadcrumbItem>
-          <BreadcrumbLink asChild>
-            <Link href="/user-dashboard">Dashboard</Link>
-          </BreadcrumbLink>
-        </BreadcrumbItem>
-
-        {pathArr.length > 0 && <BreadcrumbSeparator />}
-
         {pathArr.map((segment, index) => {
           const isLast = index === pathArr.length - 1;
 

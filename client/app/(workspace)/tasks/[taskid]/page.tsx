@@ -1,16 +1,14 @@
 "use client";
 
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 
-import { useParams, usePathname, useRouter } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 
-import { RiUserAddLine } from "react-icons/ri";
 import { StarIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 
-import { AvatarGroup } from "@/features/avatar/avatar";
 import { BreadcrumbWithCustomSeparator } from "@/features/breadecrumbs/breadcrumbs";
 
 import Spreadsheet from "./spreadsheet/page";

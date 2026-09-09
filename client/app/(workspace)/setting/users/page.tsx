@@ -1,10 +1,6 @@
 "use client";
 
-import { TaskDataTable } from "@/features/table/TasksDataTable";
-import { useGetAllTasksByCaseId, useUpdateTask } from "@/hooks/task";
 import { Skeleton } from "@/components/ui/skeleton"; // Shadcn component
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { useParams } from "next/navigation";
 import { useBulkUpdateTasks } from "@/hooks/task";
 import { UserManagmentActionBtn } from "@/features/actionBtn/userManagmentActionBtn";
 import { UserDataTable } from "@/features/table/userDataTable";

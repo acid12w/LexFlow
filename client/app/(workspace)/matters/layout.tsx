@@ -2,17 +2,13 @@
 
 import React, { useState } from "react";
 
-import { RiUserAddLine } from "react-icons/ri";
-
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 
-import { AvatarGroup } from "@/features/avatar/avatar";
 import { BreadcrumbWithCustomSeparator } from "@/features/breadecrumbs/breadcrumbs";
 
 import Link from "next/link";
 
-import { AssignUser } from "@/features/add-user/assign-user";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 

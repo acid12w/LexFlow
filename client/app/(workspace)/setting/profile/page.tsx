@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { ModeToggle } from "@/features/setting/component/mode-toggle";
+
 import { Input } from "@/components/ui/input"; // Replaced raw inputs with Shadcn Inputs
 import { Label } from "@/components/ui/label";
 
@@ -12,7 +12,6 @@ import { Pencil, X, Save } from "lucide-react";
 import { useEffect, useState } from "react";
 import { InputTags } from "@/features/inputTag/tagInput";
 import { useUserCredentials } from "@/app/store/user-store";
-import { FieldDescription } from "@/components/ui/field";
 import { useUpdateFirmMember } from "@/hooks/useAuthHook";
 
 // import { useUpdateUser } from "@/hooks/useAuthHook";

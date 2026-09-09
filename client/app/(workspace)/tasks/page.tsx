@@ -1,13 +1,11 @@
 "use client";
 
 import { TaskDataTable } from "@/features/table/TasksDataTable";
-import { useGetAllTasks, useUpdateTask } from "@/hooks/task";
+import { useGetAllTasks } from "@/hooks/task";
 import { Skeleton } from "@/components/ui/skeleton"; // Shadcn component
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { useParams } from "next/navigation";
 import { useBulkUpdateTasks } from "@/hooks/task";
 import { TaskActionBtn } from "@/features/actionBtn/taskActionBtn";
-import { useEffect } from "react";
 
 const Spreadsheet = () => {
   const { data: tasksData, isLoading, isError, error } = useGetAllTasks();

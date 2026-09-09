@@ -28,16 +28,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Calendar22 } from "@/features/datepicker/page";
 
 import { BiSolidBriefcase } from "react-icons/bi";
-import { MdOutlineSecurity } from "react-icons/md";
-
-import { TbSubtask } from "react-icons/tb";
 
 import { ComboboxDemo } from "@/features/combo-box/comboBox";
 import { useState } from "react";
 
 import { useCreateMatters } from "@/hooks/useMatterHook";
-import React from "react";
-import { PracticeAreaCombobox } from "@/features/combo-box/practiceArea";
+
 import { useRouter } from "next/navigation";
 
 export const matterSchema = z.object({
@@ -193,14 +189,6 @@ export default function MatterField() {
               <h3>Case details</h3>
             </div>
             <FieldGroup>
-              {/* <Field>
-                <FieldLabel>Create Matter using existing template</FieldLabel>
-                <ComboboxDemo
-                  name="template"
-                  onChange={(val) => handleChange(val, "template")}
-                />
-              </Field> */}
-
               <Controller
                 name="title"
                 control={form.control}

@@ -106,7 +106,8 @@ export default function Dashboard() {
                   ))}
                 </Pie>
                 <ChartLegend
-                  content={<ChartLegendContent className="-translate-y-2" />}
+                  formatter={(value) => `Status: ${value}`}
+                  // content={<ChartLegendContent className="-translate-y-2" />}
                 />
               </PieChart>
             </ChartContainer>

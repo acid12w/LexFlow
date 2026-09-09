@@ -7,7 +7,6 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { CaseDataTable } from "@/features/table/CaseDataTable";
 import { useBulkUpdateCases } from "@/hooks/useMatterHook";
 import { CaseActionBtn } from "@/features/actionBtn/caseActionBtn";
-import { useUserCredentials } from "@/app/store/user-store";
 
 const Userdashboard = () => {
   const { data: caseData, isLoading, isError, error } = useGetAllMatters();

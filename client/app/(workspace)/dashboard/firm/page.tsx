@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import {
   LineChart,
   Line,
@@ -13,8 +12,6 @@ import {
   Bar,
   BarChart,
 } from "recharts";
-
-import { Pie, PieChart, Cell } from "recharts";
 
 import {
   DollarSign,
@@ -45,13 +42,6 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-
-const financialData = [
-  { month: "Jan", income: 4500, expenses: 3200 },
-  { month: "Feb", income: 5200, expenses: 3800 },
-  { month: "Mar", income: 4800, expenses: 4100 },
-  { month: "Apr", income: 6100, expenses: 4200 },
-];
 
 const financialConfig = {
   collected: { label: "Collected", color: "#0088FF" },

@@ -3,8 +3,6 @@
 import { Suspense } from "react";
 import { SignUpCard } from "@/features/auth/component/sign-up-card";
 
-import { Button } from "@/components/ui/button";
-
 import Image from "next/image";
 import Link from "next/link";
 
