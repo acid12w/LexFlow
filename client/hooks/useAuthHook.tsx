@@ -167,8 +167,8 @@ export function useJoinfirmMember() {
   const showAlert = useAlertStore((state) => state.showAlert);
 
   return useMutation({
-    mutationFn: (newuserData) =>
-      authService.joinFirm(newuserData, newuserData.token),
+    mutationFn: (newuserData: []) =>
+      authService.joinFirm(newuserData, newuserData?.token),
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user"] });

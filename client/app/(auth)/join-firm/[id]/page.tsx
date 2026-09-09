@@ -63,8 +63,8 @@ function JoinFirm() {
     try {
       const user = await mutateAsync({
         token: token,
-        userName: values.userName,
-        password: values.password,
+        userName: values?.userName,
+        password: values?.password,
       });
 
       setUserCredentials(user.data.user);
