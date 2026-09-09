@@ -102,13 +102,14 @@ const CustomToolBar = ({
     </div>
   );
 };
+interface tasksDataProps {
+  tasksData: []; // Expects standard router path like "/dashboard/matters/123"
+}
 
-export const DataCalendar = ({ tasksData }) => {
+export const DataCalendar = ({ tasksData }: tasksDataProps) => {
   const [value, setValue] = useState(
     tasksData?.length > 0 ? new Date(tasksData[0].endDate) : new Date()
   );
-
-  console.log(tasksData);
 
   const handleNavigate = (action: "PREV" | "NEXT" | "TODAY") => {
     if (action === "NEXT") {

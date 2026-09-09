@@ -8,7 +8,7 @@ export const getUserActivity = async (
   next: NextFunction
 ) => {
   try {
-    const userId = req?.user.id;
+    const userId = req?.user?.id;
 
     const response = await ActivityLog.find({ userId: userId });
 

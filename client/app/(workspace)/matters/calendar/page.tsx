@@ -18,7 +18,6 @@ const CaseCalendar = () => {
       </div>
     );
   }
-  console.log(caseData?.data);
 
   // 3. Error Handling
   if (isError) {

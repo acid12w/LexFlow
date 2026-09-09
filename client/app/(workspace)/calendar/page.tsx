@@ -31,7 +31,7 @@ const CaseCalendar = () => {
 
   return (
     <div>
-      <DataCalendar tasksData={caseData?.data || []} isLoading={isLoading} />
+      <DataCalendar tasksData={caseData?.data || []} />
     </div>
   );
 };

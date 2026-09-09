@@ -19,6 +19,7 @@ import {
 import { Button } from "@/components/ui/button";
 
 import { useRouter } from "next/navigation";
+import { create } from "domain";
 
 const formSchema = z.object({
   name: z.string().min(3, "Username must be at least 3 characters."),
@@ -30,7 +31,13 @@ const formSchema = z.object({
   workspace: z.string().min(1, "Last name is required."),
 });
 
-const FirmRegistration = ({ createFirm }) => {
+type FormValues = z.infer<typeof formSchema>;
+
+interface FirmRegistrationProps {
+  createFirm: () => void; // or specify the exact arguments it takes
+}
+
+const FirmRegistration = ({ createFirm }: FirmRegistrationProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     mode: "onTouched",

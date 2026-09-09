@@ -193,20 +193,29 @@ export function useJoinfirmMember() {
   });
 }
 
+interface CreateFirmPayload {
+  name: string;
+  country: string;
+  practiceAreas: string[];
+  workspace: string;
+  logo?: File | undefined;
+}
+
 export function useCreateFirm() {
   const queryClient = useQueryClient();
   const showAlert = useAlertStore((state) => state.showAlert);
 
-  return useMutation({
-    mutationFn: (firmData) => authService.createFirm(firmData),
+  // 💡 Add the generic parameters here: <ResponseDataType, ErrorType, VariablesType>
+  return useMutation<any, any, CreateFirmPayload>({
+    mutationFn: (firmData: CreateFirmPayload) =>
+      authService.createFirm(firmData),
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user"] });
-      // Fire success notification
-      showAlert("success!", "You user has been updated", "success");
+      showAlert("success!", "Your firm has been created", "success");
     },
 
-    onError: (error) => {
+    onError: (error: any) => {
       console.error("Mutation Error:", error);
       const serverMessage =
         error?.response?.data?.error ||
@@ -216,17 +225,3 @@ export function useCreateFirm() {
     },
   });
 }
-
-// export function useEmailVerification() {
-//   return useMutation({
-//     mutationFn: (token) => authService.verifyEmail(token),
-
-//     onError: (error) => {
-//       // const serverMessage =
-//       //   error?.response?.data?.error ||
-//       //   error?.response?.data?.message ||
-//       //   "Sign-up failed. Please try again.";
-//       // showAlert("Sign-up failed", serverMessage, "error");
-//     },
-//   });
-// }
