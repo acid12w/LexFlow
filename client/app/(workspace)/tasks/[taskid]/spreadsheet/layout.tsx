@@ -29,7 +29,6 @@ import { useTaskStore } from "@/app/store/use-task";
 export default function TashWorkspace({
   children,
 }: {
-  href: string;
   children: React.ReactNode;
 }) {
   const router = useRouter();

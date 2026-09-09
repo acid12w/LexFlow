@@ -1,12 +1,9 @@
 "use client";
 
-import { useGetAllTasks, useUpdateTask } from "@/hooks/task";
 import { Skeleton } from "@/components/ui/skeleton"; // Shadcn component
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { useParams } from "next/navigation";
 import { useBulkUpdateTasks } from "@/hooks/task";
 import { TaskActionBtn } from "@/features/actionBtn/taskActionBtn";
-import { useEffect } from "react";
 import { useGetAllClients } from "@/hooks/useClientHook";
 import { ClientDataTable } from "@/features/table/ClientTable";
 
