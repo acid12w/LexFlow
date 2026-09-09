@@ -92,7 +92,7 @@ function JoinFirm() {
   if (
     isTokenInvalid ||
     invitation?.data.response?.status === "ACCEPTED" ||
-    !invitation?.response
+    !invitation?.data.response
   ) {
     return (
       <main className="flex min-h-screen items-center justify-center p-4 text-center">
