@@ -108,7 +108,7 @@ interface tasksDataProps {
 
 export const DataCalendar = ({ tasksData }: tasksDataProps) => {
   const [value, setValue] = useState(
-    tasksData?.length > 0 ? new Date(tasksData[0].endDate) : new Date()
+    tasksData?.length > 0 ? new Date(tasksData[0]?.endDate) : new Date()
   );
 
   const handleNavigate = (action: "PREV" | "NEXT" | "TODAY") => {

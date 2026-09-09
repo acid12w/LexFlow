@@ -33,8 +33,18 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
+// 1. Import your payload interface or define it here
+interface CreateFirmPayload {
+  name: string;
+  country: string;
+  practiceAreas: string[];
+  workspace: string;
+  logo?: File;
+}
+
+// 2. Update the prop interface to expect 1 argument
 interface FirmRegistrationProps {
-  createFirm: () => void; // or specify the exact arguments it takes
+  createFirm: (values: CreateFirmPayload) => Promise<any>; // Changed from () => void
 }
 
 const FirmRegistration = ({ createFirm }: FirmRegistrationProps) => {
