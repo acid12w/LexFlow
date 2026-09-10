@@ -125,6 +125,17 @@ const Profile = () => {
     handleIsEditToggle("billing");
   };
 
+  interface UserProfile {
+    firstName?: string;
+    lastName?: string;
+    // Add other profile fields here
+  }
+
+  interface UserData {
+    profile?: UserProfile;
+    // Add other top-level fields here
+  }
+
   return (
     <div className="w-2/3 p-4 flex flex-col gap-y-6">
       <div className="flex justify-between items-center">
@@ -235,10 +246,8 @@ const Profile = () => {
                 />
               ) : (
                 <p className="font-medium text-slate-900 px-1">
-                  {typeof userData?.profile?.firstName === "string" ||
-                  typeof userData?.profile?.firstName === "number"
-                    ? userData?.profile?.firstName
-                    : "No data available"}
+                  {(userData?.profile as { firstName?: string })?.firstName ??
+                    "No data available"}
                 </p>
               )}
             </div>
@@ -257,7 +266,8 @@ const Profile = () => {
                 />
               ) : (
                 <p className="font-medium text-slate-900 px-1">
-                  {userData?.profile?.lastName}
+                  {(userData?.profile as { lastName?: string })?.lastName ??
+                    "No data available"}
                 </p>
               )}
             </div>
@@ -277,7 +287,8 @@ const Profile = () => {
                 />
               ) : (
                 <p className="font-medium text-slate-900 px-1">
-                  {userData.profile?.email}
+                  {(userData?.profile as { email?: string })?.email ??
+                    "No data available"}
                 </p>
               )}
             </div>
@@ -296,7 +307,8 @@ const Profile = () => {
                 />
               ) : (
                 <p className="font-medium text-slate-900 px-1">
-                  {userData.profile?.phone}
+                  {(userData?.profile as { phone?: string })?.phone ??
+                    "No data available"}
                 </p>
               )}
             </div>
@@ -413,7 +425,9 @@ const Profile = () => {
                 </div>
               ) : (
                 <p className="font-semibold px-1">
-                  ${userData.billing?.defaultHourlyRate}/hr
+                  {(userData?.profile as { defaultHourlyRate?: string })
+                    ?.defaultHourlyRate ?? "No data available"}
+                  /hr
                 </p>
               )}
             </div>

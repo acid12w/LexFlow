@@ -39,17 +39,15 @@ const STATUS_STYLES = {
   AT_RISK: { badge: "bg-[#ffd2c2] text-[#e80e0e]", dot: "bg-[#e80e0e]" },
 } as const;
 
-type User = { id: string; [key: string]: any };
+type User = { id: string; [key: string]: unknown };
 
 export default function TaskWorkspace() {
   const pathname = usePathname();
   const params = useParams();
   const caseId = params?.taskid;
 
-  const { data: tasksData, isLoading } = useGetAllTasksByCaseId(caseId);
+  const { data: tasksData, isLoading } = useGetAllTasksByCaseId(caseId ?? "");
   const { data: matterData } = useGetMatterById(caseId);
-
-  console.log(tasksData?.data);
 
   // Control visibility state flags securely
   const [open, setOpen] = useState(false); // ✅ FIXED: Added missing open state handler

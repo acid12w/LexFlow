@@ -103,7 +103,7 @@ const CustomToolBar = ({
   );
 };
 interface tasksDataProps {
-  tasksData: []; // Expects standard router path like "/dashboard/matters/123"
+  tasksData: Task[]; // Expects standard router path like "/dashboard/matters/123"
 }
 
 export const DataCalendar = ({ tasksData }: tasksDataProps) => {

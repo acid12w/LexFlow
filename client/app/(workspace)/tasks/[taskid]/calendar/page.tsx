@@ -1,6 +1,6 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { DataCalendar } from "@/features/calendar/data-calendar";
-import { Task, TaskStatus } from "@/features/tasks/types";
+import { Task } from "@/features/tasks/types";
 
 const Calendar = ({
   tasksData,

@@ -11,11 +11,17 @@ export function useGetAllTasks() {
   return result;
 }
 
-export function useGetAllTasksByCaseId(caseId: string) {
+export function useGetAllTasksByCaseId(caseId: string | string[]) {
+  // 💡 Extract the string safely if it happens to be an array
+  const cleanCaseId = Array.isArray(caseId) ? caseId[0] : caseId;
+
   const result = useQuery({
-    queryKey: ["task", caseId],
-    queryFn: () => taskService.getTasksByCaseId(caseId),
+    queryKey: ["task", cleanCaseId],
+    // 💡 Pass the clean string to your service, with a fallback just in case it's empty
+    queryFn: () => taskService.getTasksByCaseId(cleanCaseId ?? ""),
+    enabled: !!cleanCaseId, // Skip the query if no ID is present
   });
+
   return result;
 }
 
@@ -59,7 +65,6 @@ export function useUpdateTask() {
     },
 
     onError: (error) => {
-      console.error("Mutation Error:", error);
       const serverMessage =
         error?.response?.data?.message || "somthing went wrong.";
 

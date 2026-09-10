@@ -31,13 +31,6 @@ import { Timer, Activity } from "lucide-react";
 import { useUserCredentials } from "@/app/store/user-store";
 import { useGetUserActivityLog } from "@/hooks/useActivityHook";
 import { useGetCasesOverview } from "@/hooks/useDashboardHook";
-import {
-  ReactElement,
-  JSXElementConstructor,
-  ReactNode,
-  ReactPortal,
-  Key,
-} from "react";
 
 // 1. Data & Config for Income vs Expenses (Bar Chart)
 const financialData = [
@@ -64,6 +57,17 @@ const projectConfig = {
   inprogress: { label: "In Progress", color: "hsl(var(--chart-2))" },
   todo: { label: "To Do", color: "hsl(var(--chart-3))" },
 } satisfies ChartConfig;
+
+interface ActivityLog {
+  category: string;
+  userName: string;
+  description: string;
+  id: string;
+  createdAt: string;
+  metadata: {
+    actionTitle: string;
+  };
+}
 
 export default function Dashboard() {
   const { data: casesOverview } = useGetCasesOverview();
@@ -137,67 +141,7 @@ export default function Dashboard() {
             {recentActivity?.data.data &&
             recentActivity.data.data.length > 0 ? (
               recentActivity.data.data.map(
-                (
-                  activity: {
-                    userName:
-                      | string
-                      | number
-                      | bigint
-                      | boolean
-                      | ReactElement<
-                          unknown,
-                          string | JSXElementConstructor<any>
-                        >
-                      | Iterable<ReactNode>
-                      | ReactPortal
-                      | Promise<
-                          | string
-                          | number
-                          | bigint
-                          | boolean
-                          | ReactPortal
-                          | ReactElement<
-                              unknown,
-                              string | JSXElementConstructor<any>
-                            >
-                          | Iterable<ReactNode>
-                          | null
-                          | undefined
-                        >
-                      | null
-                      | undefined;
-                    description: any;
-                    metadata: { actionTitle: any };
-                    createdAt:
-                      | string
-                      | number
-                      | bigint
-                      | boolean
-                      | ReactElement<
-                          unknown,
-                          string | JSXElementConstructor<any>
-                        >
-                      | Iterable<ReactNode>
-                      | ReactPortal
-                      | Promise<
-                          | string
-                          | number
-                          | bigint
-                          | boolean
-                          | ReactPortal
-                          | ReactElement<
-                              unknown,
-                              string | JSXElementConstructor<any>
-                            >
-                          | Iterable<ReactNode>
-                          | null
-                          | undefined
-                        >
-                      | null
-                      | undefined;
-                  },
-                  index: Key | null | undefined
-                ) => {
+                (activity: ActivityLog, index: number) => {
                   return (
                     <div
                       key={index}
@@ -205,6 +149,16 @@ export default function Dashboard() {
                     >
                       <div className="flex flex-col gap-x-4 pl-2">
                         <div className="flex items-center gap-2">
+                          {/* <Avatar>
+                          <AvatarImage
+                            // src="https://github.com/shadcn.png"
+                            alt="@shadcn"
+                            className=""
+                          />
+                          <AvatarFallback>
+                            {activity.userName.slice(0, 2)}
+                          </AvatarFallback>
+                        </Avatar> */}
                           <p className="mr-3 text-xs text-gray-500">
                             {activity.userName}
                           </p>

@@ -106,7 +106,13 @@ export default function MatterDashboard() {
     100
   ).toFixed(1);
 
-  console.log(revenuseTrends);
+  interface ActivityLog {
+    category: string;
+    userName: string;
+    description: string;
+    id: string;
+    createdAt: string;
+  }
 
   // Extract latest metrics safely from our data array for summary indicators
   const latestMonthData = historicalChartData[historicalChartData.length - 1];
@@ -291,7 +297,7 @@ export default function MatterDashboard() {
           </div>
 
           <div className="space-y-4 my-4 overflow-y-auto max-h-[190px] pr-1">
-            {recentActivity?.data.data.map((log) => (
+            {recentActivity?.data.data.map((log: ActivityLog) => (
               <div
                 key={log.id}
                 className="text-xs border-l-2 border-slate-200 pl-3 py-1 relative"
