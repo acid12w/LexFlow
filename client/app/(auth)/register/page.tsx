@@ -3,7 +3,6 @@
 import { useState } from "react";
 
 import FirmRegistration from "./firm/page";
-import WorkspaceRegistration from "./workspace/page";
 import { useCreateFirm } from "@/hooks/useAuthHook";
 
 const RegisterPage = () => {

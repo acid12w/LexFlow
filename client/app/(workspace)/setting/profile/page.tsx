@@ -58,7 +58,7 @@ const Profile = () => {
       phone: userData.profile.phone ?? "",
     });
 
-    setValues(userData.profile?.practiceAreas);
+    setValues(userData?.profile?.practiceAreas);
   }, [userData]);
 
   const [billingData, setBillingData] = useState({
@@ -82,10 +82,10 @@ const Profile = () => {
 
     const hasChanged =
       payload.userName !== userData.userName ||
-      payload.profile.firstName !== userData.profile?.firstName ||
-      payload.profile.lastName !== userData.profile?.lastName ||
-      payload.profile.email !== userData.profile?.email ||
-      payload.profile.phone !== userData.profile?.phone;
+      payload.profile.firstName !== userData?.profile?.firstName ||
+      payload.profile.lastName !== userData?.profile?.lastName ||
+      payload.profile.email !== userData?.profile?.email ||
+      payload.profile.phone !== userData?.profile?.phone;
 
     if (!hasChanged) {
       handleIsEditToggle("personal");
@@ -235,9 +235,9 @@ const Profile = () => {
                 />
               ) : (
                 <p className="font-medium text-slate-900 px-1">
-                  {typeof userData.profile?.firstName === "string" ||
-                  typeof userData.profile?.firstName === "number"
-                    ? userData.profile?.firstName
+                  {typeof userData?.profile?.firstName === "string" ||
+                  typeof userData?.profile?.firstName === "number"
+                    ? userData?.profile?.firstName
                     : "No data available"}
                 </p>
               )}

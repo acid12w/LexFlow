@@ -41,7 +41,7 @@ export default function MatterWorkspace({
 
           <p>Dashboard</p>
 
-          {userData?.role.toLowerCase() === "admin" && (
+          {(userData?.role as string)?.toLowerCase() === "admin" && (
             <ButtonGroup>
               <Button
                 onClick={() => router.push("/dashboard/user")}

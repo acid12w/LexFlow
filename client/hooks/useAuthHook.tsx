@@ -129,6 +129,20 @@ export function useDeleteTeamMember() {
   });
 }
 
+interface FirmMemberPayload {
+  userName?: string; // 💡 Now optional
+  profile?: {
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    phone?: string;
+    practiceAreas?: string[];
+  };
+  billing: {
+    defaultHourlyRate?: number;
+  };
+}
+
 export function useUpdateFirmMember() {
   const queryClient = useQueryClient();
   const showAlert = useAlertStore((state) => state.showAlert);
@@ -138,7 +152,7 @@ export function useUpdateFirmMember() {
   );
 
   return useMutation({
-    mutationFn: (data) => authService.updateFirmMember(data),
+    mutationFn: (data: FirmMemberPayload) => authService.updateFirmMember(data),
 
     onSuccess: ({ data }) => {
       console.log(data.data);
