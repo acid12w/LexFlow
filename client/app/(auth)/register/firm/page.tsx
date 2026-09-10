@@ -44,7 +44,7 @@ interface CreateFirmPayload {
 
 // 2. Update the prop interface to expect 1 argument
 interface FirmRegistrationProps {
-  createFirm: (values: CreateFirmPayload) => Promise<any>; // Changed from () => void
+  createFirm: (values: CreateFirmPayload) => Promise<never>; // Changed from () => void
 }
 
 const FirmRegistration = ({ createFirm }: FirmRegistrationProps) => {
