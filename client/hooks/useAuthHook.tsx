@@ -4,12 +4,18 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAlertStore } from "@/app/store/use-alert"; // Import your Zustand bridge
 import { useUserCredentials } from "@/app/store/user-store";
 
+interface signinPayload {
+  userName: string;
+  password: string;
+}
+
 export function useSignin() {
   const queryClient = useQueryClient();
   const showAlert = useAlertStore((state) => state.showAlert);
 
   return useMutation({
-    mutationFn: (newUserData) => authService.signinUser(newUserData),
+    mutationFn: (newUserData: signinPayload) =>
+      authService.signinUser(newUserData),
 
     onSuccess: () => {
       // Refresh user credentials cache
@@ -48,12 +54,23 @@ export function useLogout() {
   });
 }
 
+interface signupPayload {
+  password: string;
+  userName: string;
+  profile: {
+    firstName: string;
+    lastName: string;
+    email: string;
+  };
+}
+
 export function useSignup() {
   const queryClient = useQueryClient();
   const showAlert = useAlertStore((state) => state.showAlert);
 
   return useMutation({
-    mutationFn: (newUserData) => authService.createUser(newUserData),
+    mutationFn: (newUserData: signupPayload) =>
+      authService.createUser(newUserData),
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["firmMembers"] });

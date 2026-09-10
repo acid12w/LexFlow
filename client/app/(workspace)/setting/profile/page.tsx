@@ -257,7 +257,7 @@ const Profile = () => {
                 />
               ) : (
                 <p className="font-medium text-slate-900 px-1">
-                  {userData.profile?.lastName}
+                  {userData?.profile?.lastName}
                 </p>
               )}
             </div>

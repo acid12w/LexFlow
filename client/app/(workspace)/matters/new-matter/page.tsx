@@ -60,7 +60,7 @@ export const matterSchema = z.object({
   billingAmount: z.coerce.number().nonnegative(),
 
   // Lowercases the email address automatically
-  clientEmail: z.string().trim().email().lowercase(),
+  clientEmail: z.email().trim().toLowerCase(),
 
   // Enforces a standard phone format (7 to 15 digits, allowing an optional starting +)
   clientContactNumber: z
@@ -88,8 +88,8 @@ export const matterSchema = z.object({
     }),
 });
 
-// 1. FIXED: Corrected the syntax for z.infer
-export type MatterFormValues = z.infer<typeof matterSchema>;
+export type MatterFormValues = z.output<typeof matterSchema>;
+export type MatterFormInput = z.input<typeof matterSchema>;
 
 export default function MatterField() {
   const { mutateAsync, isPending } = useCreateMatters();
@@ -97,8 +97,7 @@ export default function MatterField() {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const [hasAccess, sethasAccess] = useState<boolean>(false);
 
-  // 2. FIXED: Explicitly passed <MatterFormValues> to useForm
-  const form = useForm<MatterFormValues>({
+  const form = useForm<MatterFormInput, unknown, MatterFormValues>({
     resolver: zodResolver(matterSchema),
     mode: "onTouched",
     defaultValues: {
@@ -411,6 +410,12 @@ export default function MatterField() {
                 <Input
                   {...field}
                   id="form-rhf-demo-billingAmount"
+                  type="number"
+                  value={
+                    field.value === undefined || field.value === null
+                      ? ""
+                      : String(field.value)
+                  }
                   aria-invalid={fieldState.invalid}
                   placeholder="Amount"
                   autoComplete="off"

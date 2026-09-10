@@ -31,6 +31,13 @@ import { Timer, Activity } from "lucide-react";
 import { useUserCredentials } from "@/app/store/user-store";
 import { useGetUserActivityLog } from "@/hooks/useActivityHook";
 import { useGetCasesOverview } from "@/hooks/useDashboardHook";
+import {
+  ReactElement,
+  JSXElementConstructor,
+  ReactNode,
+  ReactPortal,
+  Key,
+} from "react";
 
 // 1. Data & Config for Income vs Expenses (Bar Chart)
 const financialData = [
@@ -101,9 +108,11 @@ export default function Dashboard() {
                   innerRadius={60}
                   strokeWidth={5}
                 >
-                  {casesOverview?.data.grouped.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.fill} />
-                  ))}
+                  {casesOverview?.data.grouped.map(
+                    (entry: { fill: string | undefined }, index: unknown) => (
+                      <Cell key={`cell-${index}`} fill={entry.fill} />
+                    )
+                  )}
                 </Pie>
                 <ChartLegend
                   formatter={(value) => `Status: ${value}`}
@@ -127,36 +136,88 @@ export default function Dashboard() {
           <div className="flex flex-col gap-y-6 overflow-scroll">
             {recentActivity?.data.data &&
             recentActivity.data.data.length > 0 ? (
-              recentActivity.data.data.map((activity, index) => {
-                return (
-                  <div
-                    key={index}
-                    className="flex gap-x-4 w-full border-l-2 border-gray-300"
-                  >
-                    <div className="flex flex-col gap-x-4 pl-2">
-                      <div className="flex items-center gap-2">
-                        {/* <Avatar>
-                          <AvatarImage
-                            // src="https://github.com/shadcn.png"
-                            alt="@shadcn"
-                            className=""
-                          />
-                          <AvatarFallback>
-                            {activity.userName.slice(0, 2)}
-                          </AvatarFallback>
-                        </Avatar> */}
-                        <p className="mr-3 text-xs text-gray-500">
-                          {activity.userName}
+              recentActivity.data.data.map(
+                (
+                  activity: {
+                    userName:
+                      | string
+                      | number
+                      | bigint
+                      | boolean
+                      | ReactElement<
+                          unknown,
+                          string | JSXElementConstructor<any>
+                        >
+                      | Iterable<ReactNode>
+                      | ReactPortal
+                      | Promise<
+                          | string
+                          | number
+                          | bigint
+                          | boolean
+                          | ReactPortal
+                          | ReactElement<
+                              unknown,
+                              string | JSXElementConstructor<any>
+                            >
+                          | Iterable<ReactNode>
+                          | null
+                          | undefined
+                        >
+                      | null
+                      | undefined;
+                    description: any;
+                    metadata: { actionTitle: any };
+                    createdAt:
+                      | string
+                      | number
+                      | bigint
+                      | boolean
+                      | ReactElement<
+                          unknown,
+                          string | JSXElementConstructor<any>
+                        >
+                      | Iterable<ReactNode>
+                      | ReactPortal
+                      | Promise<
+                          | string
+                          | number
+                          | bigint
+                          | boolean
+                          | ReactPortal
+                          | ReactElement<
+                              unknown,
+                              string | JSXElementConstructor<any>
+                            >
+                          | Iterable<ReactNode>
+                          | null
+                          | undefined
+                        >
+                      | null
+                      | undefined;
+                  },
+                  index: Key | null | undefined
+                ) => {
+                  return (
+                    <div
+                      key={index}
+                      className="flex gap-x-4 w-full border-l-2 border-gray-300"
+                    >
+                      <div className="flex flex-col gap-x-4 pl-2">
+                        <div className="flex items-center gap-2">
+                          <p className="mr-3 text-xs text-gray-500">
+                            {activity.userName}
+                          </p>
+                        </div>
+                        <h4 className=" text-sm">{`${activity?.description} : ${activity?.metadata?.actionTitle}`}</h4>
+                        <p className="text-xs text-gray-500">
+                          {activity.createdAt}
                         </p>
                       </div>
-                      <h4 className=" text-sm">{`${activity?.description} : ${activity?.metadata?.actionTitle}`}</h4>
-                      <p className="text-xs text-gray-500">
-                        {activity.createdAt}
-                      </p>
                     </div>
-                  </div>
-                );
-              })
+                  );
+                }
+              )
             ) : (
               <h3 className="text-gray-600">no activity recorded</h3>
             )}
