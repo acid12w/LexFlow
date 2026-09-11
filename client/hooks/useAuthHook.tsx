@@ -159,20 +159,27 @@ interface FirmMemberPayload {
     defaultHourlyRate?: number;
   };
 }
+type DeepPartial<T> = {
+  [P in keyof T]?: T[P] extends (infer U)[]
+    ? T[P] // Preserve array types intact (e.g. string[])
+    : T[P] extends object
+    ? DeepPartial<T[P]>
+    : T[P];
+};
 
 export function useUpdateFirmMember() {
   const queryClient = useQueryClient();
   const showAlert = useAlertStore((state) => state.showAlert);
-
   const setUserCredentials = useUserCredentials(
     (state) => state.setUserCredentials
   );
 
   return useMutation({
-    mutationFn: (data: FirmMemberPayload) => authService.updateFirmMember(data),
+    // Accept DeepPartial here so callers can pass partial updates
+    mutationFn: (data: DeepPartial<FirmMemberPayload>) =>
+      authService.updateFirmMember(data),
 
     onSuccess: ({ data }) => {
-      console.log(data.data);
       setUserCredentials(data.data);
 
       queryClient.invalidateQueries({

@@ -1,27 +1,44 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-
-import { Input } from "@/components/ui/input"; // Replaced raw inputs with Shadcn Inputs
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 import image1 from "@/public/Avatar-bg.png";
-import avatarPic from "@/public/avatar-pic.jpg";
-import Image from "next/image";
 import { Pencil, X, Save } from "lucide-react";
 import { useEffect, useState } from "react";
 import { InputTags } from "@/features/inputTag/tagInput";
 import { useUserCredentials } from "@/app/store/user-store";
 import { useUpdateFirmMember } from "@/hooks/useAuthHook";
 
-// import { useUpdateUser } from "@/hooks/useAuthHook";
+type DeepPartial<T> = {
+  [P in keyof T]?: T[P] extends (infer U)[]
+    ? T[P] // Preserve array types intact (e.g. string[])
+    : T[P] extends object
+    ? DeepPartial<T[P]>
+    : T[P];
+};
+
+// 2. Define standard payload interface
+interface FirmMemberPayload {
+  userName: string;
+  profile: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone: string;
+    practiceAreas: string[];
+  };
+  billing: {
+    defaultHourlyRate: number;
+  };
+}
 
 const Profile = () => {
   const userData = useUserCredentials((state) => state?.user);
-
   const { mutateAsync } = useUpdateFirmMember();
 
-  // 1. Core Visibility Toggles
+  // Core Visibility Toggles
   const [isEditToggle, setIsEditToggle] = useState({
     personal: false,
     practice: false,
@@ -35,6 +52,7 @@ const Profile = () => {
     }));
   };
 
+  // Local Form States
   const [personalData, setPersonalData] = useState({
     userName: "",
     role: "",
@@ -46,31 +64,61 @@ const Profile = () => {
 
   const [values, setValues] = useState<string[]>([]);
 
+  const [billingData, setBillingData] = useState({
+    defaultHourlyRate: "",
+  });
+
+  // Sync state on user data fetch/update
   useEffect(() => {
     if (!userData || !userData.profile) return;
 
     setPersonalData({
-      userName: userData.userName ?? "",
-      role: userData.role ?? "",
+      userName: typeof userData?.userName === "string" ? userData.userName : "",
+      role: typeof userData?.role === "string" ? userData.role : "",
       firstName: userData.profile.firstName ?? "",
       lastName: userData.profile.lastName ?? "",
       email: userData.profile.email ?? "",
       phone: userData.profile.phone ?? "",
     });
 
-    setValues(userData?.profile?.practiceAreas);
+    setValues(userData?.profile?.practiceAreas ?? []);
+
+    setBillingData({
+      defaultHourlyRate: userData?.billing?.defaultHourlyRate?.toString() ?? "",
+    });
   }, [userData]);
 
-  const [billingData, setBillingData] = useState({
-    defaultHourlyRate: "",
-  });
-
-  // 3. Isolated Form Submission Handlers
-  const handleUpdatePersonal = async (e: React.FormEvent) => {
+  // Reusable Partial Submission Helper
+  const submitSection = async (
+    e: React.FormEvent,
+    sectionKey: "personal" | "practice" | "billing",
+    payload: DeepPartial<FirmMemberPayload>
+  ) => {
     e.preventDefault();
 
-    // Payload contains strictly personal data keys
-    const payload = {
+    try {
+      await mutateAsync(payload);
+      handleIsEditToggle(sectionKey);
+    } catch (err) {
+      console.error(`Failed to update ${sectionKey}:`, err);
+    }
+  };
+
+  // Handler 1: Personal Info
+  const handleUpdatePersonal = (e: React.FormEvent) => {
+    const hasChanged =
+      personalData.userName !== userData?.userName ||
+      personalData.firstName !== userData?.profile?.firstName ||
+      personalData.lastName !== userData?.profile?.lastName ||
+      personalData.email !== userData?.profile?.email ||
+      personalData.phone !== userData?.profile?.phone;
+
+    if (!hasChanged) {
+      handleIsEditToggle("personal");
+      return;
+    }
+
+    submitSection(e, "personal", {
       userName: personalData.userName,
       profile: {
         firstName: personalData.firstName,
@@ -78,63 +126,26 @@ const Profile = () => {
         email: personalData.email,
         phone: personalData.phone,
       },
-    };
-
-    const hasChanged =
-      payload.userName !== userData.userName ||
-      payload.profile.firstName !== userData?.profile?.firstName ||
-      payload.profile.lastName !== userData?.profile?.lastName ||
-      payload.profile.email !== userData?.profile?.email ||
-      payload.profile.phone !== userData?.profile?.phone;
-
-    if (!hasChanged) {
-      handleIsEditToggle("personal");
-      return;
-    }
-
-    mutateAsync(payload);
-    // await fetch('/api/users/profile', { method: 'PATCH', body: JSON.stringify(payload) })
-
-    handleIsEditToggle("personal"); // Lock fields back up on success
+    });
   };
 
-  const handleUpdatePractice = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const payload = {
-      ...userData,
+  // Handler 2: Practice Scope
+  const handleUpdatePractice = (e: React.FormEvent) => {
+    submitSection(e, "practice", {
       profile: {
         practiceAreas: values,
       },
-    };
-
-    try {
-      await mutateAsync(payload);
-      handleIsEditToggle("practice");
-    } catch (err) {
-      console.error(err);
-    }
+    });
   };
 
-  const handleUpdateBilling = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const payload = {
-      billing: { defaultHourlyRate: Number(billingData.defaultHourlyRate) },
-    };
-    mutateAsync(payload);
-    handleIsEditToggle("billing");
+  // Handler 3: Billing
+  const handleUpdateBilling = (e: React.FormEvent) => {
+    submitSection(e, "billing", {
+      billing: {
+        defaultHourlyRate: Number(billingData.defaultHourlyRate),
+      },
+    });
   };
-
-  interface UserProfile {
-    firstName?: string;
-    lastName?: string;
-    // Add other profile fields here
-  }
-
-  interface UserData {
-    profile?: UserProfile;
-    // Add other top-level fields here
-  }
 
   return (
     <div className="w-2/3 p-4 flex flex-col gap-y-6">
@@ -147,15 +158,7 @@ const Profile = () => {
         className="w-full h-32 p-5 rounded-2xl flex items-center justify-center bg-cover bg-center bg-no-repeat border-gray-200 border relative"
         style={{ backgroundImage: `url(${image1.src})` }}
       >
-        <div className="absolute -bottom-8 left-6">
-          {/* <Image
-            src={avatarPic}
-            alt="Profile picture"
-            className="rounded-full aspect-square object-cover border-4 border-white shadow-sm"
-            width={80}
-            height={80}
-          /> */}
-        </div>
+        <div className="absolute -bottom-8 left-6"></div>
       </div>
 
       <div className="mt-6 flex flex-col gap-y-6">
@@ -214,17 +217,13 @@ const Profile = () => {
                 />
               ) : (
                 <p className="font-medium text-slate-900 px-1">
-                  {typeof userData.userName === "string" ||
-                  typeof userData.userName === "number"
-                    ? userData.userName
-                    : "No data available"}
+                  {userData?.userName ?? "No data available"}
                 </p>
               )}
             </div>
 
             <div className="space-y-1">
               <Label className="text-gray-400">Role</Label>
-              {/* Role is locked/disabled even in edit mode unless actor is an Admin */}
               <Input
                 value={personalData.role}
                 disabled
@@ -246,8 +245,7 @@ const Profile = () => {
                 />
               ) : (
                 <p className="font-medium text-slate-900 px-1">
-                  {(userData?.profile as { firstName?: string })?.firstName ??
-                    "No data available"}
+                  {userData?.profile?.firstName ?? "No data available"}
                 </p>
               )}
             </div>
@@ -266,8 +264,7 @@ const Profile = () => {
                 />
               ) : (
                 <p className="font-medium text-slate-900 px-1">
-                  {(userData?.profile as { lastName?: string })?.lastName ??
-                    "No data available"}
+                  {userData?.profile?.lastName ?? "No data available"}
                 </p>
               )}
             </div>
@@ -287,8 +284,7 @@ const Profile = () => {
                 />
               ) : (
                 <p className="font-medium text-slate-900 px-1">
-                  {(userData?.profile as { email?: string })?.email ??
-                    "No data available"}
+                  {userData?.profile?.email ?? "No data available"}
                 </p>
               )}
             </div>
@@ -307,8 +303,7 @@ const Profile = () => {
                 />
               ) : (
                 <p className="font-medium text-slate-900 px-1">
-                  {(userData?.profile as { phone?: string })?.phone ??
-                    "No data available"}
+                  {userData?.profile?.phone ?? "No data available"}
                 </p>
               )}
             </div>
@@ -362,7 +357,6 @@ const Profile = () => {
               onChange={setValues}
               placeholder="Enter values, comma separated..."
               className="max-w-[500px] bg-white"
-              // Pass a custom disabled prop to your tag input if it supports it
             />
           </div>
         </form>
@@ -425,9 +419,9 @@ const Profile = () => {
                 </div>
               ) : (
                 <p className="font-semibold px-1">
-                  {(userData?.profile as { defaultHourlyRate?: string })
-                    ?.defaultHourlyRate ?? "No data available"}
-                  /hr
+                  {userData?.billing?.defaultHourlyRate
+                    ? `$${userData.billing.defaultHourlyRate}/hr`
+                    : "No data available"}
                 </p>
               )}
             </div>

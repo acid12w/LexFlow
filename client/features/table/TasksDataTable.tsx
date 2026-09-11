@@ -65,6 +65,7 @@ import { UserGroup } from "../avatar/userGroup";
 import { TaskActionBtn } from "../actionBtn/taskActionBtn";
 import { TaskUserGroup } from "../avatar/taskUserGroup";
 import { DateAlert } from "../date/dateAlert";
+import { Task } from "../tasks/types";
 
 // export default function DynamicEditableTable() {
 //   const [data, setData] = useState([
@@ -344,7 +345,7 @@ export const getColumns = (
 
 interface initialDataProps {
   ActionDropdown: React.ComponentType<any>;
-  initialData: Matter[];
+  initialData: Task[];
   updateTasks: (data) => void;
 }
 

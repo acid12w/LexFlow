@@ -19,7 +19,7 @@ export default function MatterWorkspace({
 }) {
   const [open, setOpen] = React.useState(false);
   const [formData, setFormData] = useState<User[]>([]);
-  type User = { id: string; [key: string]: any };
+  type User = { id: string; [key: string]: unknown };
 
   const handleAddUser = (value: User, id: string) => {
     setFormData((prevItems: User[]) => {

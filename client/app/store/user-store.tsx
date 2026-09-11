@@ -3,31 +3,60 @@ import { persist } from "zustand/middleware";
 import { authService } from "@/app/services/auth";
 import type { FirmMember } from "@/features/combo-box/comboBox";
 
+// 1. Strongly Typed User Structures
+export interface UserProfile {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  phone?: string;
+  practiceAreas?: string[];
+}
+
+export interface UserBilling {
+  defaultHourlyRate?: number;
+}
+
+export interface UserData {
+  _id?: string;
+  userName?: string;
+  role?: string;
+  firmId?: string;
+  profile?: UserProfile;
+  billing?: UserBilling;
+  [key: string]: unknown; // Allows unexpected optional keys from API without throwing TS errors
+}
+
+// 2. Zustand Store Interface
 type UserStore = {
-  user: Record<string, unknown>;
+  user: UserData | null;
   members: FirmMember[];
   fetchMembers: () => Promise<void>;
-  setUserCredentials: (newUser: Record<string, unknown>) => void;
+  setUserCredentials: (newUser: UserData) => void;
 };
 
+// 3. Store Implementation
 export const useUserCredentials = create<UserStore>()(
   persist(
     (set, get) => ({
-      user: {} as Record<string, unknown>,
-      members: [] as FirmMember[],
-      fetchMembers: async () => {
-        const response = await authService.getFirmMembers();
+      user: null,
+      members: [],
 
-        set({ members: response.data.response });
+      fetchMembers: async () => {
+        try {
+          const response = await authService.getFirmMembers();
+          set({ members: response.data.response });
+        } catch (error) {
+          console.error("Failed to fetch firm members:", error);
+        }
       },
 
       setUserCredentials: (newUser) => {
-        const normalizedUser = {
+        const normalizedUser: UserData = {
           ...newUser,
-          //   firmId:
-          //     typeof newUser.firmId === "object"
-          //       ? newUser.firmId?.toString?.() ?? String(newUser.firmId)
-          //       : newUser.firmId,
+          firmId:
+            typeof newUser.firmId === "object" && newUser.firmId !== null
+              ? String(newUser.firmId)
+              : newUser.firmId,
         };
 
         set({ user: normalizedUser });

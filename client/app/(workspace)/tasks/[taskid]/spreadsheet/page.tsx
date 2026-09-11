@@ -8,6 +8,7 @@ import { useParams } from "next/navigation";
 import { useBulkUpdateTasks } from "@/hooks/task";
 import { TaskActionBtn } from "@/features/actionBtn/taskActionBtn";
 import { useEffect } from "react";
+import { Task } from "@/features/tasks/types";
 
 const Spreadsheet = ({
   tasksData,

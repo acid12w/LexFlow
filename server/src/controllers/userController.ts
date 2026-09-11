@@ -403,8 +403,6 @@ export const updateUser = async (
   const data = req.body;
   const { id } = req.user;
 
-  console.log(data);
-
   try {
     const response = await updateUserProfile(data, id);
     res.status(200).json({
