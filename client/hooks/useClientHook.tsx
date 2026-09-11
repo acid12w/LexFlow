@@ -31,11 +31,8 @@ export function useSignup() {
       showAlert("success!", "You have created a user", "success");
     },
 
-    onError: (error: AxiosError<{ error?: string; message?: string }>) => {
-      const serverMessage =
-        error?.response?.data?.error ||
-        error?.response?.data?.message ||
-        "Sign-up failed. Please try again.";
+    onError: (error) => {
+      const serverMessage = "Sign-up failed. Please try again.";
       showAlert("Sign-up failed", serverMessage, "error");
     },
   });
@@ -79,11 +76,10 @@ export function useDeleteTeamMember() {
       showAlert("success!", "user has been removed.", "success");
     },
 
-    onError: (error: AxiosError<{ error?: string; message?: string }>) => {
+    onError: (error) => {
       console.error("Mutation Error:", error);
 
-      const serverMessage =
-        error?.response?.data?.message || "somthing went wrong.";
+      const serverMessage = "somthing went wrong.";
 
       // Fire error notification
       showAlert("Operation failed", serverMessage, "error");
@@ -113,11 +109,8 @@ export function useUpdateFirmMember() {
       showAlert("Success!", "Your profile has been updated.", "success");
     },
 
-    onError: (error: AxiosError<{ error?: string; message?: string }>) => {
-      const serverMessage =
-        error?.response?.data?.error ||
-        error?.response?.data?.message ||
-        "Operation failed!";
+    onError: (error) => {
+      const serverMessage = "Operation failed!";
 
       showAlert("Operation failed!", serverMessage, "error");
     },
@@ -142,11 +135,8 @@ export function useJoinfirmMember() {
       showAlert("success!", "You user has been updated", "success");
     },
 
-    onError: (error: AxiosError<{ error?: string; message?: string }>) => {
-      const serverMessage =
-        error?.response?.data?.error ||
-        error?.response?.data?.message ||
-        "Operation failed! Please try again.";
+    onError: (error) => {
+      const serverMessage = "Operation failed! Please try again.";
       showAlert("Operation failed!", serverMessage, "error");
     },
   });
@@ -165,11 +155,8 @@ export function useCreateFirm() {
       showAlert("success!", "You user has been updated", "success");
     },
 
-    onError: (error: AxiosError<{ error?: string; message?: string }>) => {
-      const serverMessage =
-        error?.response?.data?.error ||
-        error?.response?.data?.message ||
-        "Operation failed! Please try again.";
+    onError: (isError) => {
+      const serverMessage = "Operation failed! Please try again.";
       showAlert("Operation failed!", serverMessage, "error");
     },
   });

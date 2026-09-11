@@ -8,8 +8,13 @@ import { ActionDropdown } from "./actionBtnDropdown";
 import { useRemoveCases, useUpdateCase } from "@/hooks/useMatterHook";
 import Link from "next/link";
 
+interface newCaseDataPayload {
+  title: string;
+  _id: string;
+}
+
 interface TaskActionBtnProps {
-  rowData: any;
+  rowData: newCaseDataPayload;
   edit: () => void;
   isEditing: boolean;
   caseId: string;

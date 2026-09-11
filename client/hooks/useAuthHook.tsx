@@ -238,7 +238,6 @@ export function useJoinfirmMember() {
     },
 
     onError: (error) => {
-      console.error("Mutation Error:", error);
       const serverMessage = "Operation failed! Please try again.";
       showAlert("Operation failed!", serverMessage, "error");
     },
@@ -267,12 +266,8 @@ export function useCreateFirm() {
       showAlert("success!", "Your firm has been created", "success");
     },
 
-    onError: (error: AxiosError<{ error?: string; message?: string }>) => {
-      console.error("Mutation Error:", error);
-      const serverMessage =
-        error?.response?.data?.error ||
-        error?.response?.data?.message ||
-        "Operation failed! Please try again.";
+    onError: (error) => {
+      const serverMessage = "Operation failed! Please try again.";
       showAlert("Operation failed!", serverMessage, "error");
     },
   });

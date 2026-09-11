@@ -120,7 +120,6 @@ export function useBulkUpdateTasks() {
     },
 
     onError: (error) => {
-      console.error("Mutation Error:", error);
       const serverMessage = "somthing went wrong.";
 
       // Fire error notification
