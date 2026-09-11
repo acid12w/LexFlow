@@ -19,7 +19,7 @@ const Spreadsheet = () => {
   if (isLoading) {
     return (
       <div className="space-y-3 px-2">
-        <Skeleton className="h-[40px] w-full" /> {/* Search bar skeleton */}
+        <Skeleton className="h-10 w-full" /> {/* Search bar skeleton */}
         <Skeleton className="h-[300px] w-full" /> {/* Table skeleton */}
       </div>
     );

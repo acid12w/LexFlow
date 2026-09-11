@@ -87,7 +87,6 @@ export type Matter = {
   taskCount?: number;
   completedTaskCount?: number;
   endDate?: string;
-  endDate?: string;
   assignedTo: string;
   assignedBy: string;
   priority: "low" | "medium" | "high";
@@ -387,7 +386,7 @@ export function CaseDataTable({
     meta: {
       isBulkEditing,
       editingRows,
-      updateData: (rowIndex: number, columnId: string, value: any) => {
+      updateData: (rowIndex: number, columnId: string, value: []) => {
         if (columnId === "status") return;
         setTableData((prev) =>
           prev.map((row, index) =>

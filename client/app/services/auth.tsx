@@ -33,7 +33,7 @@ export const authService = {
     return response;
   },
 
-  getUsers: async (data) => {
+  getUsers: async (data: []) => {
     const response = await api.post(`/user/assignees`, { data });
     return response;
   },
@@ -48,33 +48,28 @@ export const authService = {
     return response;
   },
 
-  getUserInvitation: async (id) => {
+  getUserInvitation: async (id: string) => {
     const response = await api.get(`/user/firmInvitation/${id}`);
     return response;
   },
 
-  deleteTeamMember: async (userId) => {
+  deleteTeamMember: async (userId: string) => {
     const response = await api.delete(`/user/removeTeamMember/${userId}`);
     return response;
   },
 
-  updateFirmMember: async (data) => {
+  updateFirmMember: async (data: []) => {
     const response = await api.patch(`/user/update-user`, data);
     return response;
   },
 
-  joinFirm: async (data, token) => {
+  joinFirm: async (data: [], token: string) => {
     const response = await api.patch(`/user/join-firm/${token}`, data);
     return response;
   },
 
-  createFirm: async (data) => {
+  createFirm: async (data: []) => {
     const response = await api.post(`/user/create-firm`, data);
     return response;
   },
-
-  // verifyEmail: async (token) => {
-  //   const response = await api.post("/user/verify-email", { token });
-  //   return response;
-  // },
 };

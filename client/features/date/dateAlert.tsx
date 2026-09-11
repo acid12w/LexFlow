@@ -13,7 +13,7 @@ function getDaysBetweenDates(endDate: string): number {
 }
 
 interface DateAlertProps {
-  date: string;
+  date: Date;
 }
 
 export const DateAlert = ({ date }: DateAlertProps) => {

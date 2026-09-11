@@ -102,7 +102,10 @@ export function EditTaskForm({ isEditing }) {
   const handleAssigneeChange = (ids: string[]) => {
     setAssigneeIds(ids);
     setFormData((prev) => ({ ...prev, assignedTo: ids }));
-    form.setValue("assignedTo", ids, { shouldValidate: true, shouldDirty: true });
+    form.setValue("assignedTo", ids, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
     setOpen(false);
   };
 

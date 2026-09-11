@@ -8,7 +8,6 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { formatStatus } from "@/utils/formatStatus"; // Optional: Use your status string formatter!
 
 interface BreadcrumbWithCustomSeparatorProps {
   pathnameProps: string; // Expects standard router path like "/dashboard/matters/123"

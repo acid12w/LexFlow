@@ -11,26 +11,26 @@ export const matterService = {
     return data;
   },
 
-  getMatterbyId: async (caseId) => {
+  getMatterbyId: async (caseId: string) => {
     const { data } = await api.get(`/matter/${caseId}`);
     return data;
   },
 
-  createCase: async (data) => {
+  createCase: async (data: []) => {
     const response = await api.post(`/matter`, data);
     return response;
   },
-  removeCase: async (caseId) => {
+  removeCase: async (caseId: string) => {
     const response = await api.delete(`/matter/${caseId}`);
     return response;
   },
-  updateCase: async (updates, caseId) => {
+  updateCase: async (updates: [], caseId: string) => {
     console.log(updates);
     const response = await api.patch(`/matter/${caseId}`, { data: updates });
     return response;
   },
 
-  bulkUpdateCase: async (updates: TaskUpdate[]) => {
+  bulkUpdateCase: async (updates: []) => {
     const { data } = await api.patch("/matter", { updates });
     return data;
   },

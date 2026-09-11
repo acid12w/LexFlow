@@ -11,17 +11,17 @@ export const timeTrackerService = {
     return data;
   },
 
-  createTracker: async (data) => {
+  createTracker: async (data: []) => {
     const response = await api.post(`/time-tracker`, data);
     return response;
   },
 
-  updateTracker: async (updates, taskId) => {
+  updateTracker: async (updates: [], taskId: string) => {
     const data = await api.patch(`/time-tracker/${taskId}`, updates);
     return data;
   },
 
-  bulkUpdateTracker: async (updates: TaskUpdate[]) => {
+  bulkUpdateTracker: async (updates: []) => {
     const { data } = await api.patch("/time-tracker", updates);
     return data;
   },

@@ -7,6 +7,26 @@ import { useGetMilestone } from "@/hooks/useClientHook";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
+interface milestones {
+  milestones: [];
+}
+
+interface milestone {
+  aliases: [];
+  createdAt: string;
+  createdBy: string;
+  firstName: string;
+  lastName: string;
+  refrenceNumber: string;
+  status: string;
+  type: string;
+  updatedAt: string;
+  title: string;
+  description: string;
+  __v: number;
+  _id: string;
+}
+
 const ClientProgressPage = () => {
   // Mocking the current active step index (change this to see changes)
   const currentStepIndex = 1;
@@ -22,6 +42,8 @@ const ClientProgressPage = () => {
     isLoading,
     isError,
   } = useGetMilestone(clientId || "");
+
+  console.log(MILESTONES);
 
   // 2. Professional Loading State
   if (isLoading) {
@@ -55,10 +77,10 @@ const ClientProgressPage = () => {
 
       <div className="flex flex-wrap items-start justify-center gap-24">
         {/* ADDED 'return' HERE FOR THE OUTER MAP LOOP */}
-        {MILESTONES.data.data.response.map((steps) => {
-          return steps.milestones.map((step, index) => {
+        {MILESTONES.data.data.response.map((steps: milestones) => {
+          return steps?.milestones.map((step: milestone, index: number) => {
             const isCompleted = step.status === "DONE";
-            const isLast = index === steps.milestones.length - 1;
+            const isLast = index === steps?.milestones.length - 1;
 
             return (
               <div

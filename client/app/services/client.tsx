@@ -23,17 +23,17 @@ export const clientService = {
     return response;
   },
 
-  getMilestone: async (id) => {
+  getMilestone: async (id: string) => {
     const response = await api.get(`/client/mile-stone/${id}`);
     return response;
   },
 
-  deleteTeamMember: async (userId) => {
+  deleteTeamMember: async (userId: string) => {
     const response = await api.delete(`/user/removeTeamMember/${userId}`);
     return response;
   },
 
-  updateFirmMember: async (data) => {
+  updateFirmMember: async (data: []) => {
     const response = await api.patch(`/user/update-user`, data);
     return response;
   },

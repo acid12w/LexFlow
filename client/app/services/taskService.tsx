@@ -16,12 +16,12 @@ export const taskService = {
     return response;
   },
 
-  updateTasks: async (updates, taskId) => {
+  updateTasks: async (updates: [], taskId: string) => {
     const data = await api.patch(`/tasks/${taskId}`, updates);
     return data;
   },
 
-  bulkUpdateTasks: async (updates: TaskUpdate[]) => {
+  bulkUpdateTasks: async (updates: []) => {
     const { data } = await api.patch("/tasks", updates);
     return data;
   },

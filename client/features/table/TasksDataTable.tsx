@@ -136,6 +136,7 @@ export const getColumns = (
     id: "select",
     header: ({ table }) => (
       <Checkbox
+        className="ml-2"
         checked={table.getIsAllPageRowsSelected()}
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
       />
@@ -359,6 +360,8 @@ export function TaskDataTable({
     []
   );
 
+  console.log(initialData);
+
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
@@ -414,7 +417,7 @@ export function TaskDataTable({
   return (
     <div className="w-full">
       <div className="flex justify-between items-center py-4">
-        <div className="flex gap-4">
+        <div className="flex gap-4 ">
           <Input
             placeholder="Search task name..."
             value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
