@@ -8,7 +8,11 @@ const RegisterPage = () => {
 
   return (
     <main className="flex flex-col items-center justify-center h-screen">
-      <FirmRegistration createFirm={mutateAsync} />
+      <FirmRegistration
+        createFirm={async (values) => {
+          await mutateAsync(values);
+        }}
+      />
     </main>
   );
 };
