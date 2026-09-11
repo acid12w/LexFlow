@@ -347,7 +347,7 @@ export const getColumns = (
 interface initialDataProps {
   ActionDropdown: React.ComponentType<any>;
   initialData: Task[];
-  updateTasks: (data: []) => void;
+  updateTasks: (data: any) => void;
 }
 
 export function TaskDataTable({
