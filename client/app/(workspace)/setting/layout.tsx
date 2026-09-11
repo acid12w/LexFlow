@@ -54,7 +54,7 @@ export default function SettingNavigation({
         >
           <Link href={"/setting/profile"}>profile</Link>
         </li>
-        {userData?.role.toLowerCase() === "admin" && (
+        {(userData as { role?: string })?.role?.toLowerCase() === "admin" && (
           <li
             className={cn(
               pathname.startsWith("/setting/users")
