@@ -17,11 +17,11 @@ function toAssigneeIds(assignees: AssigneeRef[]) {
 }
 
 export function TaskUserGroup({
-  className,
+  className = "",
   displayValue = 2,
-  row,
-  isEditing,
-  table,
+  row = null,
+  isEditing = false,
+  table = null,
 }) {
   const firmMembers = useUserCredentials((state) => state.members);
 

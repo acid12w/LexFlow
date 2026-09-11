@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 
-function getDaysBetweenDates(endDate: string): number {
+function getDaysBetweenDates(endDate: Date): number {
   const now = new Date();
   now.setHours(0, 0, 0, 0);
   const end = new Date(endDate);

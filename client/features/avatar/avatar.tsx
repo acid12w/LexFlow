@@ -4,8 +4,33 @@ import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useGetUsersByArray } from "@/hooks/useAuthHook";
 
+interface useGetUsersByArrayPayload {
+  userName: string;
+  password: string;
+  profileImg: string;
+  role: string;
+  lastLogin: Date;
+  status: string;
+  verificationToken: string;
+  verificationTokenExpires: Date;
+  profile: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone?: string;
+    extension?: string;
+    officeLocation?: string;
+    practiceAreas: string[];
+  };
+  // Billing and Productivity Configurations
+  billing: {
+    defaultHourlyRate: number; // Used by your Time Tracker
+    targetBillableHoursAnnual?: number;
+  };
+}
+
 interface userObj {
-  userData: [];
+  userData: useGetUsersByArrayPayload;
   displaySize: number;
 }
 

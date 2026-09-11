@@ -29,8 +29,8 @@ export type FirmMember = {
 
 export interface ComboboxDemoProps {
   name?: string;
-  value?: string[];
-  onChange: (assigneeIds: string[]) => void;
+  value?: (string | undefined)[];
+  onChange: (assigneeIds: (string | undefined)[]) => void;
   placeholder?: string;
   className?: string;
 }

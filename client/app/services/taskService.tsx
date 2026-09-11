@@ -11,17 +11,17 @@ export const taskService = {
     return data;
   },
 
-  createTask: async (data) => {
+  createTask: async (data: any) => {
     const response = await api.post(`/tasks`, data);
     return response;
   },
 
-  updateTasks: async (updates, taskId: string) => {
+  updateTasks: async (updates: any, taskId: string) => {
     const data = await api.patch(`/tasks/${taskId}`, updates);
     return data;
   },
 
-  bulkUpdateTasks: async (updates) => {
+  bulkUpdateTasks: async (updates: any) => {
     const { data } = await api.patch("/tasks", updates);
     return data;
   },

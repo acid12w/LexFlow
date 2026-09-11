@@ -11,25 +11,15 @@ import {
 import { useGetAllMattersByUserId } from "@/hooks/useMatterHook";
 
 // Define a proper type interface for your user data
-interface UserData {
-  id: string;
-  [key: string]: any;
-}
 
 export function GenericCombobox({
-  userData,
   value,
   onChange,
 }: {
-  userData: UserData; // Fixed: avoid empty object type '{}'
   value?: string;
-  onChange?: (val: string) => void;
+  onChange?: (val: string | null) => void;
 }) {
-  const {
-    data: caseData,
-    isLoading,
-    isError,
-  } = useGetAllMattersByUserId(userData?.id);
+  const { data: caseData, isLoading, isError } = useGetAllMattersByUserId();
 
   // 1. Fixed Condition: Render loading text while it IS loading or data hasn't arrived
   if (isLoading || !caseData) {
