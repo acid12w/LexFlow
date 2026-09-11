@@ -1,6 +1,5 @@
 "use client";
 
-import { useTaskStore } from "@/app/store/use-task";
 import { Skeleton } from "@/components/ui/skeleton";
 import { DataKanban } from "@/features/tasks/data-kanban";
 import { Task, TaskStatus } from "@/features/tasks/types";
