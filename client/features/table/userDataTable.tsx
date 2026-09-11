@@ -290,12 +290,12 @@ export const getColumns = (
 interface initialDataProps {
   ActionDropdown: React.ComponentType<any>;
   initialData: Matter[];
-  updateTasks: (data: []) => void;
+  // updateTasks: (data) => void;
 }
 
 export function UserDataTable({
   initialData,
-  updateTasks,
+  // updateTasks,
   ActionDropdown,
 }: initialDataProps) {
   const [sorting, setSorting] = React.useState<SortingState>([]);

@@ -41,7 +41,7 @@ const Spreadsheet = () => {
       <UserDataTable
         ActionDropdown={UserManagmentActionBtn}
         initialData={initalData?.data || []}
-        updateTasks={BulkUpdateTasks}
+        // updateTasks={BulkUpdateTasks}
       />
     </div>
   );
