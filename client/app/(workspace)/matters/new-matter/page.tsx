@@ -160,7 +160,7 @@ export default function MatterField() {
       const response = await mutateAsync({
         ...values,
         description: values.matterDescription,
-        dueDate: values.endDate,
+        endDate: values.endDate,
       });
 
       form.reset(); // Clear form on success
