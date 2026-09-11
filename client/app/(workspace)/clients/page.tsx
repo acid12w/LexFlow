@@ -38,7 +38,7 @@ const Clientsheet = () => {
       <ClientDataTable
         ActionDropdown={TaskActionBtn}
         initialData={clientData?.data.data || []}
-        updateTasks={BulkUpdateTasks}
+        updateTasks={() => BulkUpdateTasks}
       />
     </div>
   );

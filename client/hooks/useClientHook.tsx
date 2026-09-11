@@ -3,20 +3,35 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { useAlertStore } from "@/app/store/use-alert"; // Import your Zustand bridge
 import { useUserCredentials } from "@/app/store/user-store";
+import { AxiosError } from "axios";
+import { authService } from "@/app/services/auth";
+
+interface newUserDataPayload {
+  userName: string;
+  password: string;
+  company?: string;
+  inviteFirmId?: string;
+  profile: {
+    firstName: string;
+    lastName: string;
+    email: string;
+  };
+}
 
 export function useSignup() {
   const queryClient = useQueryClient();
   const showAlert = useAlertStore((state) => state.showAlert);
 
   return useMutation({
-    mutationFn: (newUserData) => authService.createUser(newUserData),
+    mutationFn: (newUserData: newUserDataPayload) =>
+      authService.createUser(newUserData),
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["firmMembers"] });
       showAlert("success!", "You have created a user", "success");
     },
 
-    onError: (error) => {
+    onError: (error: AxiosError<{ error?: string; message?: string }>) => {
       const serverMessage =
         error?.response?.data?.error ||
         error?.response?.data?.message ||
@@ -26,13 +41,13 @@ export function useSignup() {
   });
 }
 
-export function useGetClientById(id) {
-  const result = useQuery({
-    queryKey: ["client"],
-    queryFn: () => clientService.getClientById(id),
-  });
-  return result;
-}
+// export function useGetClientById(id: string) {
+//   const result = useQuery({
+//     queryKey: ["client"],
+//     queryFn: () => clientService.getClientById(id),
+//   });
+//   return result;
+// }
 
 export function useGetAllClients() {
   const result = useQuery({
@@ -42,7 +57,7 @@ export function useGetAllClients() {
   return result;
 }
 
-export function useGetMilestone(clientId) {
+export function useGetMilestone(clientId: string) {
   const result = useQuery({
     queryKey: ["clients"],
     queryFn: () => clientService.getMilestone(clientId),
@@ -55,7 +70,7 @@ export function useDeleteTeamMember() {
   const showAlert = useAlertStore((state) => state.showAlert);
 
   return useMutation({
-    mutationFn: (userId) => authService.deleteTeamMember(userId),
+    mutationFn: (userId: string) => authService.deleteTeamMember(userId),
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["firmMembers"] });
@@ -64,7 +79,7 @@ export function useDeleteTeamMember() {
       showAlert("success!", "user has been removed.", "success");
     },
 
-    onError: (error) => {
+    onError: (error: AxiosError<{ error?: string; message?: string }>) => {
       console.error("Mutation Error:", error);
 
       const serverMessage =
@@ -98,7 +113,7 @@ export function useUpdateFirmMember() {
       showAlert("Success!", "Your profile has been updated.", "success");
     },
 
-    onError: (error) => {
+    onError: (error: AxiosError<{ error?: string; message?: string }>) => {
       const serverMessage =
         error?.response?.data?.error ||
         error?.response?.data?.message ||
@@ -109,12 +124,16 @@ export function useUpdateFirmMember() {
   });
 }
 
+interface useJoinfirmMemberPayload {
+  token: string;
+}
+
 export function useJoinfirmMember() {
   const queryClient = useQueryClient();
   const showAlert = useAlertStore((state) => state.showAlert);
 
   return useMutation({
-    mutationFn: (newuserData) =>
+    mutationFn: (newuserData: useJoinfirmMemberPayload) =>
       authService.joinFirm(newuserData, newuserData.token),
 
     onSuccess: () => {
@@ -123,8 +142,7 @@ export function useJoinfirmMember() {
       showAlert("success!", "You user has been updated", "success");
     },
 
-    onError: (error) => {
-      console.error("Mutation Error:", error);
+    onError: (error: AxiosError<{ error?: string; message?: string }>) => {
       const serverMessage =
         error?.response?.data?.error ||
         error?.response?.data?.message ||
@@ -147,8 +165,7 @@ export function useCreateFirm() {
       showAlert("success!", "You user has been updated", "success");
     },
 
-    onError: (error) => {
-      console.error("Mutation Error:", error);
+    onError: (error: AxiosError<{ error?: string; message?: string }>) => {
       const serverMessage =
         error?.response?.data?.error ||
         error?.response?.data?.message ||

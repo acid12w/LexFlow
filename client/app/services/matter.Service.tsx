@@ -16,7 +16,7 @@ export const matterService = {
     return data;
   },
 
-  createCase: async (data: []) => {
+  createCase: async (data) => {
     const response = await api.post(`/matter`, data);
     return response;
   },
@@ -24,13 +24,13 @@ export const matterService = {
     const response = await api.delete(`/matter/${caseId}`);
     return response;
   },
-  updateCase: async (updates: [], caseId: string) => {
+  updateCase: async (updates, caseId: string) => {
     console.log(updates);
     const response = await api.patch(`/matter/${caseId}`, { data: updates });
     return response;
   },
 
-  bulkUpdateCase: async (updates: []) => {
+  bulkUpdateCase: async (updates) => {
     const { data } = await api.patch("/matter", { updates });
     return data;
   },

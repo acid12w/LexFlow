@@ -79,6 +79,21 @@ const matterStatusFilterOptions = Object.values(MATTER_STATUS).map((value) => ({
 //   ]);
 // }
 
+interface useUpdateTaskPayload {
+  _id?: string;
+  id?: number;
+  title: string;
+  practiceArea: string;
+  status: string;
+  taskCount?: number;
+  completedTaskCount?: number;
+  dueDate?: string;
+  endDate?: string;
+  assignedTo: string;
+  assignedBy: string;
+  priority: string;
+}
+
 export type Matter = {
   _id?: string;
   id?: number;
@@ -190,8 +205,9 @@ export const getColumns = (
 
 interface initialDataProps {
   ActionDropdown: React.ComponentType<any>;
-  initialData: Matter[];
-  updateTasks: (data: []) => void;
+  initialData: string[];
+  // Fix the function signature to accept the payload parameter
+  updateTasks: (payload: useUpdateTaskPayload) => void;
 }
 
 export function ClientDataTable({
@@ -242,7 +258,7 @@ export function ClientDataTable({
     meta: {
       isBulkEditing,
       editingRows,
-      updateData: (rowIndex: number, columnId: string, value: any) => {
+      updateData: (rowIndex: number, columnId: string, value: []) => {
         if (columnId === "status") return;
         setTableData((prev) =>
           prev.map((row, index) =>

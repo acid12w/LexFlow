@@ -11,7 +11,7 @@ export const timeTrackerService = {
     return data;
   },
 
-  createTracker: async (data: []) => {
+  createTracker: async (data) => {
     const response = await api.post(`/time-tracker`, data);
     return response;
   },

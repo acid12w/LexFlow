@@ -26,7 +26,6 @@ import { is } from "zod/v4/locales";
 import { UserGroup } from "@/features/avatar/userGroup";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { ModalContext } from "@/components/modal/providers";
-import { useTaskStore } from "@/app/store/use-task";
 import { useGetAllTasksByCaseId } from "@/hooks/task";
 import { useGetMatterById } from "@/hooks/useMatterHook";
 import { MATTER_STATUS, MATTER_STATUS_LABELS } from "@/lib/matter-health";

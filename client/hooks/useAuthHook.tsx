@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { useAlertStore } from "@/app/store/use-alert"; // Import your Zustand bridge
 import { useUserCredentials } from "@/app/store/user-store";
+import { AxiosError } from "axios";
 
 interface signinPayload {
   userName: string;
@@ -30,9 +31,7 @@ export function useSignin() {
       console.error("Sign-in error payload:", error);
 
       // Parse server message string if it exists, otherwise fall back to safety text
-      const serverMessage =
-        error?.response?.data?.message ||
-        "Incorrect email or password. Please try again.";
+      const serverMessage = "Incorrect email or password. Please try again.";
 
       // Fire error notification
       showAlert("Sign-in failed", serverMessage, "error");
@@ -78,10 +77,7 @@ export function useSignup() {
     },
 
     onError: (error) => {
-      const serverMessage =
-        error?.response?.data?.error ||
-        error?.response?.data?.message ||
-        "Sign-up failed. Please try again.";
+      const serverMessage = "Sign-up failed. Please try again.";
       showAlert("Sign-up failed", serverMessage, "error");
     },
   });
@@ -96,7 +92,32 @@ export function useGetMembersBy(p0?: { enabled: boolean }) {
   return result;
 }
 
-export function useGetUsersByArray(data) {
+interface useGetUsersByArrayPayload {
+  userName: string;
+  password: string;
+  profileImg: string;
+  role: string;
+  lastLogin: Date;
+  status: string;
+  verificationToken: string;
+  verificationTokenExpires: Date;
+  profile: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone?: string;
+    extension?: string;
+    officeLocation?: string;
+    practiceAreas: string[];
+  };
+  // Billing and Productivity Configurations
+  billing: {
+    defaultHourlyRate: number; // Used by your Time Tracker
+    targetBillableHoursAnnual?: number;
+  };
+}
+
+export function useGetUsersByArray(data: useGetUsersByArrayPayload) {
   const result = useQuery({
     queryKey: ["users", data],
     queryFn: () => authService.getUsers(data),
@@ -112,7 +133,7 @@ export function useGetTeamMember() {
   return result;
 }
 
-export function useGetInvitationById(id) {
+export function useGetInvitationById(id: string) {
   const result = useQuery({
     queryKey: ["invitation"],
     queryFn: () => authService.getUserInvitation(id),
@@ -125,7 +146,7 @@ export function useDeleteTeamMember() {
   const showAlert = useAlertStore((state) => state.showAlert);
 
   return useMutation({
-    mutationFn: (userId) => authService.deleteTeamMember(userId),
+    mutationFn: (userId: string) => authService.deleteTeamMember(userId),
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["firmMembers"] });
@@ -137,8 +158,7 @@ export function useDeleteTeamMember() {
     onError: (error) => {
       console.error("Mutation Error:", error);
 
-      const serverMessage =
-        error?.response?.data?.message || "somthing went wrong.";
+      const serverMessage = "somthing went wrong.";
 
       // Fire error notification
       showAlert("Operation failed", serverMessage, "error");
@@ -190,10 +210,7 @@ export function useUpdateFirmMember() {
     },
 
     onError: (error) => {
-      const serverMessage =
-        error?.response?.data?.error ||
-        error?.response?.data?.message ||
-        "Operation failed!";
+      const serverMessage = "Operation failed!";
 
       showAlert("Operation failed!", serverMessage, "error");
     },
@@ -222,10 +239,7 @@ export function useJoinfirmMember() {
 
     onError: (error) => {
       console.error("Mutation Error:", error);
-      const serverMessage =
-        error?.response?.data?.error ||
-        error?.response?.data?.message ||
-        "Operation failed! Please try again.";
+      const serverMessage = "Operation failed! Please try again.";
       showAlert("Operation failed!", serverMessage, "error");
     },
   });
@@ -243,8 +257,8 @@ export function useCreateFirm() {
   const queryClient = useQueryClient();
   const showAlert = useAlertStore((state) => state.showAlert);
 
-  // 💡 Add the generic parameters here: <ResponseDataType, ErrorType, VariablesType>
-  return useMutation<any, any, CreateFirmPayload>({
+  // No explicit generics needed here!
+  return useMutation({
     mutationFn: (firmData: CreateFirmPayload) =>
       authService.createFirm(firmData),
 
@@ -253,7 +267,7 @@ export function useCreateFirm() {
       showAlert("success!", "Your firm has been created", "success");
     },
 
-    onError: (error: any) => {
+    onError: (error: AxiosError<{ error?: string; message?: string }>) => {
       console.error("Mutation Error:", error);
       const serverMessage =
         error?.response?.data?.error ||

@@ -17,9 +17,6 @@ const Spreadsheet = ({
   tasksData: Task[];
   isLoading: boolean;
 }) => {
-  const params = useParams();
-  const caseId = params?.taskid;
-
   const { mutate: BulkUpdateTasks } = useBulkUpdateTasks();
 
   // 1. Destructure useful states

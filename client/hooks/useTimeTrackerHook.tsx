@@ -2,14 +2,15 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { timeTrackerService } from "../app/services/timeTrackerService";
 
 import { useAlertStore } from "@/app/store/use-alert"; // Import your Zustand bridge
+import { AxiosError } from "axios";
 
-export function useGetAlltimeTracker() {
-  const result = useQuery({
-    queryKey: ["alltimeStamp"],
-    queryFn: (firmId) => timeTrackerService.getMatter(firmId),
-  });
-  return result;
-}
+// export function useGetAlltimeTracker() {
+//   const result = useQuery({
+//     queryKey: ["alltimeStamp"],
+//     queryFn: () => timeTrackerService.getMatter(),
+//   });
+//   return result;
+// }
 
 export function useGetTimeTrackerByUserId() {
   const result = useQuery({
@@ -33,9 +34,7 @@ export function useCreatetimeTracker() {
       showAlert("success!", "You have created a time stamp.", "success");
     },
 
-    onError: (error) => {
-      console.error("Mutation Error:", error);
-
+    onError: (error: AxiosError<{ error?: string; message?: string }>) => {
       // Parse server message string if it exists, otherwise fall back to safety text
       const serverMessage =
         error?.response?.data?.message || "somthing went wrong.";
@@ -68,7 +67,7 @@ export function useRemovetimeTracker(caseId: string) {
   const showAlert = useAlertStore((state) => state.showAlert);
 
   return useMutation({
-    mutationFn: (caseId) => timeTrackerService.removeItem(caseId),
+    mutationFn: (caseId: string) => timeTrackerService.removeItem(caseId),
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["timeStamp"] });
@@ -77,9 +76,7 @@ export function useRemovetimeTracker(caseId: string) {
       showAlert("success!", "time stamp has been removed.", "success");
     },
 
-    onError: (error) => {
-      console.error("Mutation Error:", error);
-
+    onError: (error: AxiosError<{ error?: string; message?: string }>) => {
       const serverMessage =
         error?.response?.data?.message || "somthing went wrong.";
 

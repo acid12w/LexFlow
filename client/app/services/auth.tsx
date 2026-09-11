@@ -33,7 +33,7 @@ export const authService = {
     return response;
   },
 
-  getUsers: async (data: []) => {
+  getUsers: async (data) => {
     const response = await api.post(`/user/assignees`, { data });
     return response;
   },
@@ -58,17 +58,17 @@ export const authService = {
     return response;
   },
 
-  updateFirmMember: async (data: []) => {
+  updateFirmMember: async (data) => {
     const response = await api.patch(`/user/update-user`, data);
     return response;
   },
 
-  joinFirm: async (data: [], token: string) => {
+  joinFirm: async (data, token: string | undefined) => {
     const response = await api.patch(`/user/join-firm/${token}`, data);
     return response;
   },
 
-  createFirm: async (data: []) => {
+  createFirm: async (data) => {
     const response = await api.post(`/user/create-firm`, data);
     return response;
   },

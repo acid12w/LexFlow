@@ -290,7 +290,7 @@ export const getColumns = (
 interface initialDataProps {
   ActionDropdown: React.ComponentType<any>;
   initialData: Matter[];
-  updateTasks: (data) => void;
+  updateTasks: (data: []) => void;
 }
 
 export function UserDataTable({

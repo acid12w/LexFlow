@@ -347,7 +347,7 @@ export const getColumns = (
 interface initialDataProps {
   ActionDropdown: React.ComponentType<any>;
   initialData: Task[];
-  updateTasks: (data) => void;
+  updateTasks: (data: []) => void;
 }
 
 export function TaskDataTable({
@@ -400,7 +400,7 @@ export function TaskDataTable({
     meta: {
       isBulkEditing,
       editingRows,
-      updateData: (rowIndex: number, columnId: string, value: any) => {
+      updateData: (rowIndex: number, columnId: string, value: []) => {
         setTableData((prev) =>
           prev.map((row, index) =>
             index === rowIndex ? { ...row, [columnId]: value } : row

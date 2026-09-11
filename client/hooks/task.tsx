@@ -25,12 +25,29 @@ export function useGetAllTasksByCaseId(caseId: string | string[]) {
   return result;
 }
 
+interface newTaskDataPayload {
+  title: string;
+  description: string;
+  eventType?: string;
+  status: string;
+  priority: string;
+  assignedTo: [];
+  completedAt: string;
+  assignedBy: string;
+  startDate?: Date;
+  endDate?: Date;
+  position?: number;
+  mileStone: boolean;
+  _id: string;
+}
+
 export function useCreateTasks(caseId: string) {
   const queryClient = useQueryClient();
   const showAlert = useAlertStore((state) => state.showAlert);
 
   return useMutation({
-    mutationFn: (newTaskData) => taskService.createTask(newTaskData),
+    mutationFn: (newTaskData: newTaskDataPayload) =>
+      taskService.createTask(newTaskData),
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["task", caseId] });
@@ -41,8 +58,7 @@ export function useCreateTasks(caseId: string) {
     onError: (error) => {
       console.error("Mutation Error:", error);
 
-      const serverMessage =
-        error?.response?.data?.message || "somthing went wrong.";
+      const serverMessage = "somthing went wrong.";
 
       // Fire error notification
       showAlert("Operation failed", serverMessage, "error");
@@ -50,13 +66,29 @@ export function useCreateTasks(caseId: string) {
   });
 }
 
+interface useUpdateTaskPayload {
+  title: string;
+  description: string;
+  eventType?: string;
+  status: string;
+  priority: string;
+  assignedTo: [];
+  completedAt: string;
+  assignedBy: string;
+  startDate?: Date;
+  endDate?: Date;
+  position?: number;
+  mileStone: boolean;
+  _id: string;
+}
+
 export function useUpdateTask() {
   const queryClient = useQueryClient();
   const showAlert = useAlertStore((state) => state.showAlert);
 
   return useMutation({
-    mutationFn: (newTaskData, taskId) =>
-      taskService.updateTasks(newTaskData, newTaskData._id),
+    mutationFn: (newTaskData: useUpdateTaskPayload, taskId) =>
+      taskService.updateTasks(newTaskData, newTaskData?._id),
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["task"] });
@@ -65,8 +97,7 @@ export function useUpdateTask() {
     },
 
     onError: (error) => {
-      const serverMessage =
-        error?.response?.data?.message || "somthing went wrong.";
+      const serverMessage = "somthing went wrong.";
 
       // Fire error notification
       showAlert("Operation failed", serverMessage, "error");
@@ -79,7 +110,8 @@ export function useBulkUpdateTasks() {
   const showAlert = useAlertStore((state) => state.showAlert);
 
   return useMutation({
-    mutationFn: (newTaskData) => taskService.bulkUpdateTasks(newTaskData),
+    mutationFn: (newTaskData: useUpdateTaskPayload) =>
+      taskService.bulkUpdateTasks(newTaskData),
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["task"] });
@@ -89,8 +121,7 @@ export function useBulkUpdateTasks() {
 
     onError: (error) => {
       console.error("Mutation Error:", error);
-      const serverMessage =
-        error?.response?.data?.message || "somthing went wrong.";
+      const serverMessage = "somthing went wrong.";
 
       // Fire error notification
       showAlert("Operation failed", serverMessage, "error");
@@ -103,7 +134,7 @@ export function useRemoveTasks(taskId: string) {
   const showAlert = useAlertStore((state) => state.showAlert);
 
   return useMutation({
-    mutationFn: (taskId) => taskService.removeTask(taskId),
+    mutationFn: (taskId: string) => taskService.removeTask(taskId),
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
@@ -113,8 +144,7 @@ export function useRemoveTasks(taskId: string) {
 
     onError: (error) => {
       console.error("Mutation Error:", error);
-      const serverMessage =
-        error?.response?.data?.message || "somthing went wrong.";
+      const serverMessage = "somthing went wrong.";
 
       // Fire error notification
       showAlert("Operation failed", serverMessage, "error");
