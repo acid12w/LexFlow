@@ -3,7 +3,7 @@ import { MatterStatus } from "../tasks/types";
 
 interface EventCardProps {
   title: string;
-  status: MatterStatus;
+  status: any;
   id: string;
   description: string;
 }

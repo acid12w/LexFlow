@@ -15,7 +15,7 @@ import { TaskActionBtn } from "../actionBtn/taskActionBtn";
 import { UserGroup } from "../avatar/userGroup";
 
 interface KanbanCardProps {
-  tasks: Task;
+  tasks: any;
 }
 
 export const KanbanCard = ({ tasks }: KanbanCardProps) => {

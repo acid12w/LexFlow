@@ -30,6 +30,12 @@ interface DataKanbanProps {
   data: Task[];
 }
 
+interface TaskPositionUpdate {
+  _id: string;
+  status: TaskStatus;
+  position: number;
+}
+
 export const DataKanban = ({ data }: DataKanbanProps) => {
   const { mutate: updateTask } = useBulkUpdateTasks();
 
@@ -64,7 +70,7 @@ export const DataKanban = ({ data }: DataKanbanProps) => {
       const sourceStatus = source.droppableId as TaskStatus;
       const destStatus = destination.droppableId as TaskStatus;
 
-      let updatePayload: string[] = [];
+      let updatePayload: TaskPositionUpdate[] = [];
 
       setTasks((prevTasks) => {
         const newTasks = { ...prevTasks };
@@ -150,8 +156,12 @@ export const DataKanban = ({ data }: DataKanbanProps) => {
                             ref={provided.innerRef}
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
+                            style={
+                              provided.draggableProps
+                                .style as React.CSSProperties
+                            }
                           >
-                            <KanbanCard showEdit="false" tasks={tasks} />
+                            <KanbanCard tasks={tasks} />
                           </div>
                         )}
                       </Draggable>

@@ -36,7 +36,7 @@ export function UserGroup({
     }
   }, [row?.original.assignedTo]);
 
-  const handleAssigneeChange = (assigneeIds: string[]) => {
+  const handleAssigneeChange = (assigneeIds: any[]) => {
     const updatedAssignedTo = firmMembers.filter((member) =>
       assigneeIds.includes(member._id)
     );

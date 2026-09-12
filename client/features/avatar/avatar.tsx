@@ -30,7 +30,7 @@ interface useGetUsersByArrayPayload {
 }
 
 interface userObj {
-  userData: useGetUsersByArrayPayload;
+  userData: any;
   displaySize: number;
 }
 

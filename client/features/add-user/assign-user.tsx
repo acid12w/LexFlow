@@ -6,10 +6,14 @@ import { ComboboxDemo } from "../combo-box/comboBox";
 interface AssignUserProps {
   openState: boolean;
   value?: string[];
-  onChange: (assigneeIds: string[]) => void;
+  onChange: (assigneeIds: any) => void;
 }
 
-export function AssignUser({ onChange, openState, value = [] }: AssignUserProps) {
+export function AssignUser({
+  onChange,
+  openState,
+  value = [],
+}: AssignUserProps) {
   const [open, setOpen] = React.useState(openState);
 
   React.useEffect(() => {

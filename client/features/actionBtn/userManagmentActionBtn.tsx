@@ -39,10 +39,11 @@ import { cn } from "@/lib/utils";
 import { ActionDropdown } from "./actionBtnDropdown";
 
 interface userManagmentActionBtnProps {
-  rowData: [];
+  rowData: any;
   edit: () => void;
   isEditing: boolean;
   taskId: string;
+  userId: string;
 }
 
 export function UserManagmentActionBtn({
@@ -63,13 +64,13 @@ export function UserManagmentActionBtn({
   const { mutate: removeUser, isPending, isError } = useDeleteTeamMember();
   const { mutate: updateUser } = useUpdateFirmMember();
 
-  const handleDelete = (ID) => {
+  const handleDelete = (ID: string) => {
     removeUser(ID);
   };
 
   const handleEditToggle = () => {
     if (isEditing) {
-      updateUser(rowData, userId);
+      updateUser(rowData);
       edit();
     } else {
       edit();

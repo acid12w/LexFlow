@@ -87,7 +87,7 @@ export function useUpdateTask() {
   const showAlert = useAlertStore((state) => state.showAlert);
 
   return useMutation({
-    mutationFn: (newTaskData: useUpdateTaskPayload, taskId) =>
+    mutationFn: (newTaskData: useUpdateTaskPayload) =>
       taskService.updateTasks(newTaskData, newTaskData?._id),
 
     onSuccess: () => {
@@ -110,8 +110,7 @@ export function useBulkUpdateTasks() {
   const showAlert = useAlertStore((state) => state.showAlert);
 
   return useMutation({
-    mutationFn: (newTaskData: useUpdateTaskPayload) =>
-      taskService.bulkUpdateTasks(newTaskData),
+    mutationFn: (newTaskData: any) => taskService.bulkUpdateTasks(newTaskData),
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["task"] });

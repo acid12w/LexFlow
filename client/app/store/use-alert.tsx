@@ -1,18 +1,21 @@
 import { create } from "zustand";
 import { toast } from "sonner";
 
-export const useAlertStore = create(() => ({
-  /**
-   * Triggers a global app alert
-   * @param {string} title - Main bold message
-   * @param {string} description - Subtext detailing the notification
-   * @param {'success' | 'error' | 'warning' | 'info' | 'message'} type - Look & feel
-   */
+export type AlertType = "success" | "error" | "warning" | "info" | "message";
+
+interface AlertStoreState {
+  showAlert: (title: string, description?: string, type?: AlertType) => void;
+}
+
+export const useAlertStore = create<AlertStoreState>(() => ({
   showAlert: (title, description = "", type = "message") => {
     const options = description ? { description } : {};
 
-    // Safely fire matching Sonner method or fall back to baseline styling
-    if (typeof toast[type] === "function") {
+    if (
+      type !== "message" &&
+      type in toast &&
+      typeof toast[type] === "function"
+    ) {
       toast[type](title, options);
     } else {
       toast(title, options);

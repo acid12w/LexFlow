@@ -38,20 +38,20 @@ import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { ActionDropdown } from "./actionBtnDropdown";
 
-interface taskActionBtnProps {
-  rowData: [];
-  edit: () => void;
-  isEditing: boolean;
-  taskId: string;
-  showEdit: boolean;
+export interface taskActionBtnProps {
+  rowData?: any;
+  edit?: (() => void) | undefined;
+  isEditing?: boolean;
+  taskId?: string;
+  showEdit?: boolean;
 }
 
 export function TaskActionBtn({
-  edit,
-  isEditing,
-  taskId,
   rowData,
-  showEdit,
+  edit = () => {}, // 👈 Default empty function
+  isEditing = false,
+  taskId = "0",
+  showEdit = false,
 }: taskActionBtnProps) {
   const [showNewDialog, setShowNewDialog] = useState(false);
   const [showShareDialog, setShowShareDialog] = useState(false);
@@ -71,7 +71,7 @@ export function TaskActionBtn({
 
   const handleEditToggle = () => {
     if (isEditing) {
-      updateTask(rowData, taskId);
+      updateTask(rowData);
       edit();
     } else {
       edit();
