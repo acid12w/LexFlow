@@ -87,17 +87,17 @@ export const authService = {
     return response;
   },
 
-  updateFirmMember: async (data: UserPayload) => {
+  updateFirmMember: async (data: any) => {
     const response = await api.patch(`/user/update-user`, data);
     return response;
   },
 
-  joinFirm: async (data: UserPayload, token: string | undefined) => {
+  joinFirm: async (data: any, token: string | undefined) => {
     const response = await api.patch(`/user/join-firm/${token}`, data);
     return response;
   },
 
-  createFirm: async (data: UserPayload) => {
+  createFirm: async (data: any) => {
     const response = await api.post(`/user/create-firm`, data);
     return response;
   },

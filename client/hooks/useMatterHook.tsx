@@ -19,7 +19,7 @@ export function useGetAllMattersByUserId() {
   return result;
 }
 
-export function useGetMatterById(caseId: string) {
+export function useGetMatterById(caseId: any) {
   return useQuery({
     // 1. Dynamic query keys guarantee unique state caches per case
     queryKey: ["case", caseId],
