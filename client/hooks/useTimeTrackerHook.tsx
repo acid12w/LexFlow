@@ -25,7 +25,8 @@ export function useCreatetimeTracker() {
   const showAlert = useAlertStore((state) => state.showAlert);
 
   return useMutation({
-    mutationFn: (newCaseData) => timeTrackerService.createTracker(newCaseData),
+    mutationFn: (newCaseData: any) =>
+      timeTrackerService.createTracker(newCaseData),
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["timeStamp"] });
