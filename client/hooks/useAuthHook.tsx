@@ -92,7 +92,7 @@ export function useGetMembersBy(p0?: { enabled: boolean }) {
   return result;
 }
 
-interface useGetUsersByArrayPayload {
+interface UserPayload {
   userName: string;
   password: string;
   profileImg: string;
@@ -117,7 +117,7 @@ interface useGetUsersByArrayPayload {
   };
 }
 
-export function useGetUsersByArray(data: useGetUsersByArrayPayload) {
+export function useGetUsersByArray(data: any) {
   const result = useQuery({
     queryKey: ["users", data],
     queryFn: () => authService.getUsers(data),
@@ -228,7 +228,7 @@ export function useJoinfirmMember() {
   const showAlert = useAlertStore((state) => state.showAlert);
 
   return useMutation({
-    mutationFn: (newuserData: JoinFirmPayload) =>
+    mutationFn: (newuserData: any) =>
       authService.joinFirm(newuserData, newuserData?.token),
 
     onSuccess: () => {
@@ -258,8 +258,7 @@ export function useCreateFirm() {
 
   // No explicit generics needed here!
   return useMutation({
-    mutationFn: (firmData: CreateFirmPayload) =>
-      authService.createFirm(firmData),
+    mutationFn: (firmData: any) => authService.createFirm(firmData),
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user"] });

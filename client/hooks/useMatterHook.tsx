@@ -19,7 +19,7 @@ export function useGetAllMattersByUserId() {
   return result;
 }
 
-export function useGetMatterById(caseId: any) {
+export function useGetMatterById(caseId: string) {
   return useQuery({
     // 1. Dynamic query keys guarantee unique state caches per case
     queryKey: ["case", caseId],
@@ -60,8 +60,7 @@ export function useCreateMatters() {
   const showAlert = useAlertStore((state) => state.showAlert);
 
   return useMutation({
-    mutationFn: (newCaseData: newCaseDataPayload) =>
-      matterService.createCase(newCaseData),
+    mutationFn: (newCaseData: []) => matterService.createCase(newCaseData),
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["case"] });

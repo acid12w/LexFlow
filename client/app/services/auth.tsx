@@ -1,5 +1,34 @@
 import { api } from "../api/api";
 
+interface UserPayload {
+  data: [];
+}
+
+interface UserPayload {
+  userName: string;
+  password: string;
+  profileImg: string;
+  role: string;
+  lastLogin: Date;
+  status: string;
+  verificationToken: string;
+  verificationTokenExpires: Date;
+  profile: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone?: string;
+    extension?: string;
+    officeLocation?: string;
+    practiceAreas: string[];
+  };
+  // Billing and Productivity Configurations
+  billing: {
+    defaultHourlyRate: number; // Used by your Time Tracker
+    targetBillableHoursAnnual?: number;
+  };
+}
+
 export const authService = {
   createUser: async (data: {
     userName: string;
@@ -33,8 +62,8 @@ export const authService = {
     return response;
   },
 
-  getUsers: async (data) => {
-    const response = await api.post(`/user/assignees`, { data });
+  getUsers: async (data: UserPayload) => {
+    const response = await api.post(`/user/assignees`, data);
     return response;
   },
 
@@ -58,17 +87,17 @@ export const authService = {
     return response;
   },
 
-  updateFirmMember: async (data) => {
+  updateFirmMember: async (data: UserPayload) => {
     const response = await api.patch(`/user/update-user`, data);
     return response;
   },
 
-  joinFirm: async (data, token: string | undefined) => {
+  joinFirm: async (data: UserPayload, token: string | undefined) => {
     const response = await api.patch(`/user/join-firm/${token}`, data);
     return response;
   },
 
-  createFirm: async (data) => {
+  createFirm: async (data: UserPayload) => {
     const response = await api.post(`/user/create-firm`, data);
     return response;
   },
