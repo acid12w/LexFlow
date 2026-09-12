@@ -60,7 +60,8 @@ export function useCreateMatters() {
   const showAlert = useAlertStore((state) => state.showAlert);
 
   return useMutation({
-    mutationFn: (newCaseData: []) => matterService.createCase(newCaseData),
+    mutationFn: (newCaseData: newCaseDataPayload) =>
+      matterService.createCase(newCaseData),
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["case"] });
