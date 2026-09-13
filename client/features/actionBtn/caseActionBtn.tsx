@@ -29,7 +29,7 @@ export function CaseActionBtn({
   const caseId = rowData._id;
 
   const [showDetails, setShowDetails] = useState(false);
-  const { mutate: removeCase } = useRemoveCases(caseId);
+  const { mutate: removeCase } = useRemoveCases();
   const { mutate: updateCase } = useUpdateCase();
 
   const handleEditToggle = () => {
