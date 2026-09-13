@@ -11,7 +11,7 @@ export function NavigationMenuBar() {
     <nav className="border-b py-2 px-6 w-full bg-white">
       <ul className=" w-full flex justify-between">
         <li>
-          <StopWatch userData={userData} />
+          <StopWatch />
         </li>
         <li className=" flex items-center gap-2">
           {/* <div>
