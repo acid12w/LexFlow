@@ -3,7 +3,7 @@ import { AvatarGroup } from "./avatar";
 import { RiUserAddLine } from "react-icons/ri";
 import React, { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
-
+import type { Row, Table } from "@tanstack/react-table";
 import { useUpdateCase } from "@/hooks/useMatterHook";
 import { ComboboxDemo } from "../combo-box/comboBox";
 import { useUserCredentials } from "@/app/store/user-store";
@@ -16,13 +16,28 @@ function toAssigneeIds(assignees: AssigneeRef[]) {
     .filter((id): id is string => Boolean(id));
 }
 
-export function UserGroup({
+interface TaskData {
+  assignedTo?: AssigneeRef[];
+  [key: string]: unknown;
+}
+
+interface ComponentProps {
+  // Option A: Pass TanStack Table Row directly
+  row?: Row<TaskData> | undefined;
+  // Option B: If passing flat TaskData directly, set: row?: TaskData & { index: number };
+  className?: string;
+  displayValue?: number;
+  isEditing?: boolean;
+  table?: Table<TaskData> | null | any;
+}
+
+export function TaskUserGroup({
   className = "",
   displayValue = 2,
-  row = null,
+  row,
   isEditing = false,
   table = null,
-}) {
+}: ComponentProps) {
   const [open, setOpen] = React.useState(false);
   const firmMembers = useUserCredentials((state) => state.members);
 
@@ -40,9 +55,13 @@ export function UserGroup({
     const updatedAssignedTo = firmMembers.filter((member) =>
       assigneeIds.includes(member._id)
     );
+    // Safely verify row and table exist before calling meta updateData
+    if (row && table?.options?.meta?.updateData) {
+      const rowIndex = "index" in row ? row.index : 0;
+      table.options.meta.updateData(rowIndex, "assignedTo", assigneeIds);
+    }
 
     setFormData(updatedAssignedTo);
-    table.options.meta?.updateData(row.index, "assignedTo", assigneeIds);
   };
 
   return (
