@@ -335,7 +335,7 @@ export const getColumns = (
 interface initialDataProps {
   ActionDropdown: React.ComponentType<any>;
   initialData: Matter[];
-  updateTasks: (data) => void;
+  updateTasks: (data: any) => void;
 }
 
 export function CaseDataTable({

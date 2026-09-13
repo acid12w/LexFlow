@@ -8,8 +8,10 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
+  type CellContext,
   type ColumnDef,
   type ColumnFiltersState,
+  type RowSelectionState,
   type SortingState,
   type VisibilityState,
 } from "@tanstack/react-table";
@@ -21,7 +23,6 @@ import {
   ChevronRight,
   ChevronsLeft,
   ChevronsRight,
-  MoreHorizontal,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -30,9 +31,6 @@ import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
@@ -46,7 +44,6 @@ import {
 } from "@/components/ui/table";
 
 import { FiEdit3 } from "react-icons/fi";
-import { MdOutlineCloudUpload } from "react-icons/md";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import {
@@ -61,58 +58,62 @@ import {
   priorities,
   statuses,
 } from "@/app/(workspace)/tasks/[taskid]/spreadsheet/data";
-import { UserGroup } from "../avatar/userGroup";
 import { TaskActionBtn } from "../actionBtn/taskActionBtn";
 import { TaskUserGroup } from "../avatar/taskUserGroup";
 import { DateAlert } from "../date/dateAlert";
 import { Task } from "../tasks/types";
 
-// export default function DynamicEditableTable() {
-//   const [data, setData] = useState([
-//     { id: "1", name: "Project Alpha", status: "In Progress" },
-//     { id: "2", name: "Project Beta", status: "Complete" },
-//   ]);
-// }
+// --- Module Augmentation for TanStack Table Meta ---
+declare module "@tanstack/react-table" {
+  interface TableMeta<TData extends Record<string, any>> {
+    isBulkEditing?: boolean;
+    editingRows?: Record<string, boolean>;
+    updateData?: (
+      rowIndex: number,
+      columnId: keyof TData,
+      value: unknown
+    ) => void;
+    toggleRowEditing?: (rowId: string) => void;
+  }
+}
 
-export type Matter = {
-  id: number;
-  title: string;
-  eventType: string;
-  status: "inprogress" | "not started" | "complete";
-  dueDate: string;
-  assignedTo: string;
-  assignedBy: string;
-  priority: "low" | "medium" | "high";
+export type ActionComponentProps = {
+  rowData: Task;
+  edit: () => void;
+  isEditing: boolean;
+  taskId: string | number;
 };
 
-function formatStatus(status) {
-  // If string contains no uppercase characters, return it as-is
+function formatStatus(status: string): string {
+  if (!status) return "";
   if (status === status.toLowerCase()) {
     return status;
   }
-
-  // Replace underscores with spaces and convert everything to lowercase
   const lowerWithSpaces = status.replace(/_/g, " ").toLowerCase();
-
-  // Capitalize only the very first letter of the sentence
   return lowerWithSpaces.charAt(0).toUpperCase() + lowerWithSpaces.slice(1);
 }
 
 // --- Editable Cell Component ---
-const EditableCell = ({ getValue, row, column, table }: any) => {
-  const initialValue = getValue?.() ?? "";
+const EditableCell = ({
+  getValue,
+  row,
+  column,
+  table,
+}: CellContext<Task, unknown>) => {
+  const initialValue = (getValue() as string) ?? "";
+  const [value, setValue] = React.useState<string>(initialValue);
 
-  const [value, setValue] = React.useState(initialValue);
-  console.log(value);
+  React.useEffect(() => {
+    setValue(initialValue);
+  }, [initialValue]);
 
   const onBlur = () => {
-    table.options.meta?.updateData(row.index, column.id, value);
+    table.options.meta?.updateData?.(row.index, column.id as keyof Task, value);
   };
 
-  // Check if this specific cell should be in edit mode
   const isEditing =
     table.options.meta?.isBulkEditing ||
-    table.options.meta?.editingRows[row.id];
+    table.options.meta?.editingRows?.[row.id];
 
   if (isEditing) {
     return (
@@ -128,10 +129,10 @@ const EditableCell = ({ getValue, row, column, table }: any) => {
   return <span>{value}</span>;
 };
 
-// --- Column Definitions ---
+// --- Column Definitions Generator ---
 export const getColumns = (
-  ActionComponent: React.ComponentType<any>
-): ColumnDef<Matter>[] => [
+  ActionComponent: React.ComponentType<ActionComponentProps>
+): ColumnDef<Task>[] => [
   {
     id: "select",
     header: ({ table }) => (
@@ -150,59 +151,53 @@ export const getColumns = (
   },
   {
     accessorKey: "title",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Project Name
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Project Name
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
     cell: EditableCell,
   },
   {
     accessorKey: "eventType",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Event Type
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Event Type
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
     cell: EditableCell,
   },
   {
     accessorKey: "status",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Status
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Status
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
     cell: ({ row, table }) => {
-      const status = row.getValue("status") as string;
+      const status = (row.getValue("status") as string) ?? "";
       const isEditing =
         table.options.meta?.isBulkEditing ||
-        table.options.meta?.editingRows[row.id];
+        table.options.meta?.editingRows?.[row.id];
 
       if (isEditing) {
         return (
           <Select
             value={status}
-            onValueChange={(value) =>
-              table.options.meta?.updateData(row.index, "status", value)
+            onValueChange={(value: string) =>
+              table.options.meta?.updateData?.(row.index, "status", value)
             }
           >
             <SelectTrigger id="checkout-exp-month-ts6" className="h-8">
@@ -235,61 +230,54 @@ export const getColumns = (
   },
   {
     accessorKey: "endDate",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Due Date
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Due Date
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
     cell: ({ row }) => {
       const date = row.getValue("endDate") as string;
       const dueDate = new Date(date);
-
       return <DateAlert date={dueDate} />;
     },
   },
   {
     accessorKey: "priority",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Priority
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Priority
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
     filterFn: "arrIncludesSome",
     cell: ({ row, table }) => {
-      const priority = row.getValue("priority") as string;
-
+      const priority = (row.getValue("priority") as string) ?? "";
       const isEditing =
         table.options.meta?.isBulkEditing ||
-        table.options.meta?.editingRows[row.id];
+        table.options.meta?.editingRows?.[row.id];
 
       if (isEditing) {
         return (
           <Select
-            value={status}
-            onValueChange={(val) =>
-              table.options.meta?.updateData(row.index, "status", val)
+            value={priority}
+            onValueChange={(val: string) =>
+              table.options.meta?.updateData?.(row.index, "priority", val)
             }
           >
             <SelectTrigger className="h-8">
-              <SelectValue placeholder="Select status" />
+              <SelectValue placeholder="Select priority" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="DONE">Done</SelectItem>
-              <SelectItem value="IN_PROGRESS">In progress</SelectItem>
-              <SelectItem value="IN_REVIEW">In review</SelectItem>
-              <SelectItem value="TODO">Todo</SelectItem>
+              <SelectItem value="high">High</SelectItem>
+              <SelectItem value="medium">Medium</SelectItem>
+              <SelectItem value="low">Low</SelectItem>
             </SelectContent>
           </Select>
         );
@@ -316,59 +304,56 @@ export const getColumns = (
       const isEditing =
         !!table.options.meta?.isBulkEditing ||
         !!table.options.meta?.editingRows?.[row.id];
+
       return (
         <TaskUserGroup
           isEditing={isEditing}
           className={"bg-blue-100 outline-blue-500"}
           row={row}
-          table={table} // 🌟 ADDED: Pass table down here
+          table={table}
         />
       );
     },
   },
-
   {
     id: "actions",
     cell: ({ row, table }) => {
-      const isEditing = table.options.meta?.editingRows[row.id];
+      const isEditing = !!table.options.meta?.editingRows?.[row.id];
 
       return (
         <ActionComponent
           rowData={row.original}
-          edit={() => table.options.meta?.toggleRowEditing(row.id)}
+          edit={() => table.options.meta?.toggleRowEditing?.(row.id)}
           isEditing={isEditing}
-          taskId={row.original._id}
+          taskId={(row.original as any)._id ?? row.original.id}
         />
       );
     },
   },
 ];
 
-interface initialDataProps {
-  ActionDropdown: React.ComponentType<any>;
+interface InitialDataProps {
+  ActionDropdown: React.ComponentType<ActionComponentProps>;
   initialData: Task[];
-  updateTasks: (data: any) => void;
+  updateTasks: (data: Task[]) => void;
 }
 
 export function TaskDataTable({
   initialData,
   updateTasks,
   ActionDropdown,
-}: initialDataProps) {
+}: InitialDataProps) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
-
-  console.log(initialData);
-
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = React.useState({});
-  const [tableData, setTableData] = useState(initialData);
+  const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({});
+  const [tableData, setTableData] = useState<Task[]>(initialData ?? []);
 
   React.useEffect(() => {
-    setTableData(initialData);
+    setTableData(initialData ?? []);
   }, [initialData]);
 
   const [isBulkEditing, setIsBulkEditing] = useState(false);
@@ -380,7 +365,7 @@ export function TaskDataTable({
   );
 
   const table = useReactTable({
-    data: tableData ?? [],
+    data: tableData,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -396,18 +381,16 @@ export function TaskDataTable({
       columnVisibility,
       rowSelection,
     },
-    // Custom Meta for editing logic
     meta: {
       isBulkEditing,
       editingRows,
-      updateData: (rowIndex: number, columnId: string, value: []) => {
+      updateData: (rowIndex: number, columnId: keyof Task, value: unknown) => {
         setTableData((prev) =>
           prev.map((row, index) =>
             index === rowIndex ? { ...row, [columnId]: value } : row
           )
         );
       },
-
       toggleRowEditing: (rowId: string) => {
         setEditingRows((prev) => ({ ...prev, [rowId]: !prev[rowId] }));
       },
@@ -417,12 +400,12 @@ export function TaskDataTable({
   return (
     <div className="w-full">
       <div className="flex justify-between items-center py-4">
-        <div className="flex gap-4 ">
+        <div className="flex gap-4">
           <Input
             placeholder="Search task name..."
             value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
-            onChange={(title) =>
-              table.getColumn("title")?.setFilterValue(title.target.value)
+            onChange={(e) =>
+              table.getColumn("title")?.setFilterValue(e.target.value)
             }
             className="max-w-sm"
           />
@@ -448,10 +431,8 @@ export function TaskDataTable({
               className="flex gap-2"
               onClick={() => {
                 if (isBulkEditing) {
-                  console.log("fire");
                   updateTasks(tableData);
                 }
-
                 setIsBulkEditing(!isBulkEditing);
               }}
             >
@@ -553,7 +534,7 @@ export function TaskDataTable({
             >
               <SelectTrigger className="h-8 w-[70px]">
                 <SelectValue
-                  placeholder={table.getState().pagination.pageSize}
+                  placeholder={`${table.getState().pagination.pageSize}`}
                 />
               </SelectTrigger>
               <SelectContent side="top">

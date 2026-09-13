@@ -8,20 +8,20 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
+  type CellContext,
   type ColumnDef,
   type ColumnFiltersState,
   type SortingState,
   type VisibilityState,
+  type RowSelectionState,
 } from "@tanstack/react-table";
 import {
-  ArrowUpDown,
   Check,
   ChevronDown,
   ChevronLeft,
   ChevronRight,
   ChevronsLeft,
   ChevronsRight,
-  MoreHorizontal,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -30,9 +30,6 @@ import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
@@ -46,7 +43,6 @@ import {
 } from "@/components/ui/table";
 
 import { FiEdit3 } from "react-icons/fi";
-import { MdOutlineCloudUpload } from "react-icons/md";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import {
@@ -64,12 +60,30 @@ import {
 import { UserGroup } from "../avatar/userGroup";
 import { TaskActionBtn } from "../actionBtn/taskActionBtn";
 
-// export default function DynamicEditableTable() {
-//   const [data, setData] = useState([
-//     { id: "1", name: "Project Alpha", status: "In Progress" },
-//     { id: "2", name: "Project Beta", status: "Complete" },
-//   ]);
-// }
+export type Matter = {
+  id: number;
+  name: string;
+  eventType: string;
+  status: "inprogress" | "not started" | "complete";
+  dueDate: string;
+  assignedTo: string;
+  assignedBy: string;
+  priority: "low" | "medium" | "high";
+};
+
+// --- Module Augmentation for TanStack Table Meta ---
+declare module "@tanstack/react-table" {
+  interface TableMeta<TData extends Record<string, any>> {
+    isBulkEditing?: boolean;
+    editingRows?: Record<string, boolean>;
+    updateData?: (
+      rowIndex: number,
+      columnId: keyof TData,
+      value: unknown
+    ) => void;
+    toggleRowEditing?: (rowId: string) => void;
+  }
+}
 
 const initialData: Matter[] = [
   {
@@ -154,35 +168,31 @@ const initialData: Matter[] = [
   },
 ];
 
-export type Matter = {
-  id: number;
-  name: string;
-  eventType: string;
-  status: "inprogress" | "not started" | "complete";
-  dueDate: string;
-  assignedTo: string;
-  assignedBy: string;
-  priority: "low" | "medium" | "high";
-};
-
 // --- Editable Cell Component ---
-const EditableCell = ({ getValue, row, column, table }: any) => {
-  const initialValue = getValue();
-  const [value, setValue] = React.useState(initialValue);
+const EditableCell = ({
+  getValue,
+  row,
+  column,
+  table,
+}: CellContext<Matter, unknown>) => {
+  const initialValue = getValue() as string;
+  const [value, setValue] = React.useState<string>(initialValue ?? "");
 
-  // Sync local state with data
   React.useEffect(() => {
-    setValue(initialValue);
+    setValue(initialValue ?? "");
   }, [initialValue]);
 
   const onBlur = () => {
-    table.options.meta?.updateData(row.index, column.id, value);
+    table.options.meta?.updateData?.(
+      row.index,
+      column.id as keyof Matter,
+      value
+    );
   };
 
-  // Check if this specific cell should be in edit mode
   const isEditing =
     table.options.meta?.isBulkEditing ||
-    table.options.meta?.editingRows[row.id];
+    table.options.meta?.editingRows?.[row.id];
 
   if (isEditing) {
     return (
@@ -229,22 +239,20 @@ export const columns: ColumnDef<Matter>[] = [
     accessorKey: "status",
     header: "Status",
     cell: ({ row, table }) => {
-      const status = row.getValue("status") as string;
+      const status = row.getValue("status") as Matter["status"];
       const isEditing =
         table.options.meta?.isBulkEditing ||
-        table.options.meta?.editingRows[row.id];
+        table.options.meta?.editingRows?.[row.id];
 
       if (isEditing) {
         return (
           <Select
             value={status}
-            // 1. Use onValueChange instead of onChange
-            // 2. The argument is the string value, not an event object
-            onValueChange={(value) =>
-              table.options.meta?.updateData(row.index, "status", value)
+            onValueChange={(value: Matter["status"]) =>
+              table.options.meta?.updateData?.(row.index, "status", value)
             }
           >
-            <SelectTrigger id="checkout-exp-month-ts6" className="h-8">
+            <SelectTrigger className="h-8">
               <SelectValue placeholder="Select status" />
             </SelectTrigger>
             <SelectContent>
@@ -279,20 +287,20 @@ export const columns: ColumnDef<Matter>[] = [
     header: "Priority",
     filterFn: "arrIncludesSome",
     cell: ({ row, table }) => {
-      const priority = row.getValue("priority") as string;
+      const priority = row.getValue("priority") as Matter["priority"];
       const isEditing =
         table.options.meta?.isBulkEditing ||
-        table.options.meta?.editingRows[row.id];
+        table.options.meta?.editingRows?.[row.id];
 
       if (isEditing) {
         return (
           <Select
             value={priority}
-            onValueChange={(value) =>
-              table.options.meta?.updateData(row.index, "priority", value)
+            onValueChange={(value: Matter["priority"]) =>
+              table.options.meta?.updateData?.(row.index, "priority", value)
             }
           >
-            <SelectTrigger id="checkout-exp-month-ts6" className="h-8">
+            <SelectTrigger className="h-8">
               <SelectValue placeholder="Select priority" />
             </SelectTrigger>
             <SelectContent>
@@ -319,20 +327,18 @@ export const columns: ColumnDef<Matter>[] = [
   },
   {
     header: "Assignee",
-    id: "Asignee",
-    cell: ({ row, table }) => {
-      const $id = row.id;
-      const isEditing = table.options.meta?.editingRows[row.id];
-      return <UserGroup className={"bg-blue-100 outline-blue-500"} />;
+    id: "Assignee",
+    cell: () => {
+      return <UserGroup className="bg-blue-100 outline-blue-500" />;
     },
   },
   {
     id: "actions",
     cell: ({ row, table }) => {
-      const isEditing = table.options.meta?.editingRows[row.id];
+      const isEditing = !!table.options.meta?.editingRows?.[row.id];
       return (
         <TaskActionBtn
-          edit={() => table.options.meta?.toggleRowEditing(row.id)}
+          edit={() => table.options.meta?.toggleRowEditing?.(row.id)}
           isEditing={isEditing}
         />
       );
@@ -347,7 +353,7 @@ export function ListTable() {
   );
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = React.useState({});
+  const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({});
 
   const [tableData, setTableData] = useState<Matter[]>(initialData);
   const [isBulkEditing, setIsBulkEditing] = useState(false);
@@ -370,12 +376,14 @@ export function ListTable() {
       columnVisibility,
       rowSelection,
     },
-    // Custom Meta for editing logic
     meta: {
       isBulkEditing,
       editingRows,
-      updateData: (rowIndex: number, columnId: string, value: any) => {
-        console.log(value);
+      updateData: (
+        rowIndex: number,
+        columnId: keyof Matter,
+        value: unknown
+      ) => {
         setTableData((prev) =>
           prev.map((row, index) =>
             index === rowIndex ? { ...row, [columnId]: value } : row
@@ -389,7 +397,6 @@ export function ListTable() {
   });
 
   const boards = [
-    // TaskStatus.BACKLOG,
     "Contract Review – ABC Holdings",
     "Johnson v. Smith – Initial Filing",
   ];
@@ -401,8 +408,8 @@ export function ListTable() {
           <Input
             placeholder="Search matter name..."
             value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-            onChange={(name) =>
-              table.getColumn("name")?.setFilterValue(name.target.value)
+            onChange={(e) =>
+              table.getColumn("name")?.setFilterValue(e.target.value)
             }
             className="max-w-sm"
           />
@@ -483,12 +490,10 @@ export function ListTable() {
 
           {boards.map((matterGroup) => (
             <TableBody key={matterGroup} className="border-t-2">
-              {/* Header Row for the Group */}
               <TableRow className="bg-muted/50 font-bold">
                 <TableCell colSpan={columns.length}>{matterGroup}</TableCell>
               </TableRow>
 
-              {/* Actual Data Rows */}
               {table
                 .getRowModel()
                 .rows.filter((row) => row.original.name === matterGroup)
@@ -524,7 +529,7 @@ export function ListTable() {
             >
               <SelectTrigger className="h-8 w-[70px]">
                 <SelectValue
-                  placeholder={table.getState().pagination.pageSize}
+                  placeholder={`${table.getState().pagination.pageSize}`}
                 />
               </SelectTrigger>
               <SelectContent side="top">
