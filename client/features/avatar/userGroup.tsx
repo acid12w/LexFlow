@@ -31,7 +31,7 @@ interface ComponentProps {
   table?: Table<TaskData> | null | any;
 }
 
-export function TaskUserGroup({
+export function UserGroup({
   className = "",
   displayValue = 2,
   row,
