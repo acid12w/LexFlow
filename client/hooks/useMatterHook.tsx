@@ -68,11 +68,8 @@ export function useCreateMatters() {
       showAlert("success!", "You have created a case", "success");
     },
 
-    onError: (error: AxiosError<{ error?: string; message?: string }>) => {
-      const serverMessage =
-        error?.response?.data?.error ||
-        error?.response?.data?.message ||
-        "Operation failed! Please try again.";
+    onError: (error) => {
+      const serverMessage = "Operation failed! Please try again.";
       showAlert("Operation failed!", serverMessage, "error");
     },
   });
@@ -83,7 +80,7 @@ export function useUpdateCase() {
   const showAlert = useAlertStore((state) => state.showAlert);
 
   return useMutation({
-    mutationFn: (newcaseData: newCaseDataPayload) =>
+    mutationFn: (newcaseData: any) =>
       matterService.updateCase(newcaseData, newcaseData._id),
 
     onSuccess: () => {
@@ -92,11 +89,8 @@ export function useUpdateCase() {
       showAlert("success!", "You case has been updated", "success");
     },
 
-    onError: (error: AxiosError<{ error?: string; message?: string }>) => {
-      const serverMessage =
-        error?.response?.data?.error ||
-        error?.response?.data?.message ||
-        "Operation failed! Please try again.";
+    onError: (error) => {
+      const serverMessage = "Operation failed! Please try again.";
       showAlert("Operation failed!", serverMessage, "error");
     },
   });
@@ -107,25 +101,21 @@ export function useBulkUpdateCases() {
   const showAlert = useAlertStore((state) => state.showAlert);
 
   return useMutation({
-    mutationFn: (newcaseData: newCaseDataPayload) =>
-      matterService.bulkUpdateCase(newcaseData),
+    mutationFn: (newcaseData: any) => matterService.bulkUpdateCase(newcaseData),
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["case"] });
       showAlert("success!", "Your cases has been updated", "success");
     },
 
-    onError: (error: AxiosError<{ error?: string; message?: string }>) => {
-      const serverMessage =
-        error?.response?.data?.error ||
-        error?.response?.data?.message ||
-        "Operation failed! Please try again.";
+    onError: (error) => {
+      const serverMessage = "Operation failed! Please try again.";
       showAlert("Operation failed!", serverMessage, "error");
     },
   });
 }
 
-export function useRemoveCases(caseId: string) {
+export function useRemoveCases() {
   const queryClient = useQueryClient();
   const showAlert = useAlertStore((state) => state.showAlert);
 
@@ -137,11 +127,8 @@ export function useRemoveCases(caseId: string) {
       showAlert("success!", "Your case has been removed", "success");
     },
 
-    onError: (error: AxiosError<{ error?: string; message?: string }>) => {
-      const serverMessage =
-        error?.response?.data?.error ||
-        error?.response?.data?.message ||
-        "Operation failed! Please try again.";
+    onError: (error) => {
+      const serverMessage = "Operation failed! Please try again.";
       showAlert("Operation failed!", serverMessage, "error");
     },
   });
