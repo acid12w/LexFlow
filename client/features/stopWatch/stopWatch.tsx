@@ -6,23 +6,17 @@ import { Button } from "@/components/ui/button";
 
 import {
   Dialog,
-  DialogClose,
   DialogContent,
-  DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 
 import { CirclePlus, Pause, Play, RotateCcw, Save, Timer } from "lucide-react";
 import { NewTimeForm } from "./newTimeForm";
 import { TbSubtask } from "react-icons/tb";
 import { useAlertStore } from "@/app/store/use-alert";
 
-export const StopWatch = (userData) => {
+export const StopWatch = () => {
   const [isRunning, setIsRunning] = useState(false);
   const [elapsedTime, setElapsedTime] = useState(0);
   const intervalIdRef = useRef(null);
@@ -122,7 +116,7 @@ export const StopWatch = (userData) => {
               </DialogTitle>
             </DialogHeader>
             <NewTimeForm
-              userData={userData}
+              // userData={userData}
               currentTime={formatTime()}
               onClose={() => setIsDialogOpen(false)}
             />

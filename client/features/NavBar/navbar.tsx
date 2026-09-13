@@ -1,7 +1,5 @@
 "use client";
 
-import { MdOutlineNotificationsNone } from "react-icons/md";
-
 import { StopWatch } from "../stopWatch/stopWatch";
 import { useUserCredentials } from "@/app/store/user-store";
 import { DropdownMenuShortcuts } from "@/features/drop-down/drop-down";

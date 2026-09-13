@@ -19,11 +19,9 @@ import { useCreatetimeTracker } from "@/hooks/useTimeTrackerHook";
 
 export function NewTimeForm({
   currentTime,
-  userData,
   onClose,
 }: {
   currentTime: string;
-  userData: {};
   onClose: () => void;
 }) {
   const { mutateAsync, isPending } = useCreatetimeTracker();
@@ -96,7 +94,9 @@ export function NewTimeForm({
                 autoComplete="off"
               />
               {fieldState.invalid && (
-                <FieldError errors={[fieldState.error?.message]} />
+                <FieldError
+                  errors={fieldState.error ? [fieldState.error] : []}
+                />
               )}
             </Field>
           )}
@@ -110,7 +110,9 @@ export function NewTimeForm({
               <FieldLabel>Event Type</FieldLabel>
               <Input {...field} placeholder="Event type" autoComplete="off" />
               {fieldState.invalid && (
-                <FieldError errors={[fieldState.error?.message]} />
+                <FieldError
+                  errors={fieldState.error ? [fieldState.error] : []}
+                />
               )}
             </Field>
           )}
@@ -122,12 +124,14 @@ export function NewTimeForm({
             <Field data-invalid={fieldState.invalid}>
               <FieldLabel>Attach this time stamp to a matter</FieldLabel>
               <GenericCombobox
-                userData={userData}
+                // userData={userData}
                 value={field.value}
                 onChange={field.onChange}
               />
               {fieldState.invalid && (
-                <FieldError errors={[fieldState.error?.message]} />
+                <FieldError
+                  errors={fieldState.error ? [fieldState.error] : []}
+                />
               )}
             </Field>
           )}

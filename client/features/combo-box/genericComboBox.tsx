@@ -16,7 +16,7 @@ export function GenericCombobox({
   value,
   onChange,
 }: {
-  value?: string;
+  value?: any;
   onChange?: (val: string | null) => void;
 }) {
   const { data: caseData, isLoading, isError } = useGetAllMattersByUserId();

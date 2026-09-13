@@ -68,8 +68,7 @@ export function useSignup() {
   const showAlert = useAlertStore((state) => state.showAlert);
 
   return useMutation({
-    mutationFn: (newUserData: signupPayload) =>
-      authService.createUser(newUserData),
+    mutationFn: (newUserData: any) => authService.createUser(newUserData),
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["firmMembers"] });
