@@ -333,7 +333,7 @@ export const getColumns = (
 ];
 
 interface InitialDataProps {
-  ActionDropdown: React.ComponentType<ActionComponentProps>;
+  ActionDropdown: any;
   initialData: Task[];
   updateTasks: (data: Task[]) => void;
 }
