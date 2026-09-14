@@ -23,7 +23,7 @@ interface TaskData {
 
 interface ComponentProps {
   // Option A: Pass TanStack Table Row directly
-  row?: Row<TaskData> | undefined;
+  row?: Row<any> | undefined;
   // Option B: If passing flat TaskData directly, set: row?: TaskData & { index: number };
   className?: string;
   displayValue?: number;

@@ -258,10 +258,10 @@ export function ClientDataTable({
     meta: {
       isBulkEditing,
       editingRows,
-      updateData: (rowIndex: number, columnId: string, value: []) => {
+      updateData: (rowIndex: number, columnId: any, value: any) => {
         if (columnId === "status") return;
         setTableData((prev) =>
-          prev.map((row, index) =>
+          prev.map((row: any, index) =>
             index === rowIndex ? { ...row, [columnId]: value } : row
           )
         );
