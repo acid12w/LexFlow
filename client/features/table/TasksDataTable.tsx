@@ -325,7 +325,7 @@ export const getColumns = (
           rowData={row.original}
           edit={() => table.options.meta?.toggleRowEditing?.(row.id)}
           isEditing={isEditing}
-          taskId={(row.original as any)._id ?? row.original.id}
+          taskId={(row.original as any)._id ?? row.original._id}
         />
       );
     },

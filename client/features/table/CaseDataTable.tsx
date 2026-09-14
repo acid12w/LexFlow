@@ -323,7 +323,7 @@ export const getColumns = (
       return (
         <ActionComponent
           rowData={row.original}
-          edit={() => table.options.meta?.toggleRowEditing(row.id)}
+          edit={() => table.options.meta?.toggleRowEditing?.(row.id)}
           isEditing={isEditing}
           taskId={row.original._id}
         />
@@ -386,7 +386,7 @@ export function CaseDataTable({
     meta: {
       isBulkEditing,
       editingRows,
-      updateData: (rowIndex: number, columnId: string, value: []) => {
+      updateData: (rowIndex: number, columnId: string, value: any) => {
         if (columnId === "status") return;
         setTableData((prev) =>
           prev.map((row, index) =>
