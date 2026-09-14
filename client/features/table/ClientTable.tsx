@@ -180,27 +180,27 @@ export const getColumns = (
   {
     id: "Client Portal",
     header: "Client Portal",
-    cell: ({ row, table }) => {
+    cell: ({ row }) => {
       return <Link href={`client-portal/${row.original._id}`}>Link</Link>;
     },
   },
-  {
-    id: "actions",
-    cell: ({ row, table }) => {
-      const isEditing =
-        !!table.options.meta?.isBulkEditing ||
-        !!table.options.meta?.editingRows?.[row.id];
+  // {
+  //   id: "actions",
+  //   cell: ({ row, table }) => {
+  //     const isEditing =
+  //       !!table.options.meta?.isBulkEditing ||
+  //       !!table.options.meta?.editingRows?.[row.id];
 
-      return (
-        <ActionComponent
-          rowData={row.original}
-          edit={() => table.options.meta?.toggleRowEditing(row.id)}
-          isEditing={isEditing}
-          taskId={row.original._id}
-        />
-      );
-    },
-  },
+  //     return (
+  //       <ActionComponent
+  //         rowData={row.original}
+  //         edit={() => table.options.meta?.toggleRowEditing?.(row.id)}
+  //         isEditing={isEditing}
+  //         taskId={row.original._id}
+  //       />
+  //     );
+  //   },
+  // },
 ];
 
 interface initialDataProps {
