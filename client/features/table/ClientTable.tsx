@@ -1,6 +1,8 @@
 "use client";
 
 import * as React from "react";
+import { useState } from "react";
+import Link from "next/link";
 import {
   flexRender,
   getCoreRowModel,
@@ -8,20 +10,19 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
+  type CellContext,
   type ColumnDef,
   type ColumnFiltersState,
+  type RowSelectionState,
   type SortingState,
   type VisibilityState,
 } from "@tanstack/react-table";
 import {
-  ArrowUpDown,
-  Check,
   ChevronDown,
   ChevronLeft,
   ChevronRight,
   ChevronsLeft,
   ChevronsRight,
-  MoreHorizontal,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -33,7 +34,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import { Progress } from "@/components/ui/progress";
 import {
   Table,
   TableBody,
@@ -42,11 +42,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
-import { FiEdit3 } from "react-icons/fi";
-import { MdOutlineCloudUpload } from "react-icons/md";
-import { cn } from "@/lib/utils";
-import { useState } from "react";
 import {
   Select,
   SelectContent,
@@ -54,32 +49,31 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { TableFilter } from "./TableFilter";
-import { priorities } from "@/app/(workspace)/tasks/[taskid]/spreadsheet/data";
-import {
-  MATTER_STATUS,
-  MATTER_STATUS_LABELS,
-  formatTaskProgress,
-  getTaskProgressPercent,
-  matterStatusClassName,
-} from "@/lib/matter-health";
-import { UserGroup } from "../avatar/userGroup";
-import { DateAlert } from "../date/dateAlert";
-import Link from "next/link";
 
-const matterStatusFilterOptions = Object.values(MATTER_STATUS).map((value) => ({
-  label: MATTER_STATUS_LABELS[value],
-  value,
-}));
+// --- Module Augmentation for TanStack Table Meta ---
+declare module "@tanstack/react-table" {
+  interface TableMeta<TData extends Record<string, any>> {
+    isBulkEditing?: boolean;
+    editingRows?: Record<string, boolean>;
+    updateData?: (
+      rowIndex: number,
+      columnId: keyof TData,
+      value: unknown
+    ) => void;
+    toggleRowEditing?: (rowId: string) => void;
+  }
+}
 
-// export default function DynamicEditableTable() {
-//   const [data, setData] = useState([
-//     { id: "1", name: "Project Alpha", status: "In Progress" },
-//     { id: "2", name: "Project Beta", status: "Complete" },
-//   ]);
-// }
+export interface ClientData {
+  _id?: string;
+  id?: number;
+  firstName: string;
+  lastName: string;
+  status: string;
+  type: string;
+}
 
-interface useUpdateTaskPayload {
+export interface UseUpdateTaskPayload {
   _id?: string;
   id?: number;
   title: string;
@@ -94,35 +88,38 @@ interface useUpdateTaskPayload {
   priority: string;
 }
 
-export type Matter = {
-  _id?: string;
-  id?: number;
-  title: string;
-  practiceArea: string;
-  status: string;
-  taskCount?: number;
-  completedTaskCount?: number;
-  dueDate?: string;
-  endDate?: string;
-  assignedTo: string;
-  assignedBy: string;
-  priority: "low" | "medium" | "high";
-};
+export interface ActionComponentProps {
+  rowData: ClientData;
+  edit: () => void;
+  isEditing: boolean;
+  taskId?: string | number;
+}
 
 // --- Editable Cell Component ---
-const EditableCell = ({ getValue, row, column, table }: any) => {
-  const initialValue = getValue?.() ?? "";
+const EditableCell = ({
+  getValue,
+  row,
+  column,
+  table,
+}: CellContext<ClientData, unknown>) => {
+  const initialValue = (getValue() as string) ?? "";
+  const [value, setValue] = React.useState<string>(initialValue);
 
-  const [value, setValue] = React.useState(initialValue);
+  React.useEffect(() => {
+    setValue(initialValue);
+  }, [initialValue]);
 
   const onBlur = () => {
-    table.options.meta?.updateData(row.index, column.id, value);
+    table.options.meta?.updateData?.(
+      row.index,
+      column.id as keyof ClientData,
+      value
+    );
   };
 
-  // Check if this specific cell should be in edit mode
   const isEditing =
     table.options.meta?.isBulkEditing ||
-    table.options.meta?.editingRows[row.id];
+    table.options.meta?.editingRows?.[row.id];
 
   if (isEditing) {
     return (
@@ -140,8 +137,8 @@ const EditableCell = ({ getValue, row, column, table }: any) => {
 
 // --- Column Definitions ---
 export const getColumns = (
-  ActionComponent: React.ComponentType<any>
-): ColumnDef<Matter>[] => [
+  ActionComponent?: React.ComponentType<ActionComponentProps>
+): ColumnDef<ClientData>[] => [
   {
     id: "select",
     header: ({ table }) => (
@@ -180,56 +177,65 @@ export const getColumns = (
   {
     id: "Client Portal",
     header: "Client Portal",
-    cell: ({ row }) => {
-      return <Link href={`client-portal/${row.original._id}`}>Link</Link>;
-    },
+    cell: ({ row }) => (
+      <Link href={`client-portal/${row.original._id ?? row.original.id}`}>
+        Link
+      </Link>
+    ),
   },
-  // {
-  //   id: "actions",
-  //   cell: ({ row, table }) => {
-  //     const isEditing =
-  //       !!table.options.meta?.isBulkEditing ||
-  //       !!table.options.meta?.editingRows?.[row.id];
+  ...(ActionComponent
+    ? [
+        {
+          id: "actions",
+          cell: ({
+            row,
+            table,
+          }: CellContext<ClientData, unknown>): React.ReactNode => {
+            const isEditing =
+              !!table.options.meta?.isBulkEditing ||
+              !!table.options.meta?.editingRows?.[row.id];
 
-  //     return (
-  //       <ActionComponent
-  //         rowData={row.original}
-  //         edit={() => table.options.meta?.toggleRowEditing?.(row.id)}
-  //         isEditing={isEditing}
-  //         taskId={row.original._id}
-  //       />
-  //     );
-  //   },
-  // },
+            return (
+              <ActionComponent
+                rowData={row.original}
+                edit={() => {
+                  table.options.meta?.toggleRowEditing?.(row.id);
+                }}
+                isEditing={isEditing}
+                taskId={row.original._id ?? row.original.id}
+              />
+            );
+          },
+        } as ColumnDef<ClientData>,
+      ]
+    : []),
 ];
 
-interface initialDataProps {
-  ActionDropdown: React.ComponentType<any>;
-  initialData: string[];
-  // Fix the function signature to accept the payload parameter
-  updateTasks: (payload: useUpdateTaskPayload) => void;
+interface InitialDataProps {
+  ActionDropdown?: React.ComponentType<ActionComponentProps>;
+  initialData: ClientData[];
+  updateTasks?: (payload: UseUpdateTaskPayload) => void;
 }
 
 export function ClientDataTable({
   initialData,
   updateTasks,
   ActionDropdown,
-}: initialDataProps) {
+}: InitialDataProps) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
-
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = React.useState({});
-  const [tableData, setTableData] = useState(initialData);
+  const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({});
+  const [tableData, setTableData] = useState<ClientData[]>(initialData ?? []);
 
   React.useEffect(() => {
-    setTableData(initialData);
+    setTableData(initialData ?? []);
   }, [initialData]);
 
-  const [isBulkEditing, setIsBulkEditing] = useState(false);
+  const [isBulkEditing] = useState(false);
   const [editingRows, setEditingRows] = useState<Record<string, boolean>>({});
 
   const columns = React.useMemo(
@@ -238,7 +244,7 @@ export function ClientDataTable({
   );
 
   const table = useReactTable({
-    data: tableData ?? [],
+    data: tableData,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -254,19 +260,21 @@ export function ClientDataTable({
       columnVisibility,
       rowSelection,
     },
-    // Custom Meta for editing logic
     meta: {
       isBulkEditing,
       editingRows,
-      updateData: (rowIndex: number, columnId: any, value: any) => {
+      updateData: (
+        rowIndex: number,
+        columnId: keyof ClientData,
+        value: unknown
+      ) => {
         if (columnId === "status") return;
         setTableData((prev) =>
-          prev.map((row: any, index) =>
+          prev.map((row, index) =>
             index === rowIndex ? { ...row, [columnId]: value } : row
           )
         );
       },
-
       toggleRowEditing: (rowId: string) => {
         setEditingRows((prev) => ({ ...prev, [rowId]: !prev[rowId] }));
       },
@@ -282,10 +290,8 @@ export function ClientDataTable({
             value={
               (table.getColumn("firstName")?.getFilterValue() as string) ?? ""
             }
-            onChange={(firstName) =>
-              table
-                .getColumn("firstName")
-                ?.setFilterValue(firstName.target.value)
+            onChange={(e) =>
+              table.getColumn("firstName")?.setFilterValue(e.target.value)
             }
             className="max-w-sm"
           />
@@ -294,7 +300,7 @@ export function ClientDataTable({
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="ml-auto">
-                View <ChevronDown />
+                View <ChevronDown className="ml-2 h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -380,7 +386,7 @@ export function ClientDataTable({
             >
               <SelectTrigger className="h-8 w-[70px]">
                 <SelectValue
-                  placeholder={table.getState().pagination.pageSize}
+                  placeholder={`${table.getState().pagination.pageSize}`}
                 />
               </SelectTrigger>
               <SelectContent side="top">
@@ -405,7 +411,7 @@ export function ClientDataTable({
               disabled={!table.getCanPreviousPage()}
             >
               <span className="sr-only">Go to first page</span>
-              <ChevronsLeft />
+              <ChevronsLeft className="h-4 w-4" />
             </Button>
             <Button
               variant="outline"
@@ -415,7 +421,7 @@ export function ClientDataTable({
               disabled={!table.getCanPreviousPage()}
             >
               <span className="sr-only">Go to previous page</span>
-              <ChevronLeft />
+              <ChevronLeft className="h-4 w-4" />
             </Button>
             <Button
               variant="outline"
@@ -425,7 +431,7 @@ export function ClientDataTable({
               disabled={!table.getCanNextPage()}
             >
               <span className="sr-only">Go to next page</span>
-              <ChevronRight />
+              <ChevronRight className="h-4 w-4" />
             </Button>
             <Button
               variant="outline"
@@ -435,7 +441,7 @@ export function ClientDataTable({
               disabled={!table.getCanNextPage()}
             >
               <span className="sr-only">Go to last page</span>
-              <ChevronsRight />
+              <ChevronsRight className="h-4 w-4" />
             </Button>
           </div>
         </div>
