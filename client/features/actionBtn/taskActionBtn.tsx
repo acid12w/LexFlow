@@ -42,7 +42,7 @@ export interface taskActionBtnProps {
   rowData?: any;
   edit?: (() => void) | undefined;
   isEditing?: boolean;
-  taskId?: string;
+  taskId?: string | number | undefined;
   showEdit?: boolean;
 }
 
