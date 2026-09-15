@@ -62,7 +62,7 @@ export function TaskActionBtn({
 
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const { mutate: removeTask, isPending, isError } = useRemoveTasks(taskId);
+  const { mutate: removeTask, isPending, isError } = useRemoveTasks();
   const { mutate: updateTask } = useUpdateTask();
 
   const handleDelete = () => {

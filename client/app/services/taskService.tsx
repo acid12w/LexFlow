@@ -26,7 +26,7 @@ export const taskService = {
     return data;
   },
 
-  removeTask: async (taskId: string) => {
+  removeTask: async (taskId: string | number | undefined) => {
     const { data } = await api.delete(`/tasks/${taskId}`);
     return data.data.response;
   },

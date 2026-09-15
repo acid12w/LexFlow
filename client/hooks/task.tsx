@@ -127,12 +127,13 @@ export function useBulkUpdateTasks() {
   });
 }
 
-export function useRemoveTasks(taskId: string) {
+export function useRemoveTasks() {
   const queryClient = useQueryClient();
   const showAlert = useAlertStore((state) => state.showAlert);
 
   return useMutation({
-    mutationFn: (taskId: string) => taskService.removeTask(taskId),
+    mutationFn: (taskId: string | number | undefined) =>
+      taskService.removeTask(taskId),
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
