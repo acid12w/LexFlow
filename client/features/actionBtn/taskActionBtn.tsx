@@ -50,7 +50,7 @@ export function TaskActionBtn({
   rowData,
   edit = () => {}, // 👈 Default empty function
   isEditing = false,
-  taskId = "0",
+  taskId,
   showEdit = false,
 }: taskActionBtnProps) {
   const [showNewDialog, setShowNewDialog] = useState(false);
