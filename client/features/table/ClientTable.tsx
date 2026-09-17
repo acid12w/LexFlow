@@ -50,20 +50,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-// --- Module Augmentation for TanStack Table Meta ---
-declare module "@tanstack/react-table" {
-  interface TableMeta<TData extends Record<string, any>> {
-    isBulkEditing?: boolean;
-    editingRows?: Record<string, boolean>;
-    updateData?: (
-      rowIndex: number,
-      columnId: keyof TData,
-      value: unknown
-    ) => void;
-    toggleRowEditing?: (rowId: string) => void;
-  }
-}
-
 export interface ClientData {
   _id?: string;
   id?: number;
