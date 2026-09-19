@@ -26,22 +26,19 @@ export function useGetAllTasksByCaseId(caseId: string | string[]) {
 }
 
 interface newTaskDataPayload {
-  title: string;
-  description: string;
-  eventType?: string;
+  matterId: string;
+  assignedTo: string[];
   status: string;
   priority: string;
-  assignedTo: [];
-  completedAt: string;
-  assignedBy: string;
-  startDate?: Date;
-  endDate?: Date;
-  position?: number;
+  startDate: string;
+  endDate: string;
+  description: string;
+  title: string;
   mileStone: boolean;
-  _id: string;
+  eventType: string;
 }
 
-export function useCreateTasks(caseId: string) {
+export function useCreateTasks(caseId: any) {
   const queryClient = useQueryClient();
   const showAlert = useAlertStore((state) => state.showAlert);
 

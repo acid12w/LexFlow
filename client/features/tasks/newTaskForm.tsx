@@ -1,19 +1,17 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-
 import { Calendar22 } from "../datepicker/page";
 import {
   Field,
   FieldContent,
-  FieldDescription,
   FieldError,
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
 import { ComboboxDemo } from "../combo-box/comboBox";
 import { useContext, useState } from "react";
-import z, { boolean } from "zod";
+import { z } from "zod";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Textarea } from "@/components/ui/textarea";
@@ -29,27 +27,33 @@ import { Input } from "@/components/ui/input";
 import { DialogClose, DialogFooter } from "@/components/ui/dialog";
 
 import { useCreateTasks } from "@/hooks/task";
-import { useTaskStore } from "@/app/store/use-task";
 import { useParams } from "next/navigation";
 import { ModalContext } from "@/components/modal/providers";
 
+const formSchema = z.object({
+  matterId: z.string(),
+  status: z.string(),
+  priority: z.string(),
+  startDate: z.string(),
+  endDate: z.string(),
+  assignedTo: z.array(z.string()),
+  description: z.string(),
+  title: z.string(),
+  mileStone: z.boolean(),
+  eventType: z.string(),
+});
+
+type FormValues = z.infer<typeof formSchema>;
+
 export function NewTaskForm() {
   const param = useParams();
-  const caseId = param.taskid;
-  const { setShowTaskModal } = useContext(ModalContext);
+  const rawTaskId = param?.taskid;
+  const caseId = Array.isArray(rawTaskId)
+    ? rawTaskId[0] ?? ""
+    : rawTaskId ?? "";
 
-  const formSchema = z.object({
-    matterId: z.string(),
-    status: z.string(),
-    priority: z.string(),
-    startDate: z.string(),
-    endDate: z.string(),
-    // assignedTo: z.string(),
-    description: z.string(),
-    title: z.string(),
-    mileStone: z.boolean(),
-    eventType: z.string(),
-  });
+  const modalContext = useContext(ModalContext);
+  const setShowTaskModal = modalContext?.setShowTaskModal;
 
   const initialFormState = {
     assignedTo: [] as string[],
@@ -57,16 +61,16 @@ export function NewTaskForm() {
     endDate: "",
   };
 
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     mode: "onTouched",
     defaultValues: {
-      matterId: "",
+      matterId: caseId,
       status: "",
       priority: "",
       startDate: "",
       endDate: "",
-      // assignedTo: "",
+      assignedTo: [],
       description: "",
       title: "",
       eventType: "",
@@ -75,33 +79,40 @@ export function NewTaskForm() {
   });
 
   const [formData, setFormData] = useState(initialFormState);
+
   const resetForm = () => {
     setFormData(initialFormState);
   };
 
-  const { mutate: createTask, isPending, isError } = useCreateTasks(caseId);
+  const { mutate: createTask } = useCreateTasks(caseId);
 
-  const handleChange = (value: string, name: string) => {
+  const handleChange = (value: string, name: keyof FormValues) => {
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
-    console.log(value);
 
-    form.setValue(name as keyof z.infer<typeof formSchema>, value, {
+    form.setValue(name, value as any, {
       shouldValidate: true,
       shouldDirty: true,
     });
   };
 
-  const handleAssigneeChange = (assigneeIds: string[]) => {
+  const handleAssigneeChange = (assigneeIds: (string | undefined)[]) => {
+    const validIds = assigneeIds.filter((id): id is string => id !== undefined);
+
     setFormData((prev) => ({
       ...prev,
-      assignedTo: assigneeIds,
+      assignedTo: validIds,
     }));
+
+    form.setValue("assignedTo", validIds, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
   };
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit(values: FormValues) {
     const payload = {
       ...values,
       matterId: caseId,
@@ -112,7 +123,7 @@ export function NewTaskForm() {
       onSuccess: () => {
         form.reset();
         resetForm();
-        setShowTaskModal(false);
+        setShowTaskModal?.(false);
       },
       onError: (error) => {
         console.error("Mutation Error:", error);
@@ -136,6 +147,7 @@ export function NewTaskForm() {
             onChange={(val) => handleChange(val, "endDate")}
           />
         </div>
+
         <Field>
           <FieldLabel>Assignee</FieldLabel>
           <ComboboxDemo
@@ -144,66 +156,76 @@ export function NewTaskForm() {
             placeholder="Select assignees..."
           />
         </Field>
+
         <Controller
           name="title"
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor="form-rhf-demo-title">Task title</FieldLabel>
+              <FieldLabel htmlFor="task-title">Task title</FieldLabel>
               <Input
                 {...field}
-                id="form-rhf-demo-title"
+                id="task-title"
                 aria-invalid={fieldState.invalid}
-                placeholder="Task Description"
+                placeholder="Task Title"
                 autoComplete="off"
               />
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+              {fieldState.invalid && fieldState.error && (
+                <FieldError errors={[fieldState.error]} />
+              )}
             </Field>
           )}
         />
+
         <Controller
           name="description"
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor="form-rhf-demo-title">
+              <FieldLabel htmlFor="task-description">
                 Task Description
               </FieldLabel>
               <Textarea
                 {...field}
-                id="form-rhf-demo-title"
+                id="task-description"
                 aria-invalid={fieldState.invalid}
                 placeholder="Task Description"
                 autoComplete="off"
               />
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+              {fieldState.invalid && fieldState.error && (
+                <FieldError errors={[fieldState.error]} />
+              )}
             </Field>
           )}
         />
+
         <Controller
           name="eventType"
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor="form-rhf-demo-title">Event type</FieldLabel>
+              <FieldLabel htmlFor="event-type">Event type</FieldLabel>
               <Input
                 {...field}
-                id="form-rhf-demo-title"
+                id="event-type"
                 aria-invalid={fieldState.invalid}
                 placeholder="Event type"
                 autoComplete="off"
               />
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+              {fieldState.invalid && fieldState.error && (
+                <FieldError errors={[fieldState.error]} />
+              )}
             </Field>
           )}
         />
+
         <Controller
           name="status"
           control={form.control}
           render={({ field, fieldState }) => (
-            <Field {...field}>
+            <Field data-invalid={fieldState.invalid}>
               <FieldLabel>Task Status</FieldLabel>
-              <Select>
+              <Select value={field.value} onValueChange={field.onChange}>
                 <SelectTrigger>
                   <SelectValue placeholder="Choose status" />
                 </SelectTrigger>
@@ -214,50 +236,57 @@ export function NewTaskForm() {
                   <SelectItem value="DONE">Done</SelectItem>
                 </SelectContent>
               </Select>
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+              {fieldState.invalid && fieldState.error && (
+                <FieldError errors={[fieldState.error]} />
+              )}
             </Field>
           )}
         />
+
         <Controller
           name="priority"
           control={form.control}
           render={({ field, fieldState }) => (
-            <Field {...field}>
+            <Field data-invalid={fieldState.invalid}>
               <FieldLabel>Task priority</FieldLabel>
-              <Select>
+              <Select value={field.value} onValueChange={field.onChange}>
                 <SelectTrigger>
                   <SelectValue placeholder="Choose priority" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="high">High</SelectItem>
                   <SelectItem value="medium">Medium</SelectItem>
-                  <SelectItem value="low">low</SelectItem>
+                  <SelectItem value="low">Low</SelectItem>
                 </SelectContent>
               </Select>
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+              {fieldState.invalid && fieldState.error && (
+                <FieldError errors={[fieldState.error]} />
+              )}
             </Field>
           )}
         />
+
         <Controller
           name="mileStone"
           control={form.control}
           render={({ field, fieldState }) => (
-            <Field {...field} orientation="horizontal">
-              <Checkbox id="finder-pref-9k2-sync-folders-nep" />
+            <Field orientation="horizontal" data-invalid={fieldState.invalid}>
+              <Checkbox
+                id="milestone-checkbox"
+                checked={field.value}
+                onCheckedChange={field.onChange}
+              />
               <FieldContent>
-                <FieldLabel htmlFor="finder-pref-9k2-sync-folders-nep">
-                  Mile Stone
-                </FieldLabel>
-                {/* <FieldDescription>
-                  This task will be used as a check point to indicate how far
-                  along the project is.
-                </FieldDescription> */}
+                <FieldLabel htmlFor="milestone-checkbox">Mile Stone</FieldLabel>
               </FieldContent>
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+              {fieldState.invalid && fieldState.error && (
+                <FieldError errors={[fieldState.error]} />
+              )}
             </Field>
           )}
         />
       </FieldGroup>
+
       <DialogFooter>
         <DialogClose asChild>
           <Button variant="outline">Cancel</Button>

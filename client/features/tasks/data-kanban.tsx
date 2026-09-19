@@ -49,7 +49,10 @@ export const DataKanban = ({ data }: DataKanbanProps) => {
     };
 
     data.forEach((task) => {
-      initialTasks[task?.status].push(task);
+      // 1. Guard against missing tasks or invalid statuses
+      if (task?.status && task.status in initialTasks) {
+        initialTasks[task.status as TaskStatus].push(task);
+      }
     });
     Object.keys(initialTasks).forEach((status) => {
       initialTasks[status as TaskStatus].sort(

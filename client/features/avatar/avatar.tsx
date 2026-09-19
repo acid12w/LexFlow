@@ -40,7 +40,7 @@ interface userInterface {
   profileImage: string;
 }
 
-export function AvatarGroup({ userData, displaySize }: userObj) {
+export function AvatarGroup({ userData, displaySize = 3 }: userObj) {
   const [open, setOpen] = React.useState(false);
 
   const { data: assignee } = useGetUsersByArray(userData);

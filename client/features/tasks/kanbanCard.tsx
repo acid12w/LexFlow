@@ -36,7 +36,7 @@ export const KanbanCard = ({ tasks }: KanbanCardProps) => {
     });
   };
 
-  const limitParagraph = (text) => {
+  const limitParagraph = (text: string) => {
     if (!text) return "";
     const words = text.split(/\s+/); // Splits by spaces or linebreaks
 

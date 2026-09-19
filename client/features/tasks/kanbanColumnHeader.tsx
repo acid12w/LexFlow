@@ -1,10 +1,8 @@
 "use client";
 import {
   CircleCheckIcon,
-  CircleDashedIcon,
   CircleDotDashedIcon,
   CircleIcon,
-  Ghost,
   PlusIcon,
 } from "lucide-react";
 
