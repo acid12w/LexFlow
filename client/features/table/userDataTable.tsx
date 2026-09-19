@@ -159,9 +159,9 @@ export const getColumns = (
         return (
           <Select
             value={role}
-            onValueChange={(value) =>
-              table.options.meta?.updateData?.(row.index, "role", value)
-            }
+            // onValueChange={(value) =>
+            //   table.options.meta?.updateData?.(row.index, column._id, value)
+            // }
           >
             <SelectTrigger id="checkout-exp-month-ts6" className="h-8">
               <SelectValue placeholder="Select role" />
