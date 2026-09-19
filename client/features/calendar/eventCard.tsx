@@ -1,18 +1,26 @@
 import { cn } from "@/lib/utils";
-import { MatterStatus } from "../tasks/types";
+import { MatterStatus, TaskStatus } from "../tasks/types";
+
+export type CardStatus = MatterStatus | TaskStatus;
 
 interface EventCardProps {
   title: string;
-  status: MatterStatus;
+  status: CardStatus; // 👈 Allow both Task and Matter statuses
   id: string | null | undefined;
   description: string;
 }
 
-const statusColorMap: Record<MatterStatus, string> = {
+const statusColorMap: Record<CardStatus, string> = {
+  // Matter Statuses
   [MatterStatus.DONE]: "border-green-500 bg-green-50 text-green-700",
   [MatterStatus.IN_PROGRESS]: "border-blue-500 bg-blue-50 text-blue-700",
   [MatterStatus.AT_RISK]: "border-yellow-500 bg-yellow-50 text-yellow-700",
   [MatterStatus.NOT_STARTED]: "border-yellow-500 bg-yellow-50 text-yellow-700",
+
+  // Task Statuses
+  [TaskStatus.TODO]: "border-slate-500 bg-slate-50 text-slate-700",
+  [TaskStatus.IN_REVIEW]: "border-purple-500 bg-purple-50 text-purple-700",
+  // Map any remaining TaskStatus enums here...
 };
 
 export const EventCard = ({

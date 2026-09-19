@@ -31,7 +31,7 @@ interface DataKanbanProps {
 }
 
 interface TaskPositionUpdate {
-  _id: string;
+  _id: string | null | undefined;
   status: TaskStatus;
   position: number;
 }
