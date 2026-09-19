@@ -37,8 +37,6 @@ interface TaskPositionUpdate {
 }
 
 export const DataKanban = ({ data }: DataKanbanProps) => {
-  const { mutate: updateTask } = useBulkUpdateTasks();
-
   const [tasks, setTasks] = useState<TasksState>(() => {
     const initialTasks: TasksState = {
       // [TaskStatus.BACKLOG]: [],
@@ -48,15 +46,19 @@ export const DataKanban = ({ data }: DataKanbanProps) => {
       [TaskStatus.DONE]: [],
     };
 
-    data.forEach((task) => {
-      // 1. Guard against missing tasks or invalid statuses
-      if (task?.status && task.status in initialTasks) {
-        initialTasks[task.status as TaskStatus].push(task);
+    data.forEach((task: Task) => {
+      const status = task?.status;
+      if (
+        status &&
+        Object.prototype.hasOwnProperty.call(initialTasks, status)
+      ) {
+        initialTasks[status as TaskStatus].push(task);
       }
     });
-    Object.keys(initialTasks).forEach((status) => {
-      initialTasks[status as TaskStatus].sort(
-        (a, b) => a.position - b.position
+
+    (Object.keys(initialTasks) as TaskStatus[]).forEach((status) => {
+      initialTasks[status].sort(
+        (a, b) => (a.position ?? 0) - (b.position ?? 0)
       );
     });
 
@@ -94,7 +96,7 @@ export const DataKanban = ({ data }: DataKanbanProps) => {
         destColumn.splice(destination.index, 0, updatedTask);
         newTasks[destStatus] = destColumn;
 
-        // ✅ Build payload
+        // Build payload
         updatePayload = [];
 
         destColumn.forEach((task, index) => {
@@ -118,15 +120,12 @@ export const DataKanban = ({ data }: DataKanbanProps) => {
         return newTasks;
       });
 
-      // ✅ Fire AFTER state update
       if (updatePayload.length > 0) {
         bulkUpdate(updatePayload);
       }
     },
     [bulkUpdate]
   );
-
-  // updateTask(tasks);
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
@@ -135,7 +134,7 @@ export const DataKanban = ({ data }: DataKanbanProps) => {
           return (
             <div
               key={board}
-              className="flex-1 mx-2 bg-[#F7F9FD] p-3 rounded-md min-w-[200px] "
+              className="flex-1 mx-2 bg-[#F7F9FD] p-3 rounded-md min-w-[200px]"
             >
               <KanbanColumnHeader
                 board={board}
@@ -146,12 +145,12 @@ export const DataKanban = ({ data }: DataKanbanProps) => {
                   <div
                     {...provided.droppableProps}
                     ref={provided.innerRef}
-                    className="min-h-[200px] py-1.5 "
+                    className="min-h-[200px] py-1.5"
                   >
-                    {tasks[board].map((tasks, index) => (
+                    {tasks[board].map((taskItem, index) => (
                       <Draggable
-                        key={tasks._id}
-                        draggableId={String(tasks._id)}
+                        key={taskItem._id}
+                        draggableId={String(taskItem._id)}
                         index={index}
                       >
                         {(provided) => (
@@ -164,7 +163,7 @@ export const DataKanban = ({ data }: DataKanbanProps) => {
                                 .style as React.CSSProperties
                             }
                           >
-                            <KanbanCard tasks={tasks} />
+                            <KanbanCard tasks={taskItem} />
                           </div>
                         )}
                       </Draggable>
