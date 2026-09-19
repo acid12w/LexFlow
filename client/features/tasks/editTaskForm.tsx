@@ -40,7 +40,7 @@ import {
   ClipboardMinus,
 } from "lucide-react";
 
-export function EditTaskForm({ isEditing }: boolean) {
+export function EditTaskForm({ isEditing }: { isEditing: boolean }) {
   const formSchema = z.object({
     status: z.string(),
     startDate: z.string(),
@@ -118,217 +118,219 @@ export function EditTaskForm({ isEditing }: boolean) {
 
   return (
     <div>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="overflow-auto h-[95%]"
-      >
-        <FieldGroup>
-          <div className="flex gap-4 w-full">
-            <Calendar22
-              name="startDate"
-              onChange={(val) => handleChange(val, "startDate")}
-            />
-            <Calendar22
-              name="endDate"
-              onChange={(val) => handleChange(val, "endDate")}
-            />
-          </div>
-          <Field>
-            <FieldLabel>Assignee</FieldLabel>
-            <ComboboxDemo
-              value={formData.assignedTo}
-              onChange={handleAssigneeChange}
-              placeholder="Select assignees..."
-            />
-          </Field>
-          <Controller
-            name="taskName"
-            control={form.control}
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor="form-rhf-demo-title">
-                  Task Description
-                </FieldLabel>
-                <Input
-                  {...field}
-                  id="form-rhf-demo-title"
-                  aria-invalid={fieldState.invalid}
-                  placeholder="Task Description"
-                  autoComplete="off"
-                />
-                {fieldState.invalid && (
-                  <FieldError errors={[fieldState.error]} />
-                )}
-              </Field>
-            )}
-          />
-          <Controller
-            name="taskDescription"
-            control={form.control}
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor="form-rhf-demo-title">
-                  Task Description
-                </FieldLabel>
-                <Textarea
-                  {...field}
-                  id="form-rhf-demo-title"
-                  aria-invalid={fieldState.invalid}
-                  placeholder="Task Description"
-                  autoComplete="off"
-                />
-                {fieldState.invalid && (
-                  <FieldError errors={[fieldState.error]} />
-                )}
-              </Field>
-            )}
-          />
-          <Controller
-            name="status"
-            control={form.control}
-            render={({ field, fieldState }) => (
-              <Field {...field}>
-                <FieldLabel>Task Status</FieldLabel>
-                <Select>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Choose department" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="NotStarted">Not Started</SelectItem>
-                    <SelectItem value="Inprogess">In Progress</SelectItem>
-                    <SelectItem value="Complete">Complete</SelectItem>
-                  </SelectContent>
-                </Select>
-                {fieldState.invalid && (
-                  <FieldError errors={[fieldState.error]} />
-                )}
-              </Field>
-            )}
-          />
-          <Controller
-            name="mileStone"
-            control={form.control}
-            render={({ field, fieldState }) => (
-              <Field {...field} orientation="horizontal">
-                <Checkbox id="finder-pref-9k2-sync-folders-nep" />
-                <FieldContent>
-                  <FieldLabel htmlFor="finder-pref-9k2-sync-folders-nep">
-                    Mile Stone
-                  </FieldLabel>
-                  {/* <FieldDescription>
-                  This task will be used as a check point to indicate how far
-                  along the project is.
-                </FieldDescription> */}
-                </FieldContent>
-                {fieldState.invalid && (
-                  <FieldError errors={[fieldState.error]} />
-                )}
-              </Field>
-            )}
-          />
-        </FieldGroup>
-        <DialogFooter>
-          <DialogClose asChild>
-            <Button variant="outline">Cancel</Button>
-          </DialogClose>
-          <Button type="submit">Save changes</Button>
-        </DialogFooter>
-      </form>
-
-      <div
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="flex flex-col gap-6"
-      >
-        <div className="flex justify-between">
-          <div className="flex gap-2 items-center justify-center">
-            <GrStatusInfo size={20} />
-            <p>Status</p>
-          </div>
-
-          <p
-            className={cn(
-              "bg-[#d9fcf4] text-[#03a24e] font-medium px-2 py-1 rounded-sm flex items-center gap-x-2",
-              {
-                "bg-[#d9fcf4] text-[#03a24e]": status === "complete",
-                "bg-[#E2F1FF] text-[#006bc9]": status === "inprogress",
-                "bg-[#fff4d3] text-[#e49101]": status === "not started",
-              }
-            )}
-          >
-            Inprogress
-          </p>
-        </div>
-        <div className="flex justify-between">
-          <div className="flex gap-2 items-center justify-center">
-            <CalendarDays size={20} />
-            <p className="w-max">Due Date</p>
-          </div>
-          <p className="">24 may 2025</p>
-        </div>
-        <div className="flex justify-between">
-          <div className="flex items-center gap-2">
-            <UserRound size={20} />
-            <p>Assignee</p>
-          </div>
-
-          <div className="flex gap-4 relative">
-            <AvatarGroup userData={avatarFormData} displaySize={3} />
-            {open && (
+      {isEditing ? (
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="overflow-auto h-[95%]"
+        >
+          <FieldGroup>
+            <div className="flex gap-4 w-full">
+              <Calendar22
+                name="startDate"
+                onChange={(val) => handleChange(val, "startDate")}
+              />
+              <Calendar22
+                name="endDate"
+                onChange={(val) => handleChange(val, "endDate")}
+              />
+            </div>
+            <Field>
+              <FieldLabel>Assignee</FieldLabel>
               <ComboboxDemo
-                value={assigneeIds}
+                value={formData.assignedTo}
                 onChange={handleAssigneeChange}
                 placeholder="Select assignees..."
               />
-            )}
-            <Button
-              type="button"
-              onClick={() => setOpen(!open)}
-              size="icon"
-              className="rounded-full bg-blue-400 outline-blue-800 outline-dashed"
+            </Field>
+            <Controller
+              name="taskName"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="form-rhf-demo-title">
+                    Task Description
+                  </FieldLabel>
+                  <Input
+                    {...field}
+                    id="form-rhf-demo-title"
+                    aria-invalid={fieldState.invalid}
+                    placeholder="Task Description"
+                    autoComplete="off"
+                  />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+            <Controller
+              name="taskDescription"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="form-rhf-demo-title">
+                    Task Description
+                  </FieldLabel>
+                  <Textarea
+                    {...field}
+                    id="form-rhf-demo-title"
+                    aria-invalid={fieldState.invalid}
+                    placeholder="Task Description"
+                    autoComplete="off"
+                  />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+            <Controller
+              name="status"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field {...field}>
+                  <FieldLabel>Task Status</FieldLabel>
+                  <Select>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Choose department" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="NotStarted">Not Started</SelectItem>
+                      <SelectItem value="Inprogess">In Progress</SelectItem>
+                      <SelectItem value="Complete">Complete</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+            <Controller
+              name="mileStone"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field {...field} orientation="horizontal">
+                  <Checkbox id="finder-pref-9k2-sync-folders-nep" />
+                  <FieldContent>
+                    <FieldLabel htmlFor="finder-pref-9k2-sync-folders-nep">
+                      Mile Stone
+                    </FieldLabel>
+                    {/* <FieldDescription>
+                  This task will be used as a check point to indicate how far
+                  along the project is.
+                </FieldDescription> */}
+                  </FieldContent>
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+          </FieldGroup>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="outline">Cancel</Button>
+            </DialogClose>
+            <Button type="submit">Save changes</Button>
+          </DialogFooter>
+        </form>
+      ) : (
+        <div
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="flex flex-col gap-6"
+        >
+          <div className="flex justify-between">
+            <div className="flex gap-2 items-center justify-center">
+              <GrStatusInfo size={20} />
+              <p>Status</p>
+            </div>
+
+            <p
+              className={cn(
+                "bg-[#d9fcf4] text-[#03a24e] font-medium px-2 py-1 rounded-sm flex items-center gap-x-2",
+                {
+                  "bg-[#d9fcf4] text-[#03a24e]": status === "complete",
+                  "bg-[#E2F1FF] text-[#006bc9]": status === "inprogress",
+                  "bg-[#fff4d3] text-[#e49101]": status === "not started",
+                }
+              )}
             >
-              <RiUserAddLine className="fill-blue-800" />
-            </Button>
+              Inprogress
+            </p>
+          </div>
+          <div className="flex justify-between">
+            <div className="flex gap-2 items-center justify-center">
+              <CalendarDays size={20} />
+              <p className="w-max">Due Date</p>
+            </div>
+            <p className="">24 may 2025</p>
+          </div>
+          <div className="flex justify-between">
+            <div className="flex items-center gap-2">
+              <UserRound size={20} />
+              <p>Assignee</p>
+            </div>
+
+            <div className="flex gap-4 relative">
+              <AvatarGroup userData={avatarFormData} displaySize={3} />
+              {open && (
+                <ComboboxDemo
+                  value={assigneeIds}
+                  onChange={handleAssigneeChange}
+                  placeholder="Select assignees..."
+                />
+              )}
+              <Button
+                type="button"
+                onClick={() => setOpen(!open)}
+                size="icon"
+                className="rounded-full bg-blue-400 outline-blue-800 outline-dashed"
+              >
+                <RiUserAddLine className="fill-blue-800" />
+              </Button>
+            </div>
+          </div>
+          <div className="flex justify-between">
+            <div className="flex items-center gap-2">
+              <Flag size={20} />
+              <p>Priority</p>
+            </div>
+            <p
+              className={cn(
+                " bg-[#E2F1FF] text-[#006bc9] font-medium px-2 py-1 rounded-sm flex items-center gap-x-2",
+                {
+                  "bg-[#d9fcf4] text-[#03a24e]": status === "complete",
+                  "bg-[#E2F1FF] text-[#006bc9]": status === "inprogress",
+                  "bg-[#fff4d3] text-[#e49101]": status === "not started",
+                }
+              )}
+            >
+              High
+            </p>
+          </div>
+          <div className="flex justify-between">
+            <div className="flex gap-2 items-center">
+              <SquareCheckBig size={20} />
+              <p>Event Type</p>
+            </div>
+            <p className="bg-[#fff4d3] text-[#e49101] rounded-sm px-3 py-1">
+              Court
+            </p>
+          </div>
+          <div className="">
+            <div className="flex items-center gap-2 mb-2">
+              <ClipboardMinus size={20} />
+              <p>Description</p>
+            </div>
+            <p className="text-sm ml-7">
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Aut
+              corporis atque temporibus aspernatur sed esse non. Tenetur
+              deserunt officiis provident,
+            </p>
           </div>
         </div>
-        <div className="flex justify-between">
-          <div className="flex items-center gap-2">
-            <Flag size={20} />
-            <p>Priority</p>
-          </div>
-          <p
-            className={cn(
-              " bg-[#E2F1FF] text-[#006bc9] font-medium px-2 py-1 rounded-sm flex items-center gap-x-2",
-              {
-                "bg-[#d9fcf4] text-[#03a24e]": status === "complete",
-                "bg-[#E2F1FF] text-[#006bc9]": status === "inprogress",
-                "bg-[#fff4d3] text-[#e49101]": status === "not started",
-              }
-            )}
-          >
-            High
-          </p>
-        </div>
-        <div className="flex justify-between">
-          <div className="flex gap-2 items-center">
-            <SquareCheckBig size={20} />
-            <p>Event Type</p>
-          </div>
-          <p className="bg-[#fff4d3] text-[#e49101] rounded-sm px-3 py-1">
-            Court
-          </p>
-        </div>
-        <div className="">
-          <div className="flex items-center gap-2 mb-2">
-            <ClipboardMinus size={20} />
-            <p>Description</p>
-          </div>
-          <p className="text-sm ml-7">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Aut
-            corporis atque temporibus aspernatur sed esse non. Tenetur deserunt
-            officiis provident,
-          </p>
-        </div>
-      </div>
+      )}
     </div>
   );
 }
