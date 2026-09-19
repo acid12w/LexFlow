@@ -13,9 +13,9 @@ export enum TaskStatus {
 }
 
 export type Task = {
-  _id: Key | null | undefined;
+  _id: string | null | undefined;
   name: string;
-  status: any;
+  status: string;
   priority: string;
   workSpaceId: string;
   assigneeId: string;
