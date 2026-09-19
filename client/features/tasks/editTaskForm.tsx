@@ -40,7 +40,7 @@ import {
   ClipboardMinus,
 } from "lucide-react";
 
-export function EditTaskForm({}: boolean) {
+export function EditTaskForm({ isEditing }: boolean) {
   const formSchema = z.object({
     status: z.string(),
     startDate: z.string(),

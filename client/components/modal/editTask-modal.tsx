@@ -40,7 +40,7 @@ function TaskModal({
           </DialogDescription>
         </DialogHeader>
         <Separator className="" />
-        <EditTaskForm isEditing={undefined} />
+        <EditTaskForm isEditing={false} />
       </DialogContent>
     </Dialog>
   );
