@@ -195,14 +195,14 @@ export const getColumns = (
   {
     id: "actions",
     cell: ({ row, table }) => {
-      const isEditing = table.options.meta?.editingRows[row.id];
+      const isEditing = table.options.meta?.editingRows?.[row.id];
 
       return (
         <ActionComponent
           rowData={row.original}
-          edit={() => table.options.meta?.toggleRowEditing(row.id)}
+          edit={() => table.options.meta?.toggleRowEditing?.(row.id)}
           isEditing={isEditing}
-          taskId={row.original._id}
+          taskId={row.original.id}
         />
       );
     },

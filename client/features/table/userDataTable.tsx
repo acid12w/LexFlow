@@ -15,27 +15,15 @@ import {
 } from "@tanstack/react-table";
 import {
   ArrowUpDown,
-  Check,
-  ChevronDown,
   ChevronLeft,
   ChevronRight,
   ChevronsLeft,
   ChevronsRight,
-  Link2,
-  MoreHorizontal,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -46,8 +34,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import { FiEdit3 } from "react-icons/fi";
-import { MdOutlineCloudUpload } from "react-icons/md";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import {
@@ -57,24 +43,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { TableFilter } from "./TableFilter";
-import {
-  priorities,
-  statuses,
-} from "@/app/(workspace)/tasks/[taskid]/spreadsheet/data";
-import { UserGroup } from "../avatar/userGroup";
-import { TaskActionBtn } from "../actionBtn/taskActionBtn";
-import { TaskUserGroup } from "../avatar/taskUserGroup";
-import { DateAlert } from "../date/dateAlert";
-import { NewUserDialog } from "../modal/new-user";
-import Link from "next/link";
 
-// export default function DynamicEditrableTable() {
-//   const [data, setData] = useState([
-//     { id: "1", name: "Project Alpha", status: "In Progress" },
-//     { id: "2", name: "Project Beta", status: "Complete" },
-//   ]);
-// }
+import { NewUserDialog } from "../modal/new-user";
 
 export type Matter = {
   id: number;
@@ -183,14 +153,14 @@ export const getColumns = (
       const role = row.getValue("role") as string;
       const isEditing =
         table.options.meta?.isBulkEditing ||
-        table.options.meta?.editingRows[row.id];
+        table.options.meta?.editingRows?.[row.id];
 
       if (isEditing) {
         return (
           <Select
             value={role}
             onValueChange={(value) =>
-              table.options.meta?.updateData(row.index, "role", value)
+              table.options.meta?.updateData?.(row.index, "role", value)
             }
           >
             <SelectTrigger id="checkout-exp-month-ts6" className="h-8">
@@ -228,7 +198,7 @@ export const getColumns = (
 
       const isEditing =
         table.options.meta?.isBulkEditing ||
-        table.options.meta?.editingRows[row.id];
+        table.options.meta?.editingRows?.[row.id];
 
       return (
         <div
@@ -273,14 +243,14 @@ export const getColumns = (
   {
     id: "actions",
     cell: ({ row, table }) => {
-      const isEditing = table.options.meta?.editingRows[row.id];
+      const isEditing = table.options.meta?.editingRows?.[row.id];
 
       return (
         <ActionComponent
           rowData={row.original}
-          edit={() => table.options.meta?.toggleRowEditing(row.id)}
+          edit={() => table.options.meta?.toggleRowEditing?.(row.id)}
           isEditing={isEditing}
-          userId={row.original._id}
+          userId={row.original.id}
         />
       );
     },

@@ -63,16 +63,20 @@ import { TaskUserGroup } from "../avatar/taskUserGroup";
 import { DateAlert } from "../date/dateAlert";
 import { Task } from "../tasks/types";
 
-// --- Module Augmentation for TanStack Table Meta ---
+import type { RowData } from "@tanstack/react-table";
+
 declare module "@tanstack/react-table" {
-  interface TableMeta<TData extends Record<string, any>> {
+  interface TableMeta<TData extends RowData> {
     isBulkEditing?: boolean;
+
     editingRows?: Record<string, boolean>;
+
     updateData?: (
       rowIndex: number,
       columnId: keyof TData,
       value: unknown
     ) => void;
+
     toggleRowEditing?: (rowId: string) => void;
   }
 }
