@@ -12,7 +12,6 @@ export interface ActiveClientState {
   firstName: string;
   lastName: string;
   refrenceNumber: string;
-  avatarUrl: string;
   selectedClientId: string;
 }
 

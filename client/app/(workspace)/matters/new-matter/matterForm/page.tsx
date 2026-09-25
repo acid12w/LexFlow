@@ -71,7 +71,7 @@ export interface ActiveClientState {
   firstName: string;
   lastName: string;
   refrenceNumber?: string;
-  avatarUrl?: string;
+  // avatarUrl?: string;
 }
 
 // ✅ Wrap ActiveClientState inside the props interface
@@ -81,7 +81,6 @@ interface MatterFieldProps {
     firstName: string;
     lastName: string;
     refrenceNumber?: string;
-    avatarUrl?: string;
     selectedClientId: string;
   };
   onSuccess: () => void;
@@ -182,12 +181,12 @@ export default function MatterField({
             >
               <div className="flex justify-center">
                 <Avatar className="mr-4 h-10 w-10 shrink-0">
-                  {activeClient.avatarUrl && (
+                  {/* {activeClient.avatarUrl && (
                     <AvatarImage
                       src={activeClient.avatarUrl}
                       alt={activeClient.firstName}
                     />
-                  )}
+                  )} */}
                   <AvatarFallback className="bg-primary/20 text-primary font-semibold text-xs">
                     {getInitials(activeClient.firstName, activeClient.lastName)}
                   </AvatarFallback>
