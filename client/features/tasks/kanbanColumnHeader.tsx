@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { useContext } from "react";
 import { ModalContext } from "@/components/modal/providers";
 import { cn } from "@/lib/utils";
+import { formatStatus } from "@/lib/utils-helper";
 
 interface KanbanColumnHeaderProps {
   board: TaskStatus;
@@ -39,8 +40,7 @@ export const KanbanColumnHeader = ({
 }: KanbanColumnHeaderProps) => {
   const { setShowTaskModal } = useContext(ModalContext);
   const icon = statusIconMap[board];
-  const color = statusColor[board];
-  console.log(color);
+
   return (
     <div className="px-2 py-1.5 rounded-sm bg-[#ffffff] shadow">
       <div className="flex justify-between items-center ">
@@ -55,7 +55,7 @@ export const KanbanColumnHeader = ({
           >
             <PlusIcon className="size-4 text-neutral-100 bg-[#5C5C5C] rounded-full" />
           </Button>
-          <h2 className="text-sm">{board}</h2>
+          <h2 className="text-sm">{formatStatus(board)}</h2>
         </div>
         <div className="flex items-center gap-x-2 px-4 py-0 rounded-2xl">
           {icon}

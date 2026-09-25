@@ -31,26 +31,7 @@ import { Timer, Activity } from "lucide-react";
 import { useUserCredentials } from "@/app/store/user-store";
 import { useGetUserActivityLog } from "@/hooks/useActivityHook";
 import { useGetCasesOverview } from "@/hooks/useDashboardHook";
-
-// 1. Data & Config for Income vs Expenses (Bar Chart)
-const financialData = [
-  { month: "Jan", income: 4500, expenses: 3200 },
-  { month: "Feb", income: 5200, expenses: 3800 },
-  { month: "Mar", income: 4800, expenses: 4100 },
-  { month: "Apr", income: 6100, expenses: 4200 },
-];
-
-const financialConfig = {
-  income: { label: "Income", color: "#0088FF" },
-  expenses: { label: "Expenses", color: "#81C3FE" },
-} satisfies ChartConfig;
-
-// 2. Data & Config for Project Status (Pie Chart)
-const projectData = [
-  { status: "completed", tasks: 45, fill: "#08CB63" },
-  { status: "inprogress", tasks: 25, fill: "#F59E0B" },
-  { status: "todo", tasks: 30, fill: "#0088FF" },
-];
+import { formatStatus } from "@/lib/utils-helper";
 
 const projectConfig = {
   completed: { label: "Completed", color: "hsl(var(--chart-1))" },
@@ -119,7 +100,7 @@ export default function Dashboard() {
                   )}
                 </Pie>
                 <ChartLegend
-                  formatter={(value) => `Status: ${value}`}
+                  formatter={(value) => `Status: ${formatStatus(value)}`}
                   // content={<ChartLegendContent className="-translate-y-2" />}
                 />
               </PieChart>

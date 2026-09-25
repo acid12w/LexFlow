@@ -1,22 +1,8 @@
 import { api } from "../api/api";
 
-interface signinPayload {
-  userName: string;
-  password: string;
-  company?: string;
-  inviteFirmId?: string;
-  profile: {
-    firstName: string;
-    lastName: string;
-    email: string;
-  };
-  billing?: { defaultHourlyRate: number };
-  role?: string;
-}
-
 export const clientService = {
-  createUser: async (data: signinPayload) => {
-    const response = await api.post("/user/sign-up", data);
+  createClient: async (data: any) => {
+    const response = await api.post("/client", data);
     return response;
   },
 
@@ -30,8 +16,9 @@ export const clientService = {
     return response;
   },
 
-  deleteTeamMember: async (userId: string) => {
-    const response = await api.delete(`/user/removeTeamMember/${userId}`);
+  deleteClient: async (clientId: string) => {
+    console.log(clientId);
+    const response = await api.delete(`/client/${clientId}`);
     return response;
   },
 

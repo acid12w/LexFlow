@@ -11,6 +11,7 @@ import {
 } from "../services/matterService.js";
 import {
   createClientService,
+  getClientByClientIdService,
   getClientService,
 } from "../services/clientService.js";
 import { ProtectedRequest } from "../types/express.js";
@@ -114,7 +115,6 @@ export const addMatter = async (
   try {
     const userId = req.user?.id;
     const firmId = req.user?.firmId;
-    const userName = req.user?.userName;
 
     // await createLog({
     //   userId: userId,
@@ -138,18 +138,27 @@ export const addMatter = async (
       responsibleStaff,
       startDate,
       endDate,
-      access,
+      allowAccess,
       priority,
       rate,
       taskList,
       practiceArea,
       assignedTo,
       clientEmail,
-      firstName,
-      lastName,
-      clientType,
-      refrenceNumber,
+      clientId,
     } = req.body;
+
+    // 1. Determine if access is restricted
+    const isRestricted = Array.isArray(allowAccess) && allowAccess.length > 0;
+
+    // 2. Build allowAccess array:
+    //    - If restricted: ensure creator's userId is included & convert to ObjectIds
+    //    - If empty/not passed: keep as [] to represent firm-wide access
+    const hasAccess = isRestricted
+      ? Array.from(
+          new Set([...allowAccess, userId].map((id) => String(id)))
+        ).map((id) => new mongoose.Types.ObjectId(id))
+      : [];
 
     const clientExists = await getClientService(clientEmail);
 
@@ -157,25 +166,12 @@ export const addMatter = async (
       return res.status(404).json({ message: "Client already exsits" });
     }
 
-    const client = await createClientService({
-      firmId: new mongoose.Types.ObjectId(firmId),
-      userId: new mongoose.Types.ObjectId(userId),
-      firstName,
-      lastName,
-      email: clientEmail,
-      clientType,
-      refrenceNumber,
-      type: clientType,
-      status: "Active",
-      createdBy: new mongoose.Types.ObjectId(userId),
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    });
+    const client = await getClientByClientIdService(clientId);
 
     const data = await createMatterService({
       firmId: new mongoose.Types.ObjectId(firmId),
       userId: new mongoose.Types.ObjectId(userId),
-      clientId: client._id,
+      clientId: client?._id,
       template,
       title,
       description: description ?? matterDescription,
@@ -184,7 +180,7 @@ export const addMatter = async (
       responsibleStaff: toAssigneeObjectIds(responsibleStaff),
       startDate,
       endDate: endDate,
-      access,
+      allowAccess: hasAccess,
       priority,
       rate,
       // taskList,

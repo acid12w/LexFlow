@@ -72,6 +72,7 @@ const createMatterService = async (data: Partial<IMatterInterface>) => {
     responsibleAttorney: data.responsibleAttorney,
     originatingAttorney: data.originatingAttorney,
     responsibleStaff: data.responsibleStaff,
+    allowAccess: data.allowAccess,
     status: MATTER_STATUS.NOT_STARTED,
     taskCount: 0,
     completedTaskCount: 0,

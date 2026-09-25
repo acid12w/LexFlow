@@ -10,7 +10,6 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      console.log(error);
       // clear client state
       // localStorage.removeItem("user");
 

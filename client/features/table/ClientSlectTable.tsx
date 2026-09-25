@@ -159,56 +159,6 @@ export const getColumns = (
     header: "First Name",
     cell: EditableCell,
   },
-  {
-    accessorKey: "lastName",
-    header: "Last Name",
-    cell: EditableCell,
-  },
-  {
-    accessorKey: "status",
-    header: "Status",
-    cell: EditableCell,
-  },
-  {
-    accessorKey: "type",
-    header: "Type",
-    cell: EditableCell,
-  },
-  {
-    id: "Client Portal",
-    header: "Client Portal",
-    cell: ({ row }) => (
-      <Link href={`client-portal/${row.original._id ?? row.original.id}`}>
-        Link
-      </Link>
-    ),
-  },
-  ...(ActionComponent
-    ? [
-        {
-          id: "actions",
-          cell: ({
-            row,
-            table,
-          }: CellContext<ClientData, unknown>): React.ReactNode => {
-            const isEditing =
-              !!table.options.meta?.isBulkEditing ||
-              !!table.options.meta?.editingRows?.[row.id];
-
-            return (
-              <ActionComponent
-                rowData={row.original}
-                edit={() => {
-                  table.options.meta?.toggleRowEditing?.(row.id);
-                }}
-                isEditing={isEditing}
-                clientId={row.original._id ?? row.original.id}
-              />
-            );
-          },
-        } as ColumnDef<ClientData>,
-      ]
-    : []),
 ];
 
 interface InitialDataProps {
@@ -217,7 +167,7 @@ interface InitialDataProps {
   updateTasks?: (payload: UseUpdateTaskPayload) => void;
 }
 
-export function ClientDataTable({
+export function ClientSelectDataTable({
   initialData,
   updateTasks,
   ActionDropdown,

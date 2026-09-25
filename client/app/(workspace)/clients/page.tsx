@@ -3,9 +3,9 @@
 import { Skeleton } from "@/components/ui/skeleton"; // Shadcn component
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useBulkUpdateTasks } from "@/hooks/task";
-import { TaskActionBtn } from "@/features/actionBtn/taskActionBtn";
 import { useGetAllClients } from "@/hooks/useClientHook";
 import { ClientDataTable } from "@/features/table/ClientTable";
+import { ClientActionBtn } from "@/features/actionBtn/clientActionBtn";
 
 const Clientsheet = () => {
   const { data: clientData, isLoading, isError, error } = useGetAllClients();
@@ -36,7 +36,7 @@ const Clientsheet = () => {
     <div className="px-2">
       {/* 4. Ensure your table reacts to live data, not just 'initial' data */}
       <ClientDataTable
-        ActionDropdown={TaskActionBtn}
+        ActionDropdown={ClientActionBtn}
         initialData={clientData?.data.data || []}
         updateTasks={BulkUpdateTasks}
       />

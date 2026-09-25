@@ -3,32 +3,18 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { useAlertStore } from "@/app/store/use-alert"; // Import your Zustand bridge
 import { useUserCredentials } from "@/app/store/user-store";
-import { AxiosError } from "axios";
-import { authService } from "@/app/services/auth";
 
-interface newUserDataPayload {
-  userName: string;
-  password: string;
-  company?: string;
-  inviteFirmId?: string;
-  profile: {
-    firstName: string;
-    lastName: string;
-    email: string;
-  };
-}
-
-export function useSignup() {
+export function useCreateClient() {
   const queryClient = useQueryClient();
   const showAlert = useAlertStore((state) => state.showAlert);
 
   return useMutation({
-    mutationFn: (newUserData: newUserDataPayload) =>
-      authService.createUser(newUserData),
+    mutationFn: (newClientData: any) =>
+      clientService.createClient(newClientData),
 
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["firmMembers"] });
-      showAlert("success!", "You have created a user", "success");
+      queryClient.invalidateQueries({ queryKey: ["clients"] });
+      showAlert("success!", "your client was deleted", "success");
     },
 
     onError: (error) => {
@@ -38,13 +24,24 @@ export function useSignup() {
   });
 }
 
-// export function useGetClientById(id: string) {
-//   const result = useQuery({
-//     queryKey: ["client"],
-//     queryFn: () => clientService.getClientById(id),
-//   });
-//   return result;
-// }
+export function useRemoveClient() {
+  const queryClient = useQueryClient();
+  const showAlert = useAlertStore((state) => state.showAlert);
+
+  return useMutation({
+    mutationFn: (clientId: any) => clientService.deleteClient(clientId),
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["clients"] });
+      showAlert("success!", "You have created a user", "success");
+    },
+
+    onError: (error) => {
+      const serverMessage = "Sign-up failed. Please try again.";
+      showAlert("Sign-up failed", serverMessage, "error");
+    },
+  });
+}
 
 export function useGetAllClients() {
   const result = useQuery({
@@ -60,104 +57,4 @@ export function useGetMilestone(clientId: string) {
     queryFn: () => clientService.getMilestone(clientId),
   });
   return result;
-}
-
-export function useDeleteTeamMember() {
-  const queryClient = useQueryClient();
-  const showAlert = useAlertStore((state) => state.showAlert);
-
-  return useMutation({
-    mutationFn: (userId: string) => authService.deleteTeamMember(userId),
-
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["firmMembers"] });
-
-      // Fire success notification
-      showAlert("success!", "user has been removed.", "success");
-    },
-
-    onError: (error) => {
-      console.error("Mutation Error:", error);
-
-      const serverMessage = "somthing went wrong.";
-
-      // Fire error notification
-      showAlert("Operation failed", serverMessage, "error");
-    },
-  });
-}
-
-export function useUpdateFirmMember() {
-  const queryClient = useQueryClient();
-  const showAlert = useAlertStore((state) => state.showAlert);
-
-  const setUserCredentials = useUserCredentials(
-    (state) => state.setUserCredentials
-  );
-
-  return useMutation({
-    mutationFn: (data) => authService.updateFirmMember(data),
-
-    onSuccess: ({ data }) => {
-      console.log(data.data);
-      setUserCredentials(data.data);
-
-      queryClient.invalidateQueries({
-        queryKey: ["currentUser"],
-      });
-
-      showAlert("Success!", "Your profile has been updated.", "success");
-    },
-
-    onError: (error) => {
-      const serverMessage = "Operation failed!";
-
-      showAlert("Operation failed!", serverMessage, "error");
-    },
-  });
-}
-
-interface useJoinfirmMemberPayload {
-  token: string;
-}
-
-export function useJoinfirmMember() {
-  const queryClient = useQueryClient();
-  const showAlert = useAlertStore((state) => state.showAlert);
-
-  return useMutation({
-    mutationFn: (newuserData: useJoinfirmMemberPayload) =>
-      authService.joinFirm(newuserData, newuserData.token),
-
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["user"] });
-      // Fire success notification
-      showAlert("success!", "You user has been updated", "success");
-    },
-
-    onError: (error) => {
-      const serverMessage = "Operation failed! Please try again.";
-      showAlert("Operation failed!", serverMessage, "error");
-    },
-  });
-}
-
-export function useCreateFirm() {
-  const queryClient = useQueryClient();
-  const showAlert = useAlertStore((state) => state.showAlert);
-
-  return useMutation({
-    mutationFn: (firmData) => authService.createFirm(firmData),
-
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["user"] });
-      // Fire success notification
-      showAlert("success!", "You user has been updated", "success");
-    },
-
-    onError: (isError) => {
-      const serverMessage = "Operation failed! Please try again.";
-      showAlert("Operation failed!", serverMessage, "error");
-    },
-  });
 }

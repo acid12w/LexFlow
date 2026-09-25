@@ -1,13 +1,9 @@
 "use client";
 
 import { TaskDataTable } from "@/features/table/TasksDataTable";
-import { useGetAllTasksByCaseId, useUpdateTask } from "@/hooks/task";
 import { Skeleton } from "@/components/ui/skeleton"; // Shadcn component
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { useParams } from "next/navigation";
 import { useBulkUpdateTasks } from "@/hooks/task";
 import { TaskActionBtn } from "@/features/actionBtn/taskActionBtn";
-import { useEffect } from "react";
 import { Task } from "@/features/tasks/types";
 
 const Spreadsheet = ({
@@ -18,9 +14,6 @@ const Spreadsheet = ({
   isLoading: boolean;
 }) => {
   const { mutate: BulkUpdateTasks } = useBulkUpdateTasks();
-
-  // 1. Destructure useful states
-  // const { data, isLoading, isError, error } = useGetAllTasksByCaseId(caseId);
 
   // 2. Professional Loading State
   if (isLoading) {

@@ -4,7 +4,10 @@ import {
   getAllClientsService,
   getCaseByClientId,
   getClientByClientIdService,
+  createClientService,
+  deleteClientService,
 } from "#services/clientService.js";
+import mongoose from "mongoose";
 
 export const getClient = async (
   req: Request,
@@ -74,9 +77,33 @@ export const createClient = async (
   next: NextFunction
 ) => {
   try {
-    const firmId = req.user.firmId;
-    console.log(firmId);
-    const response = await ActivityLog.find({ firmId: firmId });
+    const firmId = req.user?.firmId;
+    const userId = req.user?.id;
+
+    const {
+      firstName,
+      lastName,
+      clientContactNumber,
+      clientEmail,
+      clientType,
+      refrenceNumber,
+    } = req.body;
+
+    const response = await createClientService({
+      firmId: new mongoose.Types.ObjectId(firmId),
+      userId: new mongoose.Types.ObjectId(userId),
+      firstName,
+      lastName,
+      clientContactNumber,
+      email: clientEmail,
+      clientType,
+      refrenceNumber,
+      type: clientType,
+      status: "Active",
+      createdBy: new mongoose.Types.ObjectId(userId),
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
 
     res.status(201).json({
       success: true,
@@ -112,9 +139,10 @@ export const deleteClient = async (
   next: NextFunction
 ) => {
   try {
-    const firmId = req.user.firmId;
-    console.log(firmId);
-    const response = await ActivityLog.find({ firmId: firmId });
+    const clientId = req.params.id;
+
+    console.log(clientId);
+    const response = await deleteClientService(clientId);
 
     res.status(201).json({
       success: true,

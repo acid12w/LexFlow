@@ -35,7 +35,7 @@ export function useGetMatterById(caseId: any) {
 interface newCaseDataPayload {
   _id?: string; // 👈 Made optional for new creations
   title: string;
-  description: string;
+  matterDescription: string;
   responsibleAttorney: string[];
   originatingAttorney: string[];
   responsibleStaff: string[];
@@ -47,12 +47,7 @@ interface newCaseDataPayload {
   endDate: Date;
   isBillable: boolean;
   billingAmount: number;
-  clientEmail: string;
-  clientContactNumber: string;
-  firstName: string;
-  lastName: string;
-  clientType: string;
-  refrenceNumber: string;
+  clientId: string;
 }
 
 export function useCreateMatters() {

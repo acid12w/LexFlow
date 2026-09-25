@@ -29,7 +29,6 @@ export const EventCard = ({
   id,
   description,
 }: EventCardProps) => {
-  console.log(title);
   return (
     <div className="px-2 ">
       <div

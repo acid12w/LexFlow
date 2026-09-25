@@ -17,7 +17,7 @@ const router = express.Router();
 router.get("/", protect, getAllClients);
 router.get("/:id", protect, getClient);
 router.get("/mile-stone/:id", getMilestone);
-router.post("/:id", protect, createClient);
+router.post("/", protect, createClient);
 router.patch("/:id", protect, updateClient);
 router.delete("/:id", protect, deleteClient);
 

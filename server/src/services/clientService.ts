@@ -61,3 +61,8 @@ export const updateClientService = async (data: any) => {
   const client = await Client.findByIdAndUpdate(data._id, data, { new: true });
   return client;
 };
+
+export const deleteClientService = async (clientId: any) => {
+  const client = await Client.findByIdAndDelete({ _id: clientId });
+  return client;
+};

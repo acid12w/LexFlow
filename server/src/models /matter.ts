@@ -8,15 +8,15 @@ export interface Matter extends Document {
   template: [];
   title: string;
   description: string;
-  responsibleAttorney: mongoose.Types.ObjectId[];
-  originatingAttorney: mongoose.Types.ObjectId[];
-  responsibleStaff: mongoose.Types.ObjectId[];
+  responsibleAttorney?: mongoose.Types.ObjectId[];
+  originatingAttorney?: mongoose.Types.ObjectId[];
+  responsibleStaff?: mongoose.Types.ObjectId[];
   status: string;
   taskCount: number;
   completedTaskCount: number;
   startDate: Date;
   endDate?: Date;
-  access: [];
+  allowAccess?: any[];
   priority: string;
   isBillable: true;
   billIsCollected: boolean;
@@ -105,9 +105,6 @@ const matterSchema: Schema = new Schema(
     isBillable: {
       type: Boolean,
       default: false,
-    },
-    access: {
-      type: String,
     },
     billingMethods: {
       type: String,

@@ -2,9 +2,7 @@
 
 import { Skeleton } from "@/components/ui/skeleton";
 import { DataKanban } from "@/features/tasks/data-kanban";
-import { Task, TaskStatus } from "@/features/tasks/types";
-import { useParams } from "next/navigation";
-import { useEffect } from "react";
+import { Task } from "@/features/tasks/types";
 
 const KanbanBoard = ({
   tasksData,
