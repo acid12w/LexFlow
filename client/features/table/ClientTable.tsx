@@ -92,7 +92,7 @@ export interface ActionComponentProps {
   rowData: ClientData;
   edit: () => void;
   isEditing: boolean;
-  taskId?: string | number;
+  clientId?: string | number | undefined;
 }
 
 // --- Editable Cell Component ---

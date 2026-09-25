@@ -39,7 +39,7 @@ import { cn } from "@/lib/utils";
 import { ActionDropdown } from "./actionBtnDropdown";
 import { useRemoveClient } from "@/hooks/useClientHook";
 
-export interface taskActionBtnProps {
+export interface ActionComponentProps {
   rowData?: any;
   edit?: (() => void) | undefined;
   isEditing?: boolean;
@@ -53,7 +53,7 @@ export function ClientActionBtn({
   isEditing = false,
   clientId,
   showEdit = false,
-}: taskActionBtnProps) {
+}: ActionComponentProps) {
   const [showNewDialog, setShowNewDialog] = useState(false);
   const [showShareDialog, setShowShareDialog] = useState(false);
 
@@ -67,6 +67,7 @@ export function ClientActionBtn({
   const { mutate: updateTask } = useUpdateTask();
 
   const handleDelete = () => {
+    if (!clientId) return;
     removeClient(clientId);
   };
 
