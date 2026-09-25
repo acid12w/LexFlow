@@ -137,12 +137,6 @@ export default function ClientForm({
                 >
                   <div className="flex justify-center">
                     <Avatar className="mr-4 h-10 w-10 shrink-0">
-                      {/* {client.avatarUrl && (
-                        <AvatarImage
-                          src={client.avatarUrl}
-                          alt={client.firstName}
-                        />
-                      )} */}
                       <AvatarFallback className="bg-primary/20 text-primary font-semibold text-xs">
                         {getInitials(client.firstName, client.lastName)}
                       </AvatarFallback>

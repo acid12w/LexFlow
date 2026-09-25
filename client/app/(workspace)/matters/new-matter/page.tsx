@@ -28,7 +28,6 @@ export default function MatterField() {
     firstName: "",
     lastName: "",
     refrenceNumber: "",
-    avatarUrl: "",
     selectedClientId: "",
   });
 
