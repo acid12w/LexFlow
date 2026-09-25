@@ -35,7 +35,7 @@ interface ClientFormProps {
   selectedClientId?: string;
 }
 
-export function ClientForm({
+export default function ClientForm({
   handleSelect,
   selectedClientId,
 }: ClientFormProps) {

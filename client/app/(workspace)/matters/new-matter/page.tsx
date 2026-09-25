@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 
-import { ClientForm } from "./clientForm/page";
+import ClientForm from "./clientForm/page";
 import MatterForm from "./matterForm/page";
 import { MatterSuccess } from "./success/page";
 
