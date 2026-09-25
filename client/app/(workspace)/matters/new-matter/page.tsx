@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 
 import ClientForm from "./clientForm/page";
 import MatterForm from "./matterForm/page";
-import { MatterSuccess } from "./success/page";
+import MatterSuccess from "./success/page";
 
 export interface ActiveClientState {
   id: string;
