@@ -150,10 +150,10 @@ export default function MatterField({
 
   async function onSubmit(values: z.infer<typeof matterSchema>) {
     try {
-      //   const response = await mutateAsync({
-      //     ...values,
-      //     clientId: activeClient.selectedClientId,
-      //   });
+      const response = await mutateAsync({
+        ...values,
+        clientId: activeClient.selectedClientId,
+      });
 
       onSuccess();
 
@@ -181,15 +181,18 @@ export default function MatterField({
               <div className="flex justify-center">
                 <Avatar className="mr-4 h-10 w-10 shrink-0">
                   <AvatarFallback className="bg-primary/20 text-primary font-semibold text-xs">
-                    {getInitials(activeClient.firstName, activeClient.lastName)}
+                    {getInitials(
+                      activeClient?.firstName,
+                      activeClient?.lastName
+                    )}
                   </AvatarFallback>
                 </Avatar>
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-semibold truncate">
-                    {activeClient.firstName} {activeClient.lastName ?? ""}
+                    {activeClient?.firstName} {activeClient?.lastName ?? ""}
                   </p>
                   <p className="text-xs text-muted-foreground truncate">
-                    Ref: {activeClient.refrenceNumber}
+                    Ref: {activeClient?.refrenceNumber}
                   </p>
                 </div>
               </div>

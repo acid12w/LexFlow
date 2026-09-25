@@ -9,10 +9,10 @@ export default function MatterSuccess() {
       <h4 className="text-4xl font-bold ">Matter Created successfully</h4>
       <p className="text-gray-500">Get started manging today</p>
       <div className="flex gap-x-6 mt-6">
-        <Link href="/">
+        <Link href="/matters">
           <Button>View matter</Button>
         </Link>
-        <Link href="/">
+        <Link href="/new-matter">
           <Button variant={"outline"}>Create Another matter</Button>
         </Link>
       </div>
