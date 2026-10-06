@@ -562,7 +562,120 @@ function RevenueBars({
   );
 }
 
-export default function AdminDashboard({
+export function UserDashboard({
+  data = defaultUserData,
+}: {
+  data?: UserDashboardData;
+}) {
+  return (
+    <DashboardShell
+      userName={data.userName}
+      roleLabel={data.roleLabel ?? "User"}
+    >
+      <DashboardHeading
+        name={data.userName}
+        subtitle="Here's what's happening with your work today."
+      />
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <StatCard
+          icon={BriefcaseBusiness}
+          label="My Matters"
+          value={data.stats.myMatters}
+          note="Active matters"
+        />
+        <StatCard
+          icon={ListTodo}
+          label="My Tasks"
+          value={data.stats.myTasks}
+          note="Total tasks"
+        />
+        <StatCard
+          icon={CalendarDays}
+          label="Due Soon"
+          value={data.stats.dueSoon}
+          note="Due this week"
+        />
+        <StatCard
+          icon={AlertCircle}
+          label="Overdue"
+          value={data.stats.overdue}
+          note="Past due"
+          danger
+        />
+      </div>
+
+      <div className="mt-4 grid gap-4 xl:grid-cols-[1.5fr_1fr]">
+        <Card>
+          <CardHeader icon={ListTodo} title="My Tasks" action={<ViewAll />} />
+          <div className="divide-y divide-slate-100">
+            {data.tasks.map((task) => (
+              <div key={task.id} className="flex items-center gap-3 px-5 py-4">
+                <input
+                  type="checkbox"
+                  className="h-4 w-4 rounded border-slate-300"
+                  defaultChecked={task.completed}
+                />
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-medium text-slate-800">
+                    {task.title}
+                  </p>
+                  <p className="mt-1 text-xs text-slate-400">
+                    {task.matter} · {task.priority} priority
+                  </p>
+                </div>
+                <span className="hidden text-xs text-slate-400 sm:block">
+                  {task.due}
+                </span>
+                <ChevronRight className="h-4 w-4 text-slate-300" />
+              </div>
+            ))}
+          </div>
+        </Card>
+
+        <Card>
+          <CardHeader
+            icon={Clock3}
+            title="Today's Time"
+            action={
+              <button className="rounded-lg bg-blue-600 px-3 py-2 text-xs font-medium text-white hover:bg-blue-700">
+                Start Timer
+              </button>
+            }
+          />
+          <div className="p-5">
+            <p className="text-3xl font-semibold text-slate-950">
+              {data.time.total}
+            </p>
+            <p className="mt-1 text-xs text-slate-400">Total logged today</p>
+            <div className="mt-5 grid grid-cols-2 gap-3">
+              <div className="rounded-lg bg-slate-50 p-3">
+                <p className="text-xs text-slate-400">Billable</p>
+                <p className="mt-1 font-semibold">{data.time.billable}</p>
+              </div>
+              <div className="rounded-lg bg-slate-50 p-3">
+                <p className="text-xs text-slate-400">Non-billable</p>
+                <p className="mt-1 font-semibold">{data.time.nonBillable}</p>
+              </div>
+            </div>
+            <p className="mt-5 text-xs font-medium text-slate-600">
+              Weekly Billable Hours
+            </p>
+            <WeeklyBars values={data.time.weeklyHours} />
+          </div>
+        </Card>
+      </div>
+
+      <div className="mt-4 grid gap-4 xl:grid-cols-2">
+        <MatterTable title="My Matters" matters={data.matters} />
+        <DeadlineList deadlines={data.deadlines} />
+      </div>
+
+      <ActivityCard activity={data.activity} />
+    </DashboardShell>
+  );
+}
+
+export function AdminDashboard({
   data = defaultAdminData,
 }: {
   data?: AdminDashboardData;
@@ -669,7 +782,41 @@ function DashboardShell({
 }) {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
-      <main className="">
+      <aside className="fixed inset-y-0 left-0 hidden w-56 bg-[#09213f] text-white lg:block">
+        <div className="flex h-16 items-center px-5 text-xl font-bold">
+          <span className="mr-2 grid h-7 w-7 place-items-center rounded-md bg-blue-500">
+            L
+          </span>
+          LexFlow
+        </div>
+        <nav className="space-y-1 px-3 py-4">
+          {[
+            "Dashboard",
+            "Matters",
+            "Clients",
+            "Tasks",
+            "Time Tracking",
+            "Billing",
+            "Documents",
+            "Firm Members",
+            "Settings",
+          ].map((item, i) => (
+            <button
+              key={item}
+              className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm ${
+                i === 0
+                  ? "bg-blue-600 text-white"
+                  : "text-slate-300 hover:bg-white/10"
+              }`}
+            >
+              <span className="h-2 w-2 rounded-full bg-current opacity-70" />
+              {item}
+            </button>
+          ))}
+        </nav>
+      </aside>
+
+      <main className="lg:pl-56">
         <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b border-slate-200 bg-white/95 px-4 backdrop-blur sm:px-6">
           <div className="relative max-w-xl flex-1">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />

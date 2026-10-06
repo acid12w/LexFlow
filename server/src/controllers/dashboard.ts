@@ -3,6 +3,8 @@ import Matter, { Matter as IMatterInterface } from "../models /matter.js";
 import FinancialSnapshotSchema from "#models /financialSnapshot.js";
 import mongoose from "mongoose";
 import { generateFinancialSnapshot } from "#services/financialSnapshotService.js";
+import { ActivityLog } from "#models /activeyLog.js";
+import Task from "#models /tasks.js";
 
 const statusConfig = {
   TODO: {
@@ -194,4 +196,24 @@ export const getRevenueTrend = async (
   });
 
   res.json(snapshots);
+};
+
+export const getUserDashboard = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const userId = req.user?.id;
+    const totalTasks = await Task.countDocuments({ _id: userId });
+
+    console.log(totalTasks);
+
+    return res.status(200).json({
+      success: true,
+      data: {},
+    });
+  } catch (err) {
+    next(err);
+  }
 };

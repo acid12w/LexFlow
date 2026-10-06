@@ -6,23 +6,25 @@ import {
   getClientByClientIdService,
   createClientService,
   deleteClientService,
+  getClientMatters,
 } from "#services/clientService.js";
 import mongoose from "mongoose";
 
-export const getClient = async (
+export const getClientDetails = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const firmId = req.user?.firmId;
-    const { id } = req.params;
+    const clientId = req.params.id;
 
-    const response = await getClientService(id, firmId);
+    const clientData = await getClientService(clientId);
+    const clientMatters = await getClientMatters(clientId);
 
     res.status(201).json({
       success: true,
-      data: response,
+      clientData,
+      clientMatters,
     });
   } catch (err) {
     next(err);
@@ -55,11 +57,10 @@ export const getMilestone = async (
 ) => {
   try {
     const firmId = req.user?.firmId;
-
     const clientId = req.params.id;
 
     const userData = await getClientByClientIdService(clientId);
-    const data = await getCaseByClientId(clientId, firmId);
+    const data = await getCaseByClientId(clientId);
 
     res.status(201).json({
       success: true,
@@ -120,7 +121,7 @@ export const updateClient = async (
   next: NextFunction
 ) => {
   try {
-    const firmId = req.user.firmId;
+    const firmId = req?.user?.firmId;
     console.log(firmId);
     const response = await ActivityLog.find({ firmId: firmId });
 

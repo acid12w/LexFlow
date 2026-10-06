@@ -34,7 +34,7 @@ const getTaskByFirmIdService = async (firmId: string, userId: string) => {
   return tasks;
 };
 
-const getTaskByCaseIdService = async (caseId: string, firmId: string) => {
+const getTaskByCaseIdService = async (caseId: string | undefined) => {
   return await Task.find({ matterId: caseId });
 };
 
@@ -50,6 +50,7 @@ const createTaskService = async (taskData: Partial<ITaskInterface>) => {
     title: taskData.title,
     description: taskData.description,
     eventType: taskData.eventType,
+    mileStone: taskData.mileStone,
     status: payload.status ?? taskData.status,
     priority: taskData.priority,
     assignedTo: taskData.assignedTo,

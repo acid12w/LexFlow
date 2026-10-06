@@ -7,22 +7,34 @@ export const createClientService = async (data: any) => {
   return client;
 };
 
-export const getClientService = async (clientEmail: string) => {
-  const client = await Client.findOne({ email: clientEmail });
+export const getClientService = async (clientId: string | string[]) => {
+  const client = await Client.findById({ _id: clientId });
   return client;
 };
 
-export const getClientByClientIdService = async (clientId: string) => {
+export const getClientByClientIdService = async (
+  clientId: string | string[]
+) => {
   const client = await Client.findOne({ _id: clientId });
   return client;
 };
 
-export const getAllClientsService = async (firmId: string) => {
+export const getAllClientsService = async (firmId: string | undefined) => {
   const client = await Client.find({ firmId });
   return client;
 };
 
-export const getCaseByClientId = async (clientId, firmId) => {
+export const getClientMatters = async (clientId: string | string[]) => {
+  const response = await Matter.find({
+    clientId,
+  }).lean();
+
+  return {
+    response,
+  };
+};
+
+export const getCaseByClientId = async (clientId) => {
   const matters = await Matter.find({
     clientId,
   }).lean();
@@ -51,6 +63,8 @@ export const getCaseByClientId = async (clientId, firmId) => {
   const response = matters.map((matter) => ({
     milestones: groupedMilestones[matter._id.toString()] ?? [],
   }));
+
+  console.log(response);
 
   return {
     response,

@@ -32,15 +32,7 @@ import {
 
 import { Separator } from "@/components/ui/separator";
 
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-} from "@/components/ui/dropdown-menu";
-
 import Image from "next/image";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
@@ -130,7 +122,7 @@ export function AppSidebar() {
                         "px-3 py-5 rounded-md text-sm font-medium transition-colors",
                         isActive
                           ? "bg-[#E2F1FF] text-[#0088FF] border-[#0088FF] border"
-                          : "text-muted-foreground hover:bg-[#E2F1FF] hover:text-[#0088FF]"
+                          : "text-[#1a1c1e] hover:bg-[#E2F1FF] hover:text-[#0088FF]"
                       )}
                     >
                       <a href={item.url}>

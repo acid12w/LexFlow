@@ -51,6 +51,14 @@ export function useGetAllClients() {
   return result;
 }
 
+export function useGetClientDetails(clientId: string) {
+  const result = useQuery({
+    queryKey: ["client"],
+    queryFn: () => clientService.getClientDetails(clientId),
+  });
+  return result;
+}
+
 export function useGetMilestone(clientId: string) {
   const result = useQuery({
     queryKey: ["clients"],

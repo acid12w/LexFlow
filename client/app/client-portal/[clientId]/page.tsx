@@ -91,7 +91,7 @@ const ClientProgressPage = () => {
                 {!isLast && (
                   <div
                     className={cn(
-                      "absolute top-3 left-[calc(50%+18px)] right-[-50%] h-[2px] -z-10 w-[140%]",
+                      "absolute top-3 left-[calc(50%+18px)] right-[-50%] h-4 -z-10 w-[140%]",
                       index < currentStepIndex ? "bg-green-600" : "bg-green-200"
                     )}
                   />

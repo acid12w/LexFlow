@@ -40,7 +40,7 @@ export const getTaskByCaseId = async (
     const caseId = String(req.params.id);
     const firmId = req.user?.firmId;
 
-    const response = await getTaskByCaseIdService(caseId, firmId);
+    const response = await getTaskByCaseIdService(caseId);
 
     res.status(201).json({
       success: true,

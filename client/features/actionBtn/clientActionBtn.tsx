@@ -1,43 +1,19 @@
 "use client";
 
 import { useContext, useState } from "react";
-import { ArrowUpIcon, Expand, MoreHorizontalIcon, Pencil } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
 import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 
 import { ModalContext } from "@/components/modal/providers";
-import { EditTaskForm } from "../tasks/editTaskForm";
-import { useRemoveTasks, useUpdateTask } from "@/hooks/task";
 
-import { PiMicrosoftExcelLogoFill } from "react-icons/pi";
-import { BsFileEarmarkWordFill } from "react-icons/bs";
-import { BsFillFileEarmarkPdfFill } from "react-icons/bs";
-import { ActionTab } from "./tab";
-import { Separator } from "@/components/ui/separator";
-import { cn } from "@/lib/utils";
+import { useUpdateTask } from "@/hooks/task";
+
 import { ActionDropdown } from "./actionBtnDropdown";
 import { useRemoveClient } from "@/hooks/useClientHook";
+import { useRouter } from "next/navigation";
 
 export interface ActionComponentProps {
   rowData?: any;
@@ -71,6 +47,9 @@ export function ClientActionBtn({
     removeClient(clientId);
   };
 
+  const router = useRouter();
+  console.log(rowData);
+
   const handleEditToggle = () => {
     if (isEditing) {
       updateTask(rowData);
@@ -90,7 +69,9 @@ export function ClientActionBtn({
         ) : (
           ""
         )}
-        <DropdownMenuItem onSelect={() => setShowShareDialog(true)}>
+        <DropdownMenuItem
+          onSelect={() => router.replace(`/clients/${rowData._id}`)}
+        >
           View details
         </DropdownMenuItem>
         <DropdownMenuItem onSelect={() => handleDelete()}>

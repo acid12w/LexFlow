@@ -16,6 +16,7 @@ import { initializeCronJobs } from "./cron/schedular.js";
 
 const app = express();
 const port = process.env.PORT ?? "8080";
+const WEB_APP_URL = process.env.fontsendUrl ?? "http://localhost:3000";
 
 // 1. Connect to Database
 connectDB();
@@ -26,7 +27,7 @@ app.use(cookieParser());
 
 const corsOptions = {
   // Replace with your actual Next.js URL
-  origin: "http://localhost:3000",
+  origin: WEB_APP_URL,
 
   // Required if you use Cookies or JWTs in headers
   credentials: true,
