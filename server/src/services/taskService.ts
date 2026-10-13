@@ -2,7 +2,7 @@ import mongoose, { FilterQuery } from "mongoose";
 import Task, { Task as ITaskInterface } from "../models /tasks.js";
 import { syncMatterHealth } from "./matterHealthService.js";
 
-const firmFilter = (firmId: string) => ({
+const firmFilter = (firmId: string | undefined) => ({
   firmId: new mongoose.Types.ObjectId(firmId),
 });
 
@@ -26,7 +26,10 @@ const syncHealthForTask = async (task: {
   }
 };
 
-const getTaskByFirmIdService = async (firmId: string, userId: string) => {
+const getTaskByFirmIdService = async (
+  firmId: string | undefined,
+  userId: string | undefined
+) => {
   const tasks = await Task.find({
     ...firmFilter(firmId),
     $or: [{ user: userId }, { assignedTo: userId }],
@@ -64,7 +67,10 @@ const createTaskService = async (taskData: Partial<ITaskInterface>) => {
   return newTask;
 };
 
-const removeTaskService = async (taskId: string, firmId: string) => {
+const removeTaskService = async (
+  taskId: string,
+  firmId: string | undefined
+) => {
   const task = await Task.findOne({ _id: taskId, ...firmFilter(firmId) });
   const deleted = await Task.findOneAndDelete({
     _id: taskId,
@@ -105,7 +111,7 @@ const updateTaskbyIdService = async (
 
 const bulkUpdateTasksService = async (
   updates: Array<Partial<ITaskInterface> & { _id: string }>,
-  firmId: string
+  firmId: string | undefined
 ) => {
   const bulkOps = updates.map((update) => {
     const { _id, firmId: _f, user: _u, matter, ...rest } = update;

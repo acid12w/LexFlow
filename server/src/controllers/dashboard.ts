@@ -5,6 +5,12 @@ import mongoose from "mongoose";
 import { generateFinancialSnapshot } from "#services/financialSnapshotService.js";
 import { ActivityLog } from "#models /activeyLog.js";
 import Task from "#models /tasks.js";
+import { getTaskByFirmIdService } from "#services/taskService.js";
+import { getMatterByUserIdService } from "#services/matterService.js";
+import {
+  getTimeTrackerdService,
+  getTimeTrackerSnapshot,
+} from "#services/timeTrackerService.js";
 
 const statusConfig = {
   TODO: {
@@ -189,7 +195,7 @@ export const getRevenueTrend = async (
   next: NextFunction
 ) => {
   const snapshots = await FinancialSnapshotSchema.find({
-    firmId: req.user.firmId,
+    firmId: req.user?.firmId,
   }).sort({
     year: 1,
     month: 1,
@@ -205,13 +211,29 @@ export const getUserDashboard = async (
 ) => {
   try {
     const userId = req.user?.id;
-    const totalTasks = await Task.countDocuments({ _id: userId });
+    const firmId = req.user?.firmId;
+    const totalTasks = await Task.countDocuments({ user: userId });
+    const TasksData = await getTaskByFirmIdService(firmId, userId);
 
-    console.log(totalTasks);
+    const totalMatters = await Matter.countDocuments({ userId: userId });
+    const matterData = await getMatterByUserIdService(firmId, userId);
+
+    const activityData = await ActivityLog.find({ userId: userId });
+
+    const timeData = await getTimeTrackerSnapshot(userId, firmId);
+
+    console.log(timeData);
 
     return res.status(200).json({
       success: true,
-      data: {},
+      data: {
+        totalTasks,
+        TasksData,
+        totalMatters,
+        matterData,
+        activityData,
+        timeData,
+      },
     });
   } catch (err) {
     next(err);

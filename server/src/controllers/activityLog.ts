@@ -19,16 +19,13 @@ export const getUserActivity = async (
     //recent activity
     //tasks
 
-    const tasks = await getTaskByCaseIdService(userId);
-    const totalCount = await db.collection('yourCollectionName').estimatedDocumentCount();
-    const .count();
-
-
-
+    // const tasks = await getTaskByCaseIdService(userId);
+    // const totalCount = await db.collection('yourCollectionName').estimatedDocumentCount();
+    // const .count();
 
     res.status(201).json({
       success: true,
-      data: {tasks:{tasks, t }},
+      // data: { tasks: { tasks, t } },
     });
   } catch (err) {
     next(err);
@@ -41,7 +38,7 @@ export const getFirmActivity = async (
   next: NextFunction
 ) => {
   try {
-    const firmId = req.user.firmId;
+    const firmId = req.user?.firmId;
 
     const response = await ActivityLog.find({ firmId: firmId });
 

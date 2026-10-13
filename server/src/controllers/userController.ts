@@ -401,7 +401,7 @@ export const updateUser = async (
   next: NextFunction
 ) => {
   const data = req.body;
-  const { id } = req.user;
+  const id = req.user?.id;
 
   try {
     const response = await updateUserProfile(data, id);

@@ -6,6 +6,7 @@ export interface TimeTracker extends Document {
   firmId: mongoose.Types.ObjectId;
   description: string;
   duration: number;
+  isBillable: boolean;
   eventType: string;
   date: Date;
 }
@@ -33,6 +34,10 @@ const timeTrackerSchema: Schema = new Schema({
   duration: {
     type: String,
     required: true,
+  },
+  isBillable: {
+    type: String,
+    default: true,
   },
   eventType: {
     type: String,

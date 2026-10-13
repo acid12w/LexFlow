@@ -71,6 +71,29 @@ export const getTimeTrackerByUserId = async (
   }
 };
 
+export const getTimeTrackerSnapshot = async (
+  req: ProtectedRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const userId = req.user?.id;
+    const firmId = req.user?.firmId;
+    if (!userId || !firmId) {
+      return res.status(401).json({ message: "Not authorized" });
+    }
+
+    const response = await getTimeTrackerByIdService(userId, firmId);
+
+    res.status(201).json({
+      success: true,
+      data: response,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 export const updateTimeTrackerById = async (
   req: ProtectedRequest,
   res: Response,

@@ -6,7 +6,7 @@ import {
 } from "./matterHealthService.js";
 import Task from "#models /tasks.js";
 
-const firmFilter = (firmId: string) => ({
+const firmFilter = (firmId: string | undefined) => ({
   firmId: new mongoose.Types.ObjectId(firmId),
 });
 
@@ -20,7 +20,10 @@ const stripComputedMatterFields = (data: Record<string, unknown>) => {
   return safe;
 };
 
-const getAllMattersService = async (firmId, userId) => {
+const getAllMattersService = async (
+  firmId: string | undefined,
+  userId: string | undefined
+) => {
   await syncMatterHealthForFirm(firmId);
 
   const matters = await Matter.find({
@@ -49,14 +52,20 @@ const getAllMattersService = async (firmId, userId) => {
   return matters;
 };
 
-const getMatterByUserIdService = async (firmId: string, userId: string) => {
+const getMatterByUserIdService = async (
+  firmId: string | undefined,
+  userId: string | undefined
+) => {
   return await Matter.find({
     ...firmFilter(firmId),
     $or: [{ userId }, { assignedTo: userId }],
   } as FilterQuery<IMatterInterface>);
 };
 
-const getMatterByIdService = async (firmId: string, caseId: string) => {
+const getMatterByIdService = async (
+  firmId: string | undefined,
+  caseId: string | string[]
+) => {
   return await Matter.findOne({
     ...firmFilter(firmId),
     _id: caseId,
@@ -90,7 +99,10 @@ const createMatterService = async (data: Partial<IMatterInterface>) => {
   return newMatter;
 };
 
-const removeMatterService = async (matterId: string, firmId: string) => {
+const removeMatterService = async (
+  matterId: string | undefined,
+  firmId: string | undefined
+) => {
   // 1. Delete tasks linked to this matter (using the matter's foreign key)
   const taskResult = await Task.deleteMany({ matterId: matterId });
   console.log(taskResult);
@@ -103,8 +115,8 @@ const removeMatterService = async (matterId: string, firmId: string) => {
 };
 
 const updateMatterbyIdService = async (
-  caseId: string,
-  firmId: string,
+  caseId: string | undefined,
+  firmId: string | undefined,
   updateData: Partial<IMatterInterface>
 ) => {
   const safeUpdate = stripComputedMatterFields(

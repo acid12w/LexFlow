@@ -7,6 +7,7 @@ import {
   getTotalRevenue,
   getCollectedRevenue,
   getRevenueTrend,
+  getUserDashboard,
 } from "../controllers/dashboard.js";
 
 const router = express.Router();
@@ -15,6 +16,6 @@ const router = express.Router();
 router.get("/cases-overview", protect, getCasesOverview);
 router.get("/revenue-total", protect, getTotalRevenue);
 router.get("/revenue-collected", protect, getCollectedRevenue);
-router.get("/revenue-snapshot", protect, getRevenueTrend);
+router.get("/revenue-snapshot", protect, getUserDashboard);
 
 export default router;

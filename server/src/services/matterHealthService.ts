@@ -75,13 +75,13 @@ export async function syncMatterHealth(
   );
 }
 
-export async function syncMatterHealthByTaskId(taskId: string) {
+export async function syncMatterHealthByTaskId(taskId: string | undefined) {
   const task = await Task.findById(taskId).select("matter").lean();
   if (!task?.matterId) return null;
   return syncMatterHealth(task.matterId);
 }
 
-export async function syncMatterHealthForFirm(firmId: string) {
+export async function syncMatterHealthForFirm(firmId: string | undefined) {
   const matters = await Matter.find({
     firmId: new mongoose.Types.ObjectId(firmId),
   }).select("_id");

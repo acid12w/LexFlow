@@ -121,14 +121,6 @@ export const updateClient = async (
   next: NextFunction
 ) => {
   try {
-    const firmId = req?.user?.firmId;
-    console.log(firmId);
-    const response = await ActivityLog.find({ firmId: firmId });
-
-    res.status(201).json({
-      success: true,
-      data: response,
-    });
   } catch (err) {
     next(err);
   }
