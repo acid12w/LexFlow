@@ -6,7 +6,10 @@ import { generateFinancialSnapshot } from "#services/financialSnapshotService.js
 import { ActivityLog } from "#models /activeyLog.js";
 import Task from "#models /tasks.js";
 import { getTaskByFirmIdService } from "#services/taskService.js";
-import { getMatterByUserIdService } from "#services/matterService.js";
+import {
+  getMatterByUserIdService,
+  getMattersDueSoon,
+} from "#services/matterService.js";
 import {
   getTimeTrackerdService,
   getTimeTrackerSnapshot,
@@ -217,12 +220,11 @@ export const getUserDashboard = async (
 
     const totalMatters = await Matter.countDocuments({ userId: userId });
     const matterData = await getMatterByUserIdService(firmId, userId);
+    const matterDueDate = await getMattersDueSoon(firmId, userId);
 
     const activityData = await ActivityLog.find({ userId: userId });
 
     const timeData = await getTimeTrackerSnapshot(userId, firmId);
-
-    console.log(timeData);
 
     return res.status(200).json({
       success: true,
@@ -233,6 +235,7 @@ export const getUserDashboard = async (
         matterData,
         activityData,
         timeData,
+        matterDueDate,
       },
     });
   } catch (err) {

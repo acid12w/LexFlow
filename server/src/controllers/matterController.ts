@@ -160,12 +160,6 @@ export const addMatter = async (
         ).map((id) => new mongoose.Types.ObjectId(id))
       : [];
 
-    const clientExists = await getClientService(clientEmail);
-
-    if (clientExists) {
-      return res.status(404).json({ message: "Client already exsits" });
-    }
-
     const client = await getClientByClientIdService(clientId);
 
     const data = await createMatterService({

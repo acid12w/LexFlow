@@ -164,6 +164,73 @@ const bulkUpdateMattersService = async (
   return await Matter.bulkWrite(bulkOps, { ordered: false });
 };
 
+const getMattersDueSoon = async (
+  firmId: string | undefined,
+  userId?: string | undefined
+) => {
+  if (!firmId) {
+    throw new Error("firmId is required to fetch upcoming matters.");
+  }
+
+  // 1. Get the start of today (midnight) matching your helper function logic
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  // 2. Build the standard base match query
+  const matchQuery: Record<string, any> = {
+    firmId: new mongoose.Types.ObjectId(firmId),
+    endDate: { $exists: true, $ne: null }, // Ensure endDate exists
+  };
+
+  if (userId) {
+    matchQuery.userId = new mongoose.Types.ObjectId(userId);
+  }
+
+  // 3. Define the Aggregation Pipeline using $expr for date math
+  const pipeline = [
+    {
+      $match: {
+        ...matchQuery,
+        $expr: {
+          $lt: [
+            {
+              $floor: {
+                $divide: [
+                  { $subtract: ["$endDate", today] }, // Difference in milliseconds
+                  1000 * 60 * 60 * 24, // Milliseconds in a day
+                ],
+              },
+            },
+            5, // getDaysBetweenDates < 5
+          ],
+        },
+      },
+    },
+    // Optional: Attach 'daysLeft' to the returned documents so you can easily display it in UI
+    {
+      $addFields: {
+        daysLeft: {
+          $floor: {
+            $divide: [{ $subtract: ["$endDate", today] }, 1000 * 60 * 60 * 24],
+          },
+        },
+      },
+    },
+    // Sort by closest deadline first
+    {
+      $sort: {
+        endDate: 1,
+      },
+    },
+  ];
+
+  // 4. Execute aggregation on the Matter model
+  const MatterModel = mongoose.models.Matter || mongoose.model("Matter");
+  const results = await MatterModel.aggregate(pipeline);
+
+  return results;
+};
+
 export {
   getAllMattersService,
   getMatterByUserIdService,
@@ -172,4 +239,5 @@ export {
   removeMatterService,
   updateMatterbyIdService,
   bulkUpdateMattersService,
+  getMattersDueSoon,
 };
