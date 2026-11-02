@@ -1,7 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import mongoose from "mongoose";
 import { ActivityLog } from "#models /activeyLog.js";
-import { getTaskByCaseIdService } from "#services/taskService.js";
 
 export const getUserActivity = async (
   req: Request,
@@ -9,9 +7,14 @@ export const getUserActivity = async (
   next: NextFunction
 ) => {
   try {
-    const userId = req?.user?.id;
+    const userId = req.user?.id;
+    if (!userId) {
+      return res.status(401).json({ message: "Not authorized" });
+    }
 
-    const response = await ActivityLog.find({ userId: userId });
+    const response = await ActivityLog.find({ userId: userId }).sort({
+      createdAt: -1,
+    });
 
     //total stats amount of time wored for the day
     //matter: matters along with total
@@ -19,13 +22,9 @@ export const getUserActivity = async (
     //recent activity
     //tasks
 
-    // const tasks = await getTaskByCaseIdService(userId);
-    // const totalCount = await db.collection('yourCollectionName').estimatedDocumentCount();
-    // const .count();
-
-    res.status(201).json({
+    res.status(200).json({
       success: true,
-      // data: { tasks: { tasks, t } },
+      data: response,
     });
   } catch (err) {
     next(err);
@@ -39,10 +38,15 @@ export const getFirmActivity = async (
 ) => {
   try {
     const firmId = req.user?.firmId;
+    if (!firmId) {
+      return res.status(401).json({ message: "Not authorized" });
+    }
 
-    const response = await ActivityLog.find({ firmId: firmId });
+    const response = await ActivityLog.find({ firmId: firmId }).sort({
+      createdAt: -1,
+    });
 
-    res.status(201).json({
+    res.status(200).json({
       success: true,
       data: response,
     });

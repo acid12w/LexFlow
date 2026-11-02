@@ -1,6 +1,7 @@
 // components/LexFlowDashboard.tsx
 "use client";
 
+import { useGetSnapShot } from "@/hooks/useDashboardHook";
 import { cn } from "@/lib/utils";
 import {
   AlertCircle,
@@ -320,21 +321,38 @@ function StatCard({
   );
 }
 
-function WeeklyBars({ values }: { values: number[] }) {
-  const max = Math.max(...values, 1);
+function WeeklyBars({ values }: { values: any[] }) {
+  // Extract durations to find the max value safely
+  const durations = values.map((item) => {
+    const value = Object.values(item)[0]; // handles your { tues: 5673 } structure
+    return typeof value === "number" ? value : 0;
+  });
+
+  const max = Math.max(...durations, 1);
+  const maxHeightPx = 80; // Maximum height of the tallest bar in pixels
+
   return (
-    <div className="mt-5 flex h-28 items-end gap-2">
-      {values.map((value, index) => (
-        <div key={index} className="flex flex-1 flex-col items-center gap-1">
-          <div
-            className="w-full rounded-t bg-blue-500/80"
-            style={{ height: `${Math.max(4, (value / max) * 80)}%` }}
-          />
-          <span className="text-[9px] text-slate-400">
-            {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"][index]}
-          </span>
-        </div>
-      ))}
+    <div className="mt-5 flex items-end gap-2">
+      {values.map((item, index) => {
+        const entries = Object.entries(item);
+        const dayName = entries[0] ? entries[0][0] : "";
+        const duration = entries[0] ? (entries[0][1] as number) : 0;
+
+        const shortDay = dayName.slice(0, 3);
+
+        // Calculate height in pixels instead of percentage
+        const calculatedHeight = Math.max(4, (duration / max) * maxHeightPx);
+
+        return (
+          <div key={index} className="flex flex-1 flex-col items-center gap-1">
+            <div
+              className="w-full rounded-t bg-blue-500 transition-all duration-300"
+              style={{ height: `${calculatedHeight}px` }}
+            />
+            <span className="text-[9px] text-slate-400">{shortDay}</span>
+          </div>
+        );
+      })}
     </div>
   );
 }
@@ -344,6 +362,38 @@ export default function UserDashboard({
 }: {
   data?: UserDashboardData;
 }) {
+  const { data: dashboardData, isError, isLoading } = useGetSnapShot();
+
+  if (isLoading) {
+    return <p>loading...</p>;
+  }
+
+  const totalTasks = dashboardData?.data.data.totalTasks;
+  const TasksData = dashboardData?.data.data.TasksData;
+  const totalMatters = dashboardData?.data.data.totalMatters;
+  const matterData = dashboardData?.data.data.matterData;
+  const activityData = dashboardData?.data.data.activityData;
+  const timeData = dashboardData?.data.data.timeData;
+  const matterDueDate = dashboardData?.data.data.matterDueDate;
+
+  const weeklytime = timeData.dailyBreakdown.map((timeDate) => {
+    const dateString = timeDate.date;
+
+    const [year, month, day] = dateString.split("-").map(Number);
+    // Note: Month is 0-indexed in JS dates (0 = January, 9 = October)
+    const dateObj = new Date(year, month - 1, day);
+
+    const dayofTheWeek = dateObj.toLocaleDateString("en-US", {
+      weekday: "long",
+    });
+
+    return {
+      [dayofTheWeek]: timeDate.totalDuration,
+    };
+  });
+
+  console.log(TasksData);
+
   return (
     <DashboardShell
       userName={data.userName}
@@ -357,13 +407,13 @@ export default function UserDashboard({
         <StatCard
           icon={BriefcaseBusiness}
           label="My Matters"
-          value={data.stats.myMatters}
+          value={totalMatters}
           note="Active matters"
         />
         <StatCard
           icon={ListTodo}
           label="My Tasks"
-          value={data.stats.myTasks}
+          value={totalTasks}
           note="Total tasks"
         />
         <StatCard
@@ -385,23 +435,23 @@ export default function UserDashboard({
         <Card>
           <CardHeader icon={ListTodo} title="My Tasks" action={<ViewAll />} />
           <div className="divide-y divide-slate-100">
-            {data.tasks.map((task) => (
-              <div key={task.id} className="flex items-center gap-3 px-5 py-4">
+            {TasksData.map((task, index) => (
+              <div key={index} className="flex items-center gap-3 px-5 py-4">
                 <input
                   type="checkbox"
                   className="h-4 w-4 rounded border-slate-300"
-                  defaultChecked={task.completed}
+                  defaultChecked={task.status}
                 />
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-medium text-slate-800">
                     {task.title}
                   </p>
                   <p className="mt-1 text-xs text-slate-400">
-                    {task.matter} · {task.priority} priority
+                    {task.priority} priority
                   </p>
                 </div>
                 <span className="hidden text-xs text-slate-400 sm:block">
-                  {task.due}
+                  {task.endDate}
                 </span>
                 <ChevronRight className="h-4 w-4 text-slate-300" />
               </div>
@@ -421,33 +471,37 @@ export default function UserDashboard({
           />
           <div className="p-5">
             <p className="text-3xl font-semibold text-slate-950">
-              {data.time.total}
+              {timeData.summary.grandTotal}
             </p>
             <p className="mt-1 text-xs text-slate-400">Total logged today</p>
             <div className="mt-5 grid grid-cols-2 gap-3">
               <div className="rounded-lg bg-slate-50 p-3">
                 <p className="text-xs text-slate-400">Billable</p>
-                <p className="mt-1 font-semibold">{data.time.billable}</p>
+                <p className="mt-1 font-semibold">
+                  {timeData.summary.totalBillable}
+                </p>
               </div>
               <div className="rounded-lg bg-slate-50 p-3">
                 <p className="text-xs text-slate-400">Non-billable</p>
-                <p className="mt-1 font-semibold">{data.time.nonBillable}</p>
+                <p className="mt-1 font-semibold">
+                  {timeData.summary.totalNonBillable}
+                </p>
               </div>
             </div>
             <p className="mt-5 text-xs font-medium text-slate-600">
               Weekly Billable Hours
             </p>
-            <WeeklyBars values={data.time.weeklyHours} />
+            <WeeklyBars values={weeklytime} />
           </div>
         </Card>
       </div>
 
       <div className="mt-4 grid gap-4 xl:grid-cols-2">
-        <MatterTable title="My Matters" matters={data.matters} />
-        <DeadlineList deadlines={data.deadlines} />
+        <MatterTable title="My Matters" matters={matterData} />
+        <DeadlineList deadlines={TasksData} />
       </div>
 
-      <ActivityCard activity={data.activity} />
+      <ActivityCard activity={activityData} />
     </DashboardShell>
   );
 }
@@ -490,13 +544,7 @@ function DashboardHeading({
   );
 }
 
-function MatterTable({
-  title,
-  matters,
-}: {
-  title: string;
-  matters: UserDashboardData["matters"];
-}) {
+function MatterTable({ title, matters }: { title: string; matters: any[] }) {
   return (
     <Card>
       <CardHeader icon={BriefcaseBusiness} title={title} action={<ViewAll />} />
@@ -511,8 +559,8 @@ function MatterTable({
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
-            {matters.map((m) => (
-              <tr key={m.id} className="hover:bg-slate-50">
+            {matters.map((m, index) => (
+              <tr key={index} className="hover:bg-slate-50">
                 <td className="px-5 py-3 font-medium">{m.title}</td>
                 <td className="px-3 py-3 text-slate-500">{m.client}</td>
                 <td className="px-3 py-3">
@@ -528,11 +576,7 @@ function MatterTable({
   );
 }
 
-function DeadlineList({
-  deadlines,
-}: {
-  deadlines: UserDashboardData["deadlines"];
-}) {
+function DeadlineList({ deadlines }: { deadlines: any[] }) {
   return (
     <Card>
       <CardHeader
@@ -545,7 +589,7 @@ function DeadlineList({
           const islast = index === deadlines.length - 1;
           return (
             <div
-              key={d.id}
+              key={index}
               className="flex items-center gap-3 px-5 py-4 relative"
             >
               <div
@@ -580,26 +624,29 @@ function ActivityCard({
   activity,
   title = "Recent Activity",
 }: {
-  activity: UserDashboardData["activity"];
+  activity: any[];
   title?: string;
 }) {
+  enum activityType {
+    TASK_MGMT = "TASK_MGMT",
+  }
+  const ActivityIconMap: Record<activityType, React.ReactNode> = {
+    [activityType.TASK_MGMT]: (
+      <ScrollText className="size-[40px] rounded-full bg-amber-100 text-amber-400 p-2" />
+    ),
+  };
+
   return (
     <Card className="mt-4">
       <CardHeader icon={Activity} title={title} action={<ViewAll />} />
       <div className="divide-y divide-slate-100">
         {activity.map((a, index) => {
+          const icon = ActivityIconMap[a.category];
           const islast = index === activity.length - 1;
           return (
-            <div key={a.id} className="flex gap-3 px-5 py-4 ">
+            <div key={index} className="flex gap-3 px-5 py-4 ">
               <div className="relative">
-                <a.Icon
-                  className={cn("h-10 w-10 p-2 rounded-full", {
-                    " text-blue-500 bg-blue-100": a?.type === "task",
-                    "bg-[#E4C2FF] text-[#860ee8]": a?.type === "matter",
-                    "bg-[#fff4d3] text-[#e49101]": a?.type === "userActivity",
-                    "bg-[#e3e5e4] text-[#5d5d5d]": a?.type === "time",
-                  })}
-                />
+                {icon}
                 {!islast && (
                   <div
                     className={cn(
@@ -610,10 +657,10 @@ function ActivityCard({
               </div>
 
               <div className="flex-1">
-                <p className="text-sm font-medium">{a.text}</p>
-                <p className="text-xs text-slate-400">{a.detail}</p>
+                {/* <p className="text-sm font-medium">{a.metadata.actionTitle}</p> */}
+                <p className="text-xs text-slate-400">{a.description}</p>
               </div>
-              <span className="text-xs text-slate-400">{a.time}</span>
+              <span className="text-xs text-slate-400">{a.createdAt}</span>
             </div>
           );
         })}

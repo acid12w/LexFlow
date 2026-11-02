@@ -4,6 +4,7 @@ import {
   createTimeTrackerService,
   deleteTimeTrackerByIdService,
   getTimeTrackerByIdService,
+  getTimeTrackerSnapshot as getTimeTrackerSnapshotService,
   updateTimeTrackerByIdService,
 } from "#services/timeTrackerService.js";
 import { ProtectedRequest } from "../types/express.js";
@@ -13,7 +14,7 @@ export const createTimeTracker = async (
   req: ProtectedRequest,
   res: Response,
   next: NextFunction
-) => {
+) => { 
   try {
     const firmId = req.user?.firmId;
     const userId = req.user?.id;
@@ -33,10 +34,10 @@ export const createTimeTracker = async (
       firmId: firmId,
       userName: userName,
       category: "TIME_TRACKER_MGMT",
-      description: "completed task 'Draft Operating Agreement' for case",
+      description: "Created time entry",
       metadata: {
-        taskId: response?._id,
-        taskTitle: response?.title,
+        actionId: response._id,
+        actionTitle: response.description,
       },
     });
     res.status(201).json({
@@ -62,7 +63,7 @@ export const getTimeTrackerByUserId = async (
 
     const response = await getTimeTrackerByIdService(userId, firmId);
 
-    res.status(201).json({
+    res.status(200).json({
       success: true,
       data: response,
     });
@@ -83,9 +84,9 @@ export const getTimeTrackerSnapshot = async (
       return res.status(401).json({ message: "Not authorized" });
     }
 
-    const response = await getTimeTrackerByIdService(userId, firmId);
+    const response = await getTimeTrackerSnapshotService(userId, firmId);
 
-    res.status(201).json({
+    res.status(200).json({
       success: true,
       data: response,
     });
@@ -103,28 +104,32 @@ export const updateTimeTrackerById = async (
     const firmId = req.user?.firmId;
     const userId = req.user?.id;
     const userName = req.user?.userName;
-    if (!firmId) {
+    if (!firmId || !userId) {
       return res.status(401).json({ message: "Not authorized" });
     }
 
     const response = await updateTimeTrackerByIdService(
       String(req.params.id),
       firmId,
+      userId,
       req.body
     );
+    if (!response) {
+      return res.status(404).json({ message: "Time entry not found" });
+    }
 
     await createLog({
       userId: userId,
       firmId: firmId,
       userName: userName,
       category: "TIME_TRACKER_MGMT",
-      description: "completed task 'Draft Operating Agreement' for case",
+      description: "Updated time entry",
       metadata: {
-        taskId: task._id,
-        taskTitle: task.title,
+        actionId: response._id,
+        actionTitle: response.description,
       },
     });
-    res.status(201).json({
+    res.status(200).json({
       success: true,
       data: response,
     });
@@ -142,27 +147,31 @@ export const deleteTimeTrackerById = async (
     const firmId = req.user?.firmId;
     const userId = req.user?.id;
     const userName = req.user?.userName;
-    if (!firmId) {
+    if (!firmId || !userId) {
       return res.status(401).json({ message: "Not authorized" });
     }
 
     const response = await deleteTimeTrackerByIdService(
       String(req.params.id),
-      firmId
+      firmId,
+      userId
     );
+    if (!response) {
+      return res.status(404).json({ message: "Time entry not found" });
+    }
 
     await createLog({
       userId: userId,
       firmId: firmId,
       userName: userName,
       category: "TIME_TRACKER_MGMT",
-      description: "Deleted time stamp",
+      description: "Deleted time entry",
       metadata: {
-        taskId: response?._id,
-        taskTitle: response?.title,
+        actionId: response._id,
+        actionTitle: response.description,
       },
     });
-    res.status(201).json({
+    res.status(200).json({
       success: true,
       data: response,
     });

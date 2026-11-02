@@ -14,11 +14,20 @@ import {
 import { createFirm, getFirmById } from "../services/firmService.js";
 import { ProtectedRequest } from "../types/express.js";
 import crypto from "crypto";
-import { Resend } from "resend";
 import FirmInvitation from "../models /FirmInvitation.js";
 import Firm from "#models /firm.js";
 
-const resend = new Resend("re_Xi4vGP3M_P7wciGkbS7MxNdwaguzR7vsk");
+// Fields a user may never set on themselves through the profile update
+const PROTECTED_USER_FIELDS = [
+  "_id",
+  "password",
+  "role",
+  "firmId",
+  "status",
+  "emailVerified",
+  "verificationToken",
+  "verificationTokenExpires",
+];
 
 const signToken = (
   userId: string,
@@ -31,12 +40,17 @@ const signToken = (
       ...(firmId ? { firmId } : {}),
       userName,
     },
-    process.env.JWT_SECRET || "privatekey",
+    process.env.JWT_SECRET!,
     { expiresIn: "1h" }
   );
 
 const formatUserResponse = (user: InstanceType<typeof User>) => {
-  const userObj = user.toObject();
+  const {
+    password: _password,
+    verificationToken: _verificationToken,
+    verificationTokenExpires: _verificationTokenExpires,
+    ...userObj
+  } = user.toObject();
   return {
     ...userObj,
     firmId: user.firmId?.toString(),
@@ -52,13 +66,18 @@ export const createFirmAccount = async (
     const body = req.body?.data ?? req.body;
 
     const userId = req.user?.id;
+    if (!userId) {
+      return res.status(401).json({ message: "Not authorized" });
+    }
 
     const { name, practiceAreas, workspace, country } = body;
+    if (!name || typeof name !== "string") {
+      return res.status(400).json({ error: "Firm name is required" });
+    }
 
     const existingFirm = await Firm.findOne({
       name,
     });
-    console.log(req.user);
 
     if (existingFirm) {
       return res.status(400).json({
@@ -89,7 +108,7 @@ export const createFirmAccount = async (
     });
 
     user.firmId = firm._id;
-    user.save();
+    await user.save();
 
     const token = signToken(
       user._id.toString(),
@@ -122,13 +141,15 @@ export const createUsers = async (
 
     const { userName, password, profile } = body;
 
-    if (!userName || !password || !profile?.email) {
+    if (
+      typeof userName !== "string" ||
+      typeof password !== "string" ||
+      typeof profile?.email !== "string"
+    ) {
       return res.status(400).json({ error: "Missing required sign-up fields" });
     }
 
     const existingUser = await User.findOne({ userName });
-
-    console.log(existingUser);
 
     if (existingUser) {
       return res.status(400).json({ error: "Username is already taken" });
@@ -153,11 +174,7 @@ export const createUsers = async (
       },
     });
 
-    const token = signToken(
-      newUser._id.toString(),
-      (newUser.firmId = undefined),
-      newUser.userName.toString()
-    );
+    const token = signToken(newUser._id.toString(), null, newUser.userName);
 
     res.cookie("token", token, {
       httpOnly: true,
@@ -168,7 +185,7 @@ export const createUsers = async (
 
     res.status(201).json({
       token,
-      user: newUser.toObject(),
+      user: formatUserResponse(newUser),
     });
   } catch (error) {
     next(error);
@@ -185,8 +202,16 @@ export const addUser = async (
     const verificationToken = crypto.randomBytes(32).toString("hex");
 
     const { userName, password, role, profile } = body;
+    const firmId = req.user?.firmId;
+    if (!firmId) {
+      return res.status(401).json({ message: "Not authorized" });
+    }
 
-    if (!userName || !password || !profile?.email) {
+    if (
+      typeof userName !== "string" ||
+      typeof password !== "string" ||
+      typeof profile?.email !== "string"
+    ) {
       return res.status(400).json({ error: "Missing required sign-up fields" });
     }
 
@@ -202,11 +227,7 @@ export const addUser = async (
       return res.status(400).json({ error: "Email is already registered" });
     }
 
-    const firmId = req.user?.firmId;
-
     const existingFrim = await Firm.findOne({ _id: firmId });
-
-    console.log(existingFrim);
 
     if (!existingFrim) {
       return res.status(400).json({ error: "Firm does not exist" });
@@ -224,6 +245,9 @@ export const addUser = async (
       verificationToken,
     });
 
+    // Save the user first so a failed save doesn't leave an orphaned invitation
+    const savedUser = await newUser.save();
+
     await FirmInvitation.create({
       firmName: existingFrim.name,
       firmId: firmId,
@@ -236,23 +260,10 @@ export const addUser = async (
       expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     });
 
-    const savedUser = await newUser.save();
-    const token = signToken(
-      savedUser._id.toString(),
-      savedUser.firmId.toString(),
-      savedUser.userName.toString()
-    );
-
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 3600000,
-    });
-
+    // No token/cookie here: the admin adding the user must stay signed in as
+    // themselves. The new user signs in via the invitation.
     res.status(201).json({
-      token,
-      user: savedUser.toObject(),
+      user: formatUserResponse(savedUser),
     });
   } catch (error) {
     next(error);
@@ -265,18 +276,20 @@ export const login = async (
   next: NextFunction
 ) => {
   try {
-    const { userName, password } = req.body;
+    const { userName, password } = req.body ?? {};
+
+    if (typeof userName !== "string" || typeof password !== "string") {
+      return res
+        .status(400)
+        .json({ error: "Username and password are required" });
+    }
 
     const user = await User.findOne({ userName }).select("+password");
 
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    const isMatch = await bcrypt.compare(password, user.password);
-
-    if (!isMatch) {
-      return res.status(401).json({ error: "Invalid password" });
+    // Same response for unknown user and wrong password, so usernames
+    // can't be enumerated
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+      return res.status(401).json({ error: "Invalid username or password" });
     }
 
     const token = signToken(
@@ -347,7 +360,12 @@ export const getFirmInvitation = async (
 ) => {
   try {
     const { id: invitationId } = req.params;
-    const response = await FirmInvitation.findOne({ token: invitationId });
+    const response = await FirmInvitation.findOne({
+      token: String(invitationId),
+    });
+    if (!response) {
+      return res.status(404).json({ message: "Invitation not found" });
+    }
 
     res.status(200).json({
       message: "Successful",
@@ -363,7 +381,10 @@ export const getUser = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { id } = req.user;
+  const id = req.user?.id;
+  if (!id) {
+    return res.status(401).json({ message: "Not authorized" });
+  }
 
   try {
     const response = await getUserService(id);
@@ -382,9 +403,34 @@ export const deleteUser = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { id } = req.params;
+  const id = String(req.params.id);
+  const requesterId = req.user?.id;
+  const firmId = req.user?.firmId;
+  if (!requesterId || !firmId) {
+    return res.status(401).json({ message: "Not authorized" });
+  }
 
   try {
+    const requester = await User.findById(requesterId).select("role firmId");
+    if (!requester || String(requester.firmId) !== firmId) {
+      return res.status(401).json({ message: "Not authorized" });
+    }
+    if (requester.role !== "Admin") {
+      return res
+        .status(403)
+        .json({ message: "Only admins can remove team members" });
+    }
+    if (id === requesterId) {
+      return res.status(400).json({ message: "You cannot remove yourself" });
+    }
+
+    const target = mongoose.Types.ObjectId.isValid(id)
+      ? await User.findOne({ _id: id, firmId }).select("_id")
+      : null;
+    if (!target) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
     await deleteUserProfile(id);
 
     res.status(200).json({
@@ -400,8 +446,18 @@ export const updateUser = async (
   res: Response,
   next: NextFunction
 ) => {
-  const data = req.body;
   const id = req.user?.id;
+  if (!id) {
+    return res.status(401).json({ message: "Not authorized" });
+  }
+  if (!req.body || typeof req.body !== "object") {
+    return res.status(400).json({ message: "No update data provided" });
+  }
+
+  const data = { ...req.body };
+  for (const field of PROTECTED_USER_FIELDS) {
+    delete data[field];
+  }
 
   try {
     const response = await updateUserProfile(data, id);
@@ -437,30 +493,44 @@ export const getAssignees = async (
   }
 };
 
-export const verifyEmail = async (req: Request, res: Response) => {
-  const { token } = req.body;
+export const verifyEmail = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { token } = req.body ?? {};
 
-  const user = await User.findOne({
-    verificationToken: token,
-  });
-
-  if (!user) {
+  if (typeof token !== "string" || !token) {
     return res.status(400).json({
       message: "Invalid or expired token",
     });
   }
 
-  user.emailVerified = true;
+  try {
+    const user = await User.findOne({
+      verificationToken: token,
+    });
 
-  user.verificationToken = undefined;
+    if (!user) {
+      return res.status(400).json({
+        message: "Invalid or expired token",
+      });
+    }
 
-  user.verificationTokenExpires = undefined;
+    user.emailVerified = true;
 
-  await user.save();
+    user.verificationToken = undefined;
 
-  res.status(200).json({
-    message: "Email verified successfully",
-  });
+    user.verificationTokenExpires = undefined;
+
+    await user.save();
+
+    res.status(200).json({
+      message: "Email verified successfully",
+    });
+  } catch (err) {
+    next(err);
+  }
 };
 
 export const joinFirm = async (
@@ -472,7 +542,7 @@ export const joinFirm = async (
     const { token } = req.params;
     const { userName, password } = req.body;
 
-    if (!token || !userName || !password) {
+    if (!token || typeof userName !== "string" || typeof password !== "string") {
       return res.status(400).json({
         error: "Missing required fields",
       });
@@ -518,7 +588,6 @@ export const joinFirm = async (
 
     // Optional if these were already assigned by the admin
     user.role = invitation.role;
-    user.workspaceIds = invitation.workspaceIds;
 
     user.emailVerified = true;
     user.status = "ACTIVE";
@@ -530,13 +599,13 @@ export const joinFirm = async (
 
     await invitation.save();
 
-    const jwt = signToken(
+    const authToken = signToken(
       user._id.toString(),
       user.firmId.toString(),
       user.userName
     );
 
-    res.cookie("token", jwt, {
+    res.cookie("token", authToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
@@ -584,12 +653,17 @@ export const getTeamMember = async (
   res: Response,
   next: NextFunction
 ) => {
+  const firmId = req.user?.firmId;
+  if (!firmId) {
+    return res.status(401).json({ message: "Not authorized" });
+  }
+
   try {
     const members = await User.find({
-      firmId: req.user?.firmId,
+      firmId,
       // _id: { $ne: req.user?.id },
     })
-      .select("-password -verificationToken")
+      .select("-password -verificationToken -verificationTokenExpires")
       .lean();
 
     res.status(200).json(members);

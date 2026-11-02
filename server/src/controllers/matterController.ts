@@ -49,9 +49,12 @@ export const getAllMatters = async (
     const firmId = req.user?.firmId;
 
     const userId = req.user?.id;
+    if (!firmId) {
+      return res.status(401).json({ message: "Not authorized" });
+    }
 
     const response = await getAllMattersService(firmId, userId);
-    res.status(201).json({
+    res.status(200).json({
       success: true,
       data: response,
     });
@@ -74,7 +77,7 @@ export const getMatterByUserId = async (
 
     const response = await getMatterByUserIdService(firmId, userId);
 
-    res.status(201).json({
+    res.status(200).json({
       success: true,
       data: response,
     });
@@ -97,8 +100,11 @@ export const getMatterbyId = async (
     }
 
     const response = await getMatterByIdService(firmId, caseId);
+    if (!response) {
+      return res.status(404).json({ message: "Matter not found" });
+    }
 
-    res.status(201).json({
+    res.status(200).json({
       success: true,
       data: response,
     });
@@ -115,6 +121,9 @@ export const addMatter = async (
   try {
     const userId = req.user?.id;
     const firmId = req.user?.firmId;
+    if (!firmId || !userId) {
+      return res.status(401).json({ message: "Not authorized" });
+    }
 
     // await createLog({
     //   userId: userId,
@@ -160,7 +169,12 @@ export const addMatter = async (
         ).map((id) => new mongoose.Types.ObjectId(id))
       : [];
 
-    const client = await getClientByClientIdService(clientId);
+    const client = clientId
+      ? await getClientByClientIdService(clientId)
+      : null;
+    if (clientId && (!client || String(client.firmId) !== firmId)) {
+      return res.status(404).json({ message: "Client not found" });
+    }
 
     const data = await createMatterService({
       firmId: new mongoose.Types.ObjectId(firmId),
@@ -201,22 +215,28 @@ export const removeMatter = async (
     const firmId = req.user?.firmId;
     const userId = req.user?.id;
     const userName = req.user?.userName;
+    if (!firmId || !userId) {
+      return res.status(401).json({ message: "Not authorized" });
+    }
 
     const response = await removeMatterService(matterId, firmId);
+    if (!response) {
+      return res.status(404).json({ message: "Matter not found" });
+    }
 
     await createLog({
       userId: userId,
       firmId: firmId,
       userName: userName,
-      category: "TASK_MGMT",
-      description: "Case was deleted ",
+      category: "CASE_MGMT",
+      description: "Case was deleted",
       metadata: {
-        // actionId: taskData._id,
-        // actionTitle: taskData.title,
+        actionId: response._id,
+        actionTitle: response.title,
       },
     });
 
-    res.status(201).json({
+    res.status(200).json({
       success: true,
       data: response,
     });
@@ -235,9 +255,17 @@ export const updateMatterbyId = async (
     const firmId = req.user?.firmId;
     const userId = req.user?.id;
     const userName = req.user?.userName;
-    const { data } = req.body;
-    if (!firmId) {
+    const { data } = req.body ?? {};
+    if (!firmId || !userId) {
       return res.status(401).json({ message: "Not authorized" });
+    }
+    if (!data || typeof data !== "object") {
+      return res.status(400).json({ message: "No update data provided" });
+    }
+
+    const response = await updateMatterbyIdService(caseId, firmId, data);
+    if (!response) {
+      return res.status(404).json({ message: "Matter not found" });
     }
 
     await createLog({
@@ -247,14 +275,12 @@ export const updateMatterbyId = async (
       category: "CASE_MGMT",
       description: "updated case",
       metadata: {
-        taskId: data._id,
-        taskTitle: data.title,
+        actionId: response._id,
+        actionTitle: response.title,
       },
     });
 
-    const response = await updateMatterbyIdService(caseId, firmId, data);
-
-    res.status(201).json({
+    res.status(200).json({
       success: true,
       data: response,
     });
@@ -273,8 +299,11 @@ export const bulkupdateMatter = async (
     const firmId = req.user?.firmId;
     const userId = req.user?.id;
     const userName = req.user?.userName;
-    if (!firmId) {
+    if (!firmId || !userId) {
       return res.status(401).json({ message: "Not authorized" });
+    }
+    if (!Array.isArray(updates) || updates.length === 0) {
+      return res.status(400).json({ message: "No updates provided" });
     }
 
     const response = await bulkUpdateMattersService(updates, firmId);
@@ -284,14 +313,11 @@ export const bulkupdateMatter = async (
       firmId: firmId,
       userName: userName,
       category: "CASE_MGMT",
-      description: "updated cases ",
-      metadata: {
-        taskId: task._id,
-        taskTitle: task.title,
-      },
+      description: "updated cases",
+      metadata: {},
     });
 
-    res.status(201).json({
+    res.status(200).json({
       success: true,
       data: response,
     });

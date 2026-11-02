@@ -19,10 +19,13 @@ export const getTaskById = async (
   try {
     const firmId = req.user?.firmId;
     const userId = req.user?.id;
+    if (!firmId || !userId) {
+      return res.status(401).json({ message: "Not authorized" });
+    }
 
     const response = await getTaskByFirmIdService(firmId, userId);
 
-    res.status(201).json({
+    res.status(200).json({
       success: true,
       data: response,
     });
@@ -39,10 +42,13 @@ export const getTaskByCaseId = async (
   try {
     const caseId = String(req.params.id);
     const firmId = req.user?.firmId;
+    if (!firmId) {
+      return res.status(401).json({ message: "Not authorized" });
+    }
 
-    const response = await getTaskByCaseIdService(caseId);
+    const response = await getTaskByCaseIdService(caseId, firmId);
 
-    res.status(201).json({
+    res.status(200).json({
       success: true,
       data: response,
     });
@@ -60,6 +66,9 @@ export const addTask = async (
     const userId = req.user?.id;
     const firmId = req.user?.firmId;
     const userName = req.user?.userName;
+    if (!firmId || !userId) {
+      return res.status(401).json({ message: "Not authorized" });
+    }
 
     const taskData = req.body;
     taskData.user = userId;
@@ -75,8 +84,8 @@ export const addTask = async (
       category: "TASK_MGMT",
       description: "New task created",
       metadata: {
-        actionId: taskData._id,
-        actionTitle: taskData.title,
+        actionId: task._id,
+        actionTitle: task.title,
       },
     });
 
@@ -99,8 +108,14 @@ export const removeTask = async (
     const firmId = req.user?.firmId;
     const userId = req.user?.id;
     const userName = req.user?.userName;
+    if (!firmId || !userId) {
+      return res.status(401).json({ message: "Not authorized" });
+    }
 
     const response = await removeTaskService(taskId, firmId);
+    if (!response) {
+      return res.status(404).json({ message: "Task not found" });
+    }
 
     await createLog({
       userId: userId,
@@ -109,12 +124,12 @@ export const removeTask = async (
       category: "TASK_MGMT",
       description: "A task was deleted",
       metadata: {
-        actionId: response?._id,
-        actionTitle: response?.title,
+        actionId: response._id,
+        actionTitle: response.title,
       },
     });
 
-    res.status(201).json({
+    res.status(200).json({
       success: true,
       data: response,
     });
@@ -134,12 +149,15 @@ export const updateTaskbyId = async (
   const userId = req.user?.id;
   const userName = req.user?.userName;
 
-  if (!firmId) {
+  if (!firmId || !userId) {
     return res.status(401).json({ message: "Not authorized" });
   }
 
   try {
     const response = await updateTaskbyIdService(taskId, firmId, data);
+    if (!response) {
+      return res.status(404).json({ message: "Task not found" });
+    }
 
     await createLog({
       userId: userId,
@@ -148,12 +166,12 @@ export const updateTaskbyId = async (
       category: "TASK_MGMT",
       description: "A task was updated",
       metadata: {
-        actionId: response?._id,
-        actionTitle: response?.title,
+        actionId: response._id,
+        actionTitle: response.title,
       },
     });
 
-    res.status(201).json({
+    res.status(200).json({
       success: true,
       data: response,
     });
@@ -172,6 +190,9 @@ export const bulkupdateTask = async (
     const firmId = req.user?.firmId;
     const userId = req.user?.id;
     const userName = req.user?.userName;
+    if (!firmId || !userId) {
+      return res.status(401).json({ message: "Not authorized" });
+    }
 
     if (!Array.isArray(updates) || updates.length === 0) {
       return res.status(400).json({ message: "No updates provided" });
@@ -184,7 +205,7 @@ export const bulkupdateTask = async (
       firmId: firmId,
       userName: userName,
       category: "TASK_MGMT",
-      description: "A task was updated",
+      description: "Tasks were bulk updated",
       metadata: {},
     });
 
@@ -194,6 +215,6 @@ export const bulkupdateTask = async (
       modifiedCount: result.modifiedCount,
     });
   } catch (err) {
-    res.status(500).json({ error: (err as Error).message });
+    next(err);
   }
 };

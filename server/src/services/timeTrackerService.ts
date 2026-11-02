@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { PipelineStage } from "mongoose";
 import TimeTracker, {
   TimeTracker as ItimeTrackerInterface,
 } from "../models /timeTracker.js";
@@ -17,20 +17,25 @@ export const getTimeTrackerByIdService = async (
   userId: string,
   firmId: string
 ) => {
-  return await TimeTracker.find({ user: userId, ...firmFilter(firmId) });
+  return await TimeTracker.find({
+    user: new mongoose.Types.ObjectId(userId),
+    ...firmFilter(firmId),
+  });
 };
 
 export const getTimeTrackerdService = async (
   userId: string | undefined,
   firmId: string | undefined
 ): Promise<number> => {
+  if (!userId || !firmId) return 0;
+
   const result = await TimeTracker.collection
     .aggregate([
       // 1. Filter for the specified user and firm
       {
         $match: {
-          userId,
-          firmId,
+          user: new mongoose.Types.ObjectId(userId),
+          ...firmFilter(firmId),
         },
       },
       // 2. Convert "HH:MM:SS" into total seconds per document
@@ -59,7 +64,7 @@ export const getTimeTrackerdService = async (
       // 3. Sum total seconds across all matched documents
       {
         $group: {
-          _id: "$userId",
+          _id: "$user",
           totalSeconds: { $sum: "$seconds" },
         },
       },
@@ -73,6 +78,7 @@ export const getTimeTrackerdService = async (
 export const updateTimeTrackerByIdService = async (
   id: string,
   firmId: string,
+  userId: string,
   timeTrackerData: Partial<ItimeTrackerInterface>
 ) => {
   const {
@@ -82,20 +88,27 @@ export const updateTimeTrackerByIdService = async (
   } = timeTrackerData as Record<string, unknown>;
 
   return await TimeTracker.findOneAndUpdate(
-    { _id: id, ...firmFilter(firmId) },
+    {
+      _id: id,
+      user: new mongoose.Types.ObjectId(userId),
+      ...firmFilter(firmId),
+    },
     safeUpdate,
-    { new: true }
+    { new: true, runValidators: true }
   );
 };
 
 export const deleteTimeTrackerByIdService = async (
   id: string,
-  firmId: string
+  firmId: string,
+  userId: string
 ) => {
-  return await TimeTracker.findOneAndDelete({ _id: id, firmId });
+  return await TimeTracker.findOneAndDelete({
+    _id: id,
+    user: new mongoose.Types.ObjectId(userId),
+    ...firmFilter(firmId),
+  });
 };
-
-import mongoose from "mongoose";
 
 export const getTimeTrackerSnapshot = async (
   userId: string | undefined,
@@ -131,11 +144,8 @@ export const getTimeTrackerSnapshot = async (
     matchQuery.user = new mongoose.Types.ObjectId(userId);
   }
 
-  const TimeTrackerModel =
-    mongoose.models.TimeTracker || mongoose.model("TimeTracker");
-
   // 3. Define Pipeline with Duration String Parsing
-  const pipeline = [
+  const pipeline: PipelineStage[] = [
     { $match: matchQuery },
     {
       $addFields: {
@@ -218,7 +228,7 @@ export const getTimeTrackerSnapshot = async (
     },
   ];
 
-  const result = await TimeTrackerModel.aggregate(pipeline);
+  const result = await TimeTracker.aggregate(pipeline);
 
   return (
     result[0] || {

@@ -39,3 +39,11 @@ export function useGetSnapShot() {
   });
   return result;
 }
+
+export function useGetFirmDashboard() {
+  const result = useQuery({
+    queryKey: ["firmDashboard"],
+    queryFn: () => api.get(`dashboard/firm`),
+  });
+  return result;
+}

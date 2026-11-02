@@ -19,10 +19,10 @@ const applyTaskStatusSideEffects = (
 };
 
 const syncHealthForTask = async (task: {
-  matter?: mongoose.Types.ObjectId | null;
+  matterId?: mongoose.Types.ObjectId | null;
 }) => {
-  if (task?.matter) {
-    await syncMatterHealth(task.matter);
+  if (task?.matterId) {
+    await syncMatterHealth(task.matterId);
   }
 };
 
@@ -37,8 +37,11 @@ const getTaskByFirmIdService = async (
   return tasks;
 };
 
-const getTaskByCaseIdService = async (caseId: string | undefined) => {
-  return await Task.find({ matterId: caseId });
+const getTaskByCaseIdService = async (
+  caseId: string | undefined,
+  firmId: string | undefined
+) => {
+  return await Task.find({ matterId: caseId, ...firmFilter(firmId) });
 };
 
 const createTaskService = async (taskData: Partial<ITaskInterface>) => {
@@ -54,10 +57,10 @@ const createTaskService = async (taskData: Partial<ITaskInterface>) => {
     description: taskData.description,
     eventType: taskData.eventType,
     mileStone: taskData.mileStone,
-    status: payload.status ?? taskData.status,
+    status: (payload.status ?? taskData.status) as ITaskInterface["status"],
     priority: taskData.priority,
     assignedTo: taskData.assignedTo,
-    completedAt: payload.completedAt,
+    completedAt: payload.completedAt as ITaskInterface["completedAt"],
     assignedBy: taskData.assignedBy,
     startDate: taskData.startDate,
     endDate: taskData.endDate,
@@ -76,8 +79,8 @@ const removeTaskService = async (
     _id: taskId,
     ...firmFilter(firmId),
   });
-  if (task?.matter) {
-    await syncMatterHealth(task.matter);
+  if (task?.matterId) {
+    await syncMatterHealth(task.matterId);
   }
   return deleted;
 };
@@ -114,7 +117,7 @@ const bulkUpdateTasksService = async (
   firmId: string | undefined
 ) => {
   const bulkOps = updates.map((update) => {
-    const { _id, firmId: _f, user: _u, matter, ...rest } = update;
+    const { _id, firmId: _f, user: _u, ...rest } = update;
     const safeUpdate = applyTaskStatusSideEffects(
       rest as Record<string, unknown>
     );
@@ -131,11 +134,11 @@ const bulkUpdateTasksService = async (
 
   const matterIds = new Set<string>();
   for (const update of updates) {
-    if (update.matter) {
-      matterIds.add(String(update.matter));
+    if (update.matterId) {
+      matterIds.add(String(update.matterId));
     } else if (update._id) {
-      const task = await Task.findById(update._id).select("matter").lean();
-      if (task?.matter) matterIds.add(String(task.matter));
+      const task = await Task.findById(update._id).select("matterId").lean();
+      if (task?.matterId) matterIds.add(String(task.matterId));
     }
   }
 

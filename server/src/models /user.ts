@@ -20,8 +20,9 @@ export interface IUser extends Document {
   firmId: mongoose.Types.ObjectId;
   lastLogin: Date;
   status: string;
-  verificationToken: string;
-  verificationTokenExpires: Date;
+  emailVerified: boolean;
+  verificationToken?: string;
+  verificationTokenExpires?: Date;
   profile: {
     firstName: string;
     lastName: string;
@@ -67,6 +68,7 @@ const UserSchema: Schema = new Schema<IUser, UserModel, IUserMethods>({
     // required: [true, "firm is required"],
     index: true,
   },
+  emailVerified: { type: Boolean, default: false },
   verificationToken: { type: String },
   verificationTokenExpires: {
     type: Date,

@@ -27,6 +27,8 @@ export interface Matter extends Document {
   // taskList: mongoose.Types.ObjectId[];
   practiceArea: string;
   assignedTo: [];
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 // 2. The Matter Schema

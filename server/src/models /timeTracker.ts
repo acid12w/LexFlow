@@ -2,10 +2,10 @@ import mongoose, { Schema, Document } from "mongoose";
 
 export interface TimeTracker extends Document {
   user: mongoose.Types.ObjectId;
-  matter: mongoose.Types.ObjectId;
+  matter: string;
   firmId: mongoose.Types.ObjectId;
   description: string;
-  duration: number;
+  duration: string; // "HH:MM:SS"
   isBillable: boolean;
   eventType: string;
   date: Date;
@@ -36,7 +36,7 @@ const timeTrackerSchema: Schema = new Schema({
     required: true,
   },
   isBillable: {
-    type: String,
+    type: Boolean,
     default: true,
   },
   eventType: {

@@ -103,15 +103,18 @@ const removeMatterService = async (
   matterId: string | undefined,
   firmId: string | undefined
 ) => {
-  // 1. Delete tasks linked to this matter (using the matter's foreign key)
-  const taskResult = await Task.deleteMany({ matterId: matterId });
-  console.log(taskResult);
-
-  // 2. Delete the matter and return the document as it existed BEFORE deletion
-  return await Matter.findOneAndDelete(
-    { _id: matterId, firmId: firmId }, // Security: ensure it belongs to the firm
+  // 1. Delete the matter first, scoped to the firm, so another firm's tasks
+  //    can't be wiped by guessing a matter id
+  const matter = await Matter.findOneAndDelete(
+    { _id: matterId, firmId: firmId },
     { returnDocument: "before" }
   );
+  if (!matter) return null;
+
+  // 2. Delete tasks linked to this matter (using the matter's foreign key)
+  await Task.deleteMany({ matterId: matter._id });
+
+  return matter;
 };
 
 const updateMatterbyIdService = async (

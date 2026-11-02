@@ -16,7 +16,7 @@ const router = express.Router();
 // GET /api/v1/matters
 router.get("/", protect, getAllClients);
 router.get("/:id", protect, getClientDetails);
-router.get("/mile-stone/:id", getMilestone);
+router.get("/mile-stone/:id", protect, getMilestone);
 router.post("/", protect, createClient);
 router.patch("/:id", protect, updateClient);
 router.delete("/:id", protect, deleteClient);

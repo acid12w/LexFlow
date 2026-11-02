@@ -13,7 +13,7 @@ interface InviteUserParams {
   role: string;
 }
 
-const createUser = async (data: string[]) => {
+const createUser = async (data: Record<string, unknown>) => {
   return await User.create(data);
 };
 

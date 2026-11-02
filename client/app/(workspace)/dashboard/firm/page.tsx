@@ -1,6 +1,7 @@
 // components/LexFlowDashboard.tsx
 "use client";
 
+import { useGetFirmDashboard } from "@/hooks/useDashboardHook";
 import {
   AlertCircle,
   ArrowRight,
@@ -255,162 +256,6 @@ const defaultUserData: UserDashboardData = {
   ],
 };
 
-const defaultAdminData: AdminDashboardData = {
-  userName: "Adrian",
-  stats: {
-    activeMatters: 48,
-    clients: 73,
-    openTasks: 126,
-    revenueBilled: "$425,000",
-  },
-  matterHealth: [
-    { label: "In Progress", value: 24 },
-    { label: "In Review", value: 8 },
-    { label: "At Risk", value: 5 },
-    { label: "Not Started", value: 7 },
-    { label: "Completed", value: 4 },
-  ],
-  revenue: {
-    billed: "$425,000",
-    collected: "$343,000",
-    outstanding: "$82,000",
-    months: [
-      { label: "Jan", collected: 55, outstanding: 22 },
-      { label: "Feb", collected: 63, outstanding: 28 },
-      { label: "Mar", collected: 72, outstanding: 25 },
-      { label: "Apr", collected: 68, outstanding: 31 },
-      { label: "May", collected: 78, outstanding: 27 },
-      { label: "Jun", collected: 88, outstanding: 35 },
-    ],
-  },
-  workload: [
-    {
-      name: "John Smith",
-      initials: "JS",
-      matters: 12,
-      tasks: 32,
-      hours: "28h",
-    },
-    { name: "Jane Doe", initials: "JD", matters: 8, tasks: 24, hours: "21h" },
-    {
-      name: "Mark Brown",
-      initials: "MB",
-      matters: 15,
-      tasks: 41,
-      hours: "34h",
-    },
-    { name: "Sarah Lee", initials: "SL", matters: 6, tasks: 18, hours: "19h" },
-  ],
-  taskStatus: [
-    { label: "Completed", value: 72 },
-    { label: "In Progress", value: 31 },
-    { label: "Not Started", value: 14 },
-    { label: "Overdue", value: 9 },
-  ],
-  matters: [
-    {
-      id: "1",
-      title: "Smith v. Jones",
-      client: "John Smith",
-      status: "In Progress",
-      due: "Sep 12",
-    },
-    {
-      id: "2",
-      title: "Anderson Estate",
-      client: "Mary Anderson",
-      status: "At Risk",
-      due: "Sep 15",
-    },
-    {
-      id: "3",
-      title: "Brown Contract",
-      client: "Brown Ltd.",
-      status: "Not Started",
-      due: "Sep 21",
-    },
-    {
-      id: "4",
-      title: "Williams Divorce",
-      client: "Patricia Williams",
-      status: "In Review",
-      due: "Sep 28",
-    },
-    {
-      id: "5",
-      title: "Robinson Litigation",
-      client: "Charles Robinson",
-      status: "In Progress",
-      due: "Oct 05",
-    },
-  ],
-  deadlines: [
-    {
-      id: "1",
-      title: "Review client documents",
-      matter: "Smith v. Jones",
-      date: "Today",
-      urgent: true,
-    },
-    {
-      id: "2",
-      title: "File motion",
-      matter: "Anderson Estate",
-      date: "Wed, Sep 04",
-    },
-    {
-      id: "3",
-      title: "Client meeting",
-      matter: "Brown Contract",
-      date: "Fri, Sep 06",
-    },
-    {
-      id: "4",
-      title: "Prepare trial brief",
-      matter: "Williams Divorce",
-      date: "Tue, Sep 10",
-    },
-    {
-      id: "5",
-      title: "Court filing",
-      matter: "Robinson Litigation",
-      date: "Fri, Sep 12",
-    },
-  ],
-  activity: [
-    {
-      id: "1",
-      text: "John Smith completed a task",
-      detail: "Review contract · Smith v. Jones",
-      time: "10 minutes ago",
-    },
-    {
-      id: "2",
-      text: "Jane Doe completed 4 tasks",
-      detail: "Anderson Estate",
-      time: "32 minutes ago",
-    },
-    {
-      id: "3",
-      text: "New client added",
-      detail: "Brown Ltd.",
-      time: "1 hour ago",
-    },
-    {
-      id: "4",
-      text: "Mark Brown logged 3h 20m",
-      detail: "Contract Review",
-      time: "2 hours ago",
-    },
-    {
-      id: "5",
-      text: "Sarah Lee uploaded a document",
-      detail: "Williams Divorce",
-      time: "3 hours ago",
-    },
-  ],
-};
-
 function Card({
   children,
   className = "",
@@ -562,11 +407,22 @@ function RevenueBars({
   );
 }
 
-export default function AdminDashboard({
-  data = defaultAdminData,
-}: {
-  data?: AdminDashboardData;
-}) {
+export default function AdminDashboard() {
+  const { data: response, isError, isLoading } = useGetFirmDashboard();
+  const data: AdminDashboardData | undefined = response?.data.data;
+
+  if (isLoading) {
+    return <p className="p-6 text-sm text-slate-500">Loading dashboard...</p>;
+  }
+
+  if (isError || !data) {
+    return (
+      <p className="p-6 text-sm text-red-600">
+        Couldn&apos;t load the firm dashboard. Please try again.
+      </p>
+    );
+  }
+
   return (
     <DashboardShell userName={data.userName} roleLabel="Admin">
       <DashboardHeading
@@ -578,25 +434,25 @@ export default function AdminDashboard({
           icon={BriefcaseBusiness}
           label="Active Matters"
           value={data.stats.activeMatters}
-          note="+12% from last month"
+          note="Not yet completed"
         />
         <StatCard
           icon={Users}
           label="Clients"
           value={data.stats.clients}
-          note="+8% from last month"
+          note="All clients"
         />
         <StatCard
           icon={ListTodo}
           label="Open Tasks"
           value={data.stats.openTasks}
-          note="+6% from last month"
+          note="Across the firm"
         />
         <StatCard
           icon={Wallet}
           label="Total Revenue (Billed)"
           value={data.stats.revenueBilled}
-          note="+18% from last month"
+          note="All matters"
         />
       </div>
 
@@ -818,8 +674,31 @@ function ActivityCard({
   );
 }
 
+const MATTER_HEALTH_COLORS: Record<string, string> = {
+  "In Progress": "#3b82f6",
+  "In Review": "#8b5cf6",
+  "At Risk": "#ef4444",
+  "Not Started": "#cbd5e1",
+  Completed: "#22c55e",
+};
+
 function MatterHealth({ data }: { data: AdminDashboardData["matterHealth"] }) {
   const total = data.reduce((sum, item) => sum + item.value, 0);
+  const atRisk = data.find((item) => item.label === "At Risk")?.value ?? 0;
+
+  let angle = 0;
+  const segments = data
+    .filter((item) => item.value > 0)
+    .map((item) => {
+      const start = angle;
+      angle += (item.value / total) * 360;
+      const color = MATTER_HEALTH_COLORS[item.label] ?? "#94a3b8";
+      return `${color} ${start}deg ${angle}deg`;
+    });
+  const background = segments.length
+    ? `conic-gradient(${segments.join(", ")})`
+    : "#e2e8f0";
+
   return (
     <Card>
       <CardHeader
@@ -831,30 +710,36 @@ function MatterHealth({ data }: { data: AdminDashboardData["matterHealth"] }) {
         <div className="flex items-center gap-6">
           <div
             className="relative grid h-40 w-40 shrink-0 place-items-center rounded-full"
-            style={{
-              background: `conic-gradient(#22c55e 0deg 180deg, #3b82f6 180deg 240deg, #f59e0b 240deg 277deg, #cbd5e1 277deg 330deg, #8b5cf6 330deg 360deg)`,
-            }}
+            style={{ background }}
           >
             <div className="grid h-24 w-24 place-items-center rounded-full bg-white">
               <div className="text-center">
                 <p className="text-2xl font-semibold">{total}</p>
-                <p className="text-[10px] text-slate-400">Active Matters</p>
+                <p className="text-[10px] text-slate-400">Matters</p>
               </div>
             </div>
           </div>
           <div className="space-y-3">
             {data.map((item) => (
               <div key={item.label} className="flex items-center gap-2 text-xs">
-                <span className="h-2 w-2 rounded-full bg-blue-500" />
+                <span
+                  className="h-2 w-2 rounded-full"
+                  style={{
+                    background: MATTER_HEALTH_COLORS[item.label] ?? "#94a3b8",
+                  }}
+                />
                 <span className="w-20 text-slate-500">{item.label}</span>
                 <strong>{item.value}</strong>
               </div>
             ))}
           </div>
         </div>
-        <div className="mt-5 rounded-lg bg-red-50 px-3 py-2 text-xs font-medium text-red-600">
-          ⚠ 5 matters require attention · View at-risk matters →
-        </div>
+        {atRisk > 0 && (
+          <div className="mt-5 rounded-lg bg-red-50 px-3 py-2 text-xs font-medium text-red-600">
+            ⚠ {atRisk} {atRisk === 1 ? "matter requires" : "matters require"}{" "}
+            attention · View at-risk matters →
+          </div>
+        )}
       </div>
     </Card>
   );
@@ -922,7 +807,7 @@ function TaskStatus({ data }: { data: AdminDashboardData["taskStatus"] }) {
                   i
                 ]
               }`}
-              style={{ width: `${(item.value / total) * 100}%` }}
+              style={{ width: `${total ? (item.value / total) * 100 : 0}%` }}
             />
           ))}
         </div>

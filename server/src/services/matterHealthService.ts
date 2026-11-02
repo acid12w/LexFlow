@@ -66,7 +66,7 @@ export async function syncMatterHealth(
 
   const tasks = await Task.find({ matterId: id }).select("status").lean();
   const { status, taskCount, completedTaskCount } =
-    computeMatterHealthFromTasks(tasks, matter.dueDate);
+    computeMatterHealthFromTasks(tasks, matter.endDate);
 
   return Matter.findByIdAndUpdate(
     id,
