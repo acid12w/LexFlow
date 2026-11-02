@@ -24,7 +24,7 @@ const getUserByFirmId = async (Id: any) => {
   return await User.find({ firmId: Id });
 };
 
-const getUserService = async (id) => {
+const getUserService = async (id: string) => {
   try {
     return await User.findById({ _id: id });
   } catch (error) {
@@ -33,10 +33,12 @@ const getUserService = async (id) => {
   }
 };
 
-const getUsersProfile = async (userIds) => {
+const getUsersProfile = async (userIds: Array<string | { _id: string }>) => {
   try {
     // 1. Extract IDs if they are objects, or use directly if strings
-    const ids = userIds.map((user) => user._id || user);
+    const ids = userIds.map((user) =>
+      typeof user === "string" ? user : user._id
+    );
 
     // 2. Use $in to fetch all users in one go
     const users = await User.find({
@@ -53,28 +55,35 @@ const getUsersProfile = async (userIds) => {
 };
 
 // Helper utility to convert nested objects into dot notation
-const flattenObject = (obj, prefix = "") => {
-  return Object.keys(obj).reduce((acc, k) => {
+const flattenObject = (
+  obj: Record<string, unknown>,
+  prefix = ""
+): Record<string, unknown> => {
+  return Object.keys(obj).reduce<Record<string, unknown>>((acc, k) => {
     const pre = prefix.length ? prefix + "." : "";
+    const value = obj[k];
 
     // Check if it's a plain object (and not an Array, Date, or ObjectId)
     if (
-      typeof obj[k] === "object" &&
-      obj[k] !== null &&
-      !Array.isArray(obj[k]) &&
-      !(obj[k] instanceof Date) &&
-      !(obj[k].constructor && obj[k].constructor.name === "ObjectId")
+      typeof value === "object" &&
+      value !== null &&
+      !Array.isArray(value) &&
+      !(value instanceof Date) &&
+      !(value.constructor && value.constructor.name === "ObjectId")
     ) {
-      Object.assign(acc, flattenObject(obj[k], pre + k));
+      Object.assign(
+        acc,
+        flattenObject(value as Record<string, unknown>, pre + k)
+      );
     } else {
-      acc[pre + k] = obj[k];
+      acc[pre + k] = value;
     }
 
     return acc;
   }, {});
 };
 
-const updateUserProfile = async (data, id) => {
+const updateUserProfile = async (data: Record<string, unknown>, id: string) => {
   // 1. Flatten the incoming data so nested fields use dot notation
   const flattenedData = flattenObject(data);
 
@@ -90,7 +99,7 @@ const updateUserProfile = async (data, id) => {
   return response;
 };
 
-const deleteUserProfile = async (userId) => {
+const deleteUserProfile = async (userId: string) => {
   const response = await User.findOneAndDelete({ _id: userId });
   return response;
 };
@@ -143,8 +152,6 @@ const inviteUser = async ({
     const user = await User.create(
       [
         {
-          userName: null,
-
           password: randomPassword,
 
           role,
@@ -175,8 +182,6 @@ const inviteUser = async ({
           invitedBy,
 
           token: verificationToken,
-
-          userId: user[0]._id,
 
           status: "PENDING",
 

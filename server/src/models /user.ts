@@ -46,7 +46,7 @@ interface IUserMethods {
 // type UserModel = Model<DocumentData, QueryHelpers, InstanceMethods>
 type UserModel = Model<IUser, {}, IUserMethods>;
 
-const UserSchema: Schema = new Schema<IUser, UserModel, IUserMethods>({
+const UserSchema = new Schema<IUser, UserModel, IUserMethods>({
   userName: {
     type: String,
     // required: [true, "username is required"],

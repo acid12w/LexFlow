@@ -1,4 +1,4 @@
-import mongoose, { FilterQuery } from "mongoose";
+import mongoose, { QueryFilter } from "mongoose";
 import Task, { Task as ITaskInterface } from "../models /tasks.js";
 import { syncMatterHealth } from "./matterHealthService.js";
 
@@ -33,7 +33,7 @@ const getTaskByFirmIdService = async (
   const tasks = await Task.find({
     ...firmFilter(firmId),
     $or: [{ user: userId }, { assignedTo: userId }],
-  } as FilterQuery<ITaskInterface>);
+  } as QueryFilter<ITaskInterface>);
   return tasks;
 };
 

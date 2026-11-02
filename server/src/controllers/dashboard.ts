@@ -14,7 +14,6 @@ import {
   getTimeTrackerdService,
   getTimeTrackerSnapshot,
 } from "#services/timeTrackerService.js";
-import { getFirmDashboardService } from "#services/dashboardService.js";
 
 const statusConfig = {
   TODO: {
@@ -279,20 +278,5 @@ export const getFirmDashboard = async (
   res: Response,
   next: NextFunction
 ) => {
-  try {
-    const userId = req.user?.id;
-    const firmId = req.user?.firmId;
-    if (!userId || !firmId) {
-      return res.status(401).json({ message: "Not authorized" });
-    }
 
-    const data = await getFirmDashboardService(firmId, userId);
-
-    return res.status(200).json({
-      success: true,
-      data,
-    });
-  } catch (err) {
-    next(err);
-  }
-};
+}

@@ -34,7 +34,7 @@ export const getClientMatters = async (clientId: string | string[]) => {
   };
 };
 
-export const getCaseByClientId = async (clientId) => {
+export const getCaseByClientId = async (clientId: string | string[]) => {
   const matters = await Matter.find({
     clientId,
   }).lean();
@@ -58,7 +58,7 @@ export const getCaseByClientId = async (clientId) => {
     acc[key].push(task);
 
     return acc;
-  }, {} as Record<string, Task[]>);
+  }, {} as Record<string, typeof milestones>);
 
   const response = matters.map((matter) => ({
     milestones: groupedMilestones[matter._id.toString()] ?? [],

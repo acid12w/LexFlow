@@ -1,5 +1,14 @@
 import { ActivityLog } from "../models /activeyLog.js";
 
+interface CreateLogParams {
+  userId: string;
+  firmId: string;
+  userName?: string;
+  category: string;
+  description: string;
+  metadata?: Record<string, unknown>;
+}
+
 /**
  * Creates an activity log and truncates the collection history to exactly 5 items.
  */
@@ -10,7 +19,7 @@ export async function createLog({
   category,
   description,
   metadata = {},
-}) {
+}: CreateLogParams) {
   try {
     // 1. Save the new structural action log entry
 

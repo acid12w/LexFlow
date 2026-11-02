@@ -1,7 +1,15 @@
 import mongoose from "mongoose";
 import Firm from "../models /firm.js";
 
-export const createFirm = async (data) => {
+interface CreateFirmParams {
+  name: string;
+  logo?: string;
+  practiceAreas?: string[];
+  workspace?: string;
+  country?: string;
+}
+
+export const createFirm = async (data: CreateFirmParams) => {
   return Firm.create(data);
 };
 

@@ -5,6 +5,6 @@ export const runMonthlySnapshot = async () => {
   const firms = await Firm.find();
 
   for (const firm of firms) {
-    await generateFinancialSnapshot();
+    await generateFinancialSnapshot(String(firm._id));
   }
 };

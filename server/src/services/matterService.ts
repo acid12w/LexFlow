@@ -1,4 +1,4 @@
-import mongoose, { FilterQuery } from "mongoose";
+import mongoose, { PipelineStage, QueryFilter } from "mongoose";
 import Matter, { Matter as IMatterInterface } from "../models /matter.js";
 import {
   MATTER_STATUS,
@@ -59,7 +59,7 @@ const getMatterByUserIdService = async (
   return await Matter.find({
     ...firmFilter(firmId),
     $or: [{ userId }, { assignedTo: userId }],
-  } as FilterQuery<IMatterInterface>);
+  } as QueryFilter<IMatterInterface>);
 };
 
 const getMatterByIdService = async (
@@ -69,7 +69,7 @@ const getMatterByIdService = async (
   return await Matter.findOne({
     ...firmFilter(firmId),
     _id: caseId,
-  } as FilterQuery<IMatterInterface>);
+  } as QueryFilter<IMatterInterface>);
 };
 
 const createMatterService = async (data: Partial<IMatterInterface>) => {
@@ -190,7 +190,7 @@ const getMattersDueSoon = async (
   }
 
   // 3. Define the Aggregation Pipeline using $expr for date math
-  const pipeline = [
+  const pipeline: PipelineStage[] = [
     {
       $match: {
         ...matchQuery,
@@ -228,8 +228,7 @@ const getMattersDueSoon = async (
   ];
 
   // 4. Execute aggregation on the Matter model
-  const MatterModel = mongoose.models.Matter || mongoose.model("Matter");
-  const results = await MatterModel.aggregate(pipeline);
+  const results = await Matter.aggregate(pipeline);
 
   return results;
 };
