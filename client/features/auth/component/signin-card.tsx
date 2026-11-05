@@ -32,6 +32,7 @@ const formSchema = z.object({
 });
 
 export const SignInCard = () => {
+  console.log(process.env.NEXT_PUBLIC_API_URL)
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {

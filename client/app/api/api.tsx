@@ -7,10 +7,10 @@ const API_URL = (
 ).replace(/\/+$/, "");
 
 export const api = axios.create({
-  baseURL: `${API_URL}/api/v1`,
+  baseURL: `https://lexflow-1-4ai4.onrender.com/api/v1`,
   withCredentials: true, // Required for HTTP-only cookies/sessions
 });
-
+console.log(process.env.NEXT_PUBLIC_API_URL);
 api.interceptors.response.use(
   (response) => response,
   (error) => {
