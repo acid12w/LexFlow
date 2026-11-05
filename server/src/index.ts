@@ -32,7 +32,7 @@ app.use(cookieParser());
 const corsOptions = {
   // Replace with your actual Next.js URL 
   
-   origin: ['http://localhost:3000', WEB_APP_URL,"https://acid12w-lexflow-nsb5i3gzg-acid12ws-projects.vercel.app/","https://acid12w-lexflow-git-master-acid12ws-projects.vercel.app/" ], 
+   origin: ['http://localhost:3000', 'https://lexflow-1-4ai4.onrender.com',"https://acid12w-lexflow-nsb5i3gzg-acid12ws-projects.vercel.app/","https://acid12w-lexflow-git-master-acid12ws-projects.vercel.app/" ], 
     
 
   // Required if you use Cookies or JWTs in headers
