@@ -32,7 +32,7 @@ const formSchema = z.object({
 });
 
 export const SignInCard = () => {
-  console.log(process.env.NEXT_PUBLIC_API_URL)
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -63,7 +63,7 @@ export const SignInCard = () => {
       // 2. Wrap this in a separate try/catch if it's optional for navigation
       try {
         if (user.data.user.firmId) {
-          await fetchMembers();
+          // await fetchMembers();
         } else {
           console.warn("firmId is missing, skipping fetchMembers");
         }

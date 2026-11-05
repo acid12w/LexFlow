@@ -11,7 +11,7 @@ export const api = axios.create({
   withCredentials: true, // Required for HTTP-only cookies/sessions
  
 });
-console.log(process.env.NEXT_PUBLIC_API_URL);
+
 api.interceptors.response.use(
   (response) => response,
   (error) => {
