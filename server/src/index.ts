@@ -11,17 +11,21 @@ import matterRoutes from "./routes/matterRoute.js";
 import timeTrackerRoutes from "./routes/timeTrakerRoute.js";
 import activityLog from "./routes/activityLog.js";
 import dashboardRoutes from "./routes/dashboard.js";
-import clientRoutes from "./routes/clients.js";
+import clientRoutes from "./routes/clients.js"; 
 import { initializeCronJobs } from "./cron/schedular.js";
+
+// Without this, login succeeds but every protected request fails with 401
+if (!process.env.JWT_SECRET) {
+  throw new Error("JWT_SECRET is not set");
+}
 
 const app = express();
 const port = process.env.PORT ?? "8080";
-// FRONTEND_URL is the browser origin allowed by CORS (fontsendUrl is the old,
 
-const WEB_APP_URL =
-  process.env.FRONTEND_URL ??
-  "http://localhost:3000";
-
+// Browser origin allowed by CORS; must match the client's origin exactly
+// (scheme + host, no trailing slash)
+const WEB_APP_URL = process.env.FRONTEND_URL ?? "http://localhost:3000";
+ 
 // 1. Connect to Database
 connectDB();
 
@@ -35,7 +39,7 @@ const corsOptions = {
    origin: ['http://localhost:3000',"https://acid12w-lexflow.vercel.app", 'https://lexflow-1-4ai4.onrender.com',"https://acid12w-lexflow-nsb5i3gzg-acid12ws-projects.vercel.app/","https://acid12w-lexflow-git-master-acid12ws-projects.vercel.app/" ], 
     
 
-  // Required if you use Cookies or JWTs in headers
+  // Required if you use Cookies or JWTs in headers 
   credentials: true,
 
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
@@ -56,7 +60,6 @@ app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
 
-console.log(WEB_APP_URL);
-console.log(port);
+
 
 initializeCronJobs();

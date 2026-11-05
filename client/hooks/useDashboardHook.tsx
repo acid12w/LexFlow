@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 export function useGetActivityLog() {
   const result = useQuery({
     queryKey: ["Activity"],
-    queryFn: () => api.get(`/activity`),
+    queryFn: () => api.get(`/activity/user`),
   });
   return result;
 }

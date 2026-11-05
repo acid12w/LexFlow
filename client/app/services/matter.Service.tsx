@@ -7,7 +7,7 @@ export const matterService = {
   },
 
   getMatterByUserId: async () => {
-    const { data } = await api.get(`/matter-user`);
+    const { data } = await api.get(`/matter/matter-user`);
     return data;
   },
 

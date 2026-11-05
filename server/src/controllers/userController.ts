@@ -17,6 +17,17 @@ import crypto from "crypto";
 import FirmInvitation from "../models /FirmInvitation.js";
 import Firm from "#models /firm.js";
 
+// In production the client and API are usually on different sites (e.g. Vercel
+// + Render), and browsers only send the cookie on those requests when it is
+// SameSite=None; Secure. Locally (localhost:3000 -> localhost:8080) Lax is enough.
+const isProduction = process.env.NODE_ENV === "production";
+const authCookieOptions = {
+  httpOnly: true,
+  secure: isProduction,
+  sameSite: isProduction ? ("none" as const) : ("lax" as const),
+  maxAge: 60 * 60 * 1000,
+};
+
 // Fields a user may never set on themselves through the profile update
 const PROTECTED_USER_FIELDS = [
   "_id",
@@ -116,12 +127,7 @@ export const createFirmAccount = async (
       user.userName.toString()
     );
 
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 3600000,
-    });
+    res.cookie("token", token, authCookieOptions);
 
     res.status(201).json({
       token,
@@ -176,12 +182,7 @@ export const createUsers = async (
 
     const token = signToken(newUser._id.toString(), null, newUser.userName);
 
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 3600000,
-    });
+    res.cookie("token", token, authCookieOptions);
 
     res.status(201).json({
       token,
@@ -302,12 +303,7 @@ export const login = async (
       return res.status(401).json({ error: "Failed to sign token" });
     }
 
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 3600000,
-    });
+    res.cookie("token", token, authCookieOptions);
 
     res.status(200).json({
       user: formatUserResponse(user),
@@ -322,7 +318,9 @@ export const logout = async (
   res: Response,
   next: NextFunction
 ) => {
-  res.clearCookie("token");
+  // Must use the same attributes the cookie was set with, or it won't clear
+  const { maxAge: _maxAge, ...clearOptions } = authCookieOptions;
+  res.clearCookie("token", clearOptions);
   res.status(200).json({
     message: "Logged out successfully",
   });
@@ -605,12 +603,7 @@ export const joinFirm = async (
       user.userName
     );
 
-    res.cookie("token", authToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 1000 * 60 * 60,
-    });
+    res.cookie("token", authToken, authCookieOptions);
 
     return res.status(200).json({
       user: formatUserResponse(user),
