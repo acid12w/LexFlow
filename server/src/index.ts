@@ -17,10 +17,9 @@ import { initializeCronJobs } from "./cron/schedular.js";
 const app = express();
 const port = process.env.PORT ?? "8080";
 // FRONTEND_URL is the browser origin allowed by CORS (fontsendUrl is the old,
-// misspelled name, still read so existing deployments keep working)
+
 const WEB_APP_URL =
   process.env.FRONTEND_URL ??
-  process.env.fontsendUrl ??
   "http://localhost:3000";
 
 // 1. Connect to Database
@@ -32,7 +31,9 @@ app.use(cookieParser());
 
 const corsOptions = {
   // Replace with your actual Next.js URL 
-  origin: WEB_APP_URL,
+  
+   origin: ['http://localhost:3000', WEB_APP_URL,"https://acid12w-lexflow-nsb5i3gzg-acid12ws-projects.vercel.app/","https://acid12w-lexflow-git-master-acid12ws-projects.vercel.app/" ], 
+    
 
   // Required if you use Cookies or JWTs in headers
   credentials: true,
