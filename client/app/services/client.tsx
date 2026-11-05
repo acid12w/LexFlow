@@ -1,4 +1,3 @@
-import { id } from "date-fns/locale";
 import { api } from "../api/api";
 
 export const clientService = {
@@ -11,7 +10,7 @@ export const clientService = {
     const response = await api.get(`/client/`);
     return response;
   },
-  getClientDetails: async (id) => {
+  getClientDetails: async (id: string) => {
     const response = await api.get(`/client/${id}`);
     return response;
   },

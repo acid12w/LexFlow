@@ -24,9 +24,17 @@ import {
   User,
   Timer,
 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import type { ReactNode } from "react";
 
 export type DashboardRole = "user" | "admin";
+
+type DashboardTask = {
+  title: string;
+  status: string;
+  priority: string;
+  endDate?: string;
+};
 
 export type UserDashboardData = {
   userName: string;
@@ -70,7 +78,7 @@ export type UserDashboardData = {
     text: string;
     detail?: string;
     time: string;
-    Icon: SVGRectElement<any, any>;
+    Icon: LucideIcon;
     type: "task" | "matter" | "userActivity" | "time";
   }[];
 };
@@ -376,21 +384,23 @@ export default function UserDashboard({
   const timeData = dashboardData?.data.data.timeData;
   const matterDueDate = dashboardData?.data.data.matterDueDate;
 
-  const weeklytime = timeData.dailyBreakdown.map((timeDate) => {
-    const dateString = timeDate.date;
+  const weeklytime = timeData.dailyBreakdown.map(
+    (timeDate: { date: string; totalDuration: number }) => {
+      const dateString = timeDate.date;
 
-    const [year, month, day] = dateString.split("-").map(Number);
-    // Note: Month is 0-indexed in JS dates (0 = January, 9 = October)
-    const dateObj = new Date(year, month - 1, day);
+      const [year, month, day] = dateString.split("-").map(Number);
+      // Note: Month is 0-indexed in JS dates (0 = January, 9 = October)
+      const dateObj = new Date(year, month - 1, day);
 
-    const dayofTheWeek = dateObj.toLocaleDateString("en-US", {
-      weekday: "long",
-    });
+      const dayofTheWeek = dateObj.toLocaleDateString("en-US", {
+        weekday: "long",
+      });
 
-    return {
-      [dayofTheWeek]: timeDate.totalDuration,
-    };
-  });
+      return {
+        [dayofTheWeek]: timeDate.totalDuration,
+      };
+    },
+  );
 
   console.log(TasksData);
 
@@ -435,12 +445,12 @@ export default function UserDashboard({
         <Card>
           <CardHeader icon={ListTodo} title="My Tasks" action={<ViewAll />} />
           <div className="divide-y divide-slate-100">
-            {TasksData.map((task, index) => (
+            {TasksData.map((task: DashboardTask, index: number) => (
               <div key={index} className="flex items-center gap-3 px-5 py-4">
                 <input
                   type="checkbox"
                   className="h-4 w-4 rounded border-slate-300"
-                  defaultChecked={task.status}
+                  defaultChecked={task.status === "DONE"}
                 />
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-medium text-slate-800">
@@ -609,7 +619,7 @@ function DeadlineList({ deadlines }: { deadlines: any[] }) {
 
               <div
                 className={cn(
-                  "absolute top-2 left-[70px] h-[83%] z-10 w-0.5 bg-gray-200"
+                  "absolute top-2 left-[70px] h-[83%] z-10 w-0.5 bg-gray-200",
                 )}
               />
             </div>
@@ -627,21 +637,28 @@ function ActivityCard({
   activity: any[];
   title?: string;
 }) {
-  enum activityType {
-    TASK_MGMT = "TASK_MGMT",
-  }
-  const ActivityIconMap: Record<activityType, React.ReactNode> = {
-    [activityType.TASK_MGMT]: (
-      <ScrollText className="size-[40px] rounded-full bg-amber-100 text-amber-400 p-2" />
+  const iconClass = "size-[40px] rounded-full p-2";
+  const ActivityIconMap: Record<string, React.ReactNode> = {
+    TASK_MGMT: (
+      <ScrollText className={`${iconClass} bg-amber-100 text-amber-400`} />
+    ),
+    CASE_MGMT: (
+      <BriefcaseBusiness className={`${iconClass} bg-blue-100 text-blue-500`} />
+    ),
+    TIME_TRACKER_MGMT: (
+      <Timer className={`${iconClass} bg-emerald-100 text-emerald-500`} />
     ),
   };
+  const fallbackIcon = (
+    <Activity className={`${iconClass} bg-slate-100 text-slate-400`} />
+  );
 
   return (
     <Card className="mt-4">
       <CardHeader icon={Activity} title={title} action={<ViewAll />} />
       <div className="divide-y divide-slate-100">
         {activity.map((a, index) => {
-          const icon = ActivityIconMap[a.category];
+          const icon = ActivityIconMap[a.category] ?? fallbackIcon;
           const islast = index === activity.length - 1;
           return (
             <div key={index} className="flex gap-3 px-5 py-4 ">
@@ -650,7 +667,7 @@ function ActivityCard({
                 {!islast && (
                   <div
                     className={cn(
-                      "absolute top-10 right-[19px] h-[83%] z-10 w-0.5 bg-gray-200"
+                      "absolute top-10 right-[19px] h-[83%] z-10 w-0.5 bg-gray-200",
                     )}
                   />
                 )}
