@@ -16,7 +16,12 @@ import { initializeCronJobs } from "./cron/schedular.js";
 
 const app = express();
 const port = process.env.PORT ?? "8080";
-const WEB_APP_URL = process.env.fontsendUrl ?? "http://localhost:3000";
+// FRONTEND_URL is the browser origin allowed by CORS (fontsendUrl is the old,
+// misspelled name, still read so existing deployments keep working)
+const WEB_APP_URL =
+  process.env.FRONTEND_URL ??
+  process.env.fontsendUrl ??
+  "http://localhost:3000";
 
 // 1. Connect to Database
 connectDB();

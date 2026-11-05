@@ -1,8 +1,13 @@
 import axios, { isCancel, AxiosError } from "axios";
 
+// Host only, e.g. https://lexflow-1-4ai4.onrender.com (set in client/.env.local
+// for local dev, and in your host's environment settings for production)
+const API_URL = (
+  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080"
+).replace(/\/+$/, "");
+
 export const api = axios.create({
-  // baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api",
-  baseURL: "http://localhost:8080/api/v1",
+  baseURL: `${API_URL}/api/v1`,
   withCredentials: true, // Required for HTTP-only cookies/sessions
 });
 
