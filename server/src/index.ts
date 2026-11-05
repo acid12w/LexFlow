@@ -26,7 +26,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 const corsOptions = {
-  // Replace with your actual Next.js URL
+  // Replace with your actual Next.js URL 
   origin: WEB_APP_URL,
 
   // Required if you use Cookies or JWTs in headers
@@ -49,5 +49,8 @@ app.use("/api/v1/client", clientRoutes);
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
+
+console.log(WEB_APP_URL);
+console.log(port);
 
 initializeCronJobs();
