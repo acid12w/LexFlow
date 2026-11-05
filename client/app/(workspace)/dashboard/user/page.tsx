@@ -70,7 +70,7 @@ export type UserDashboardData = {
     text: string;
     detail?: string;
     time: string;
-    Icon: ReactElement<any, any>;
+    Icon: SVGRectElement<any, any>;
     type: "task" | "matter" | "userActivity" | "time";
   }[];
 };
