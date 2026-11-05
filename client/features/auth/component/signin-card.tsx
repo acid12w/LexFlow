@@ -40,7 +40,7 @@ export const SignInCard = () => {
       password: "",
     },
   });
-  const fetchMembers = useUserCredentials((state) => state.fetchMembers);
+
 
   const setUserCredentials = useUserCredentials(
     (state) => state.setUserCredentials
@@ -59,20 +59,6 @@ export const SignInCard = () => {
       const user = await mutateAsync(values);
 
       setUserCredentials(user.data.user);
-
-      // 2. Wrap this in a separate try/catch if it's optional for navigation
-      try {
-        if (user.data.user.firmId) {
-          // await fetchMembers();
-        } else {
-          console.warn("firmId is missing, skipping fetchMembers");
-        }
-      } catch (storeError) {
-        console.error(
-          "Zustand fetchMembers failed, but proceeding to redirect:",
-          storeError
-        );
-      }
 
       // ✅ Move this here so it only redirects on SUCCESS
       router.replace("/dashboard/user");
