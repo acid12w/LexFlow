@@ -28,10 +28,10 @@ const statusIconMap: Record<TaskStatus, React.ReactNode> = {
 
 const statusColor: Record<TaskStatus, React.ReactNode> = {
   // [TaskStatus.BACKLOG]: <CircleDashedIcon className="size-[18px]" />,
-  [TaskStatus.TODO]: "bg-gray-900",
-  [TaskStatus.IN_PROGRESS]: "bg-gray-900",
-  [TaskStatus.IN_REVIEW]: "bg-gray-900",
-  [TaskStatus.DONE]: "bg-gray-900",
+  [TaskStatus.TODO]: "bg-foreground",
+  [TaskStatus.IN_PROGRESS]: "bg-foreground",
+  [TaskStatus.IN_REVIEW]: "bg-foreground",
+  [TaskStatus.DONE]: "bg-foreground",
 };
 
 export const KanbanColumnHeader = ({
@@ -42,7 +42,7 @@ export const KanbanColumnHeader = ({
   const icon = statusIconMap[board];
 
   return (
-    <div className="px-2 py-1.5 rounded-sm bg-[#ffffff] shadow">
+    <div className="px-2 py-1.5 rounded-sm bg-card shadow">
       <div className="flex justify-between items-center ">
         <div className="flex gap-x-2">
           <Button
@@ -53,7 +53,7 @@ export const KanbanColumnHeader = ({
             variant="ghost"
             size="icon"
           >
-            <PlusIcon className="size-4 text-neutral-100 bg-[#5C5C5C] rounded-full" />
+            <PlusIcon className="size-4 text-muted-foreground/40 bg-[#5C5C5C] rounded-full" />
           </Button>
           <h2 className="text-sm">{formatStatus(board)}</h2>
         </div>

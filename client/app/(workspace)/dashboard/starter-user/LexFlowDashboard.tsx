@@ -420,7 +420,7 @@ function Card({
 }) {
   return (
     <section
-      className={`rounded-xl border border-slate-200 bg-white shadow-sm ${className}`}
+      className={`rounded-xl border border-border bg-card shadow-sm ${className}`}
     >
       {children}
     </section>
@@ -437,9 +437,9 @@ function CardHeader({
   action?: ReactNode;
 }) {
   return (
-    <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4">
-      <div className="flex items-center gap-2 font-semibold text-slate-900">
-        {Icon && <Icon className="h-4 w-4 text-slate-500" />}
+    <div className="flex items-center justify-between border-b border-border/60 px-5 py-4">
+      <div className="flex items-center gap-2 font-semibold text-foreground">
+        {Icon && <Icon className="h-4 w-4 text-muted-foreground" />}
         {title}
       </div>
       {action}
@@ -449,7 +449,7 @@ function CardHeader({
 
 function ViewAll() {
   return (
-    <button className="text-xs font-medium text-blue-600 hover:text-blue-700">
+    <button className="text-xs font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300">
       View all →
     </button>
   );
@@ -457,16 +457,16 @@ function ViewAll() {
 
 function StatusBadge({ status }: { status: string }) {
   const styles: Record<string, string> = {
-    "In Progress": "bg-blue-50 text-blue-700",
-    "In Review": "bg-violet-50 text-violet-700",
-    "At Risk": "bg-red-50 text-red-700",
-    "Not Started": "bg-slate-100 text-slate-600",
-    Completed: "bg-emerald-50 text-emerald-700",
+    "In Progress": "bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300",
+    "In Review": "bg-violet-50 dark:bg-violet-500/10 text-violet-700 dark:text-violet-300",
+    "At Risk": "bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-300",
+    "Not Started": "bg-muted text-muted-foreground",
+    Completed: "bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
   };
   return (
     <span
       className={`rounded-full px-2 py-1 text-[11px] font-medium ${
-        styles[status] ?? "bg-slate-100 text-slate-600"
+        styles[status] ?? "bg-muted text-muted-foreground"
       }`}
     >
       {status}
@@ -490,20 +490,20 @@ function StatCard({
   return (
     <Card className="p-4">
       <div className="flex items-start justify-between">
-        <div className="rounded-lg bg-blue-50 p-2 text-blue-600">
+        <div className="rounded-lg bg-blue-50 dark:bg-blue-500/10 p-2 text-blue-600 dark:text-blue-400">
           <Icon className="h-4 w-4" />
         </div>
         {danger && (
-          <span className="rounded-full bg-red-50 px-2 py-1 text-[10px] font-medium text-red-600">
+          <span className="rounded-full bg-red-50 dark:bg-red-500/10 px-2 py-1 text-[10px] font-medium text-red-600 dark:text-red-400">
             Attention
           </span>
         )}
       </div>
-      <p className="mt-4 text-xs text-slate-500">{label}</p>
-      <p className="mt-1 text-2xl font-semibold tracking-tight text-slate-950">
+      <p className="mt-4 text-xs text-muted-foreground">{label}</p>
+      <p className="mt-1 text-2xl font-semibold tracking-tight text-foreground">
         {value}
       </p>
-      {note && <p className="mt-1 text-[11px] text-slate-400">{note}</p>}
+      {note && <p className="mt-1 text-[11px] text-muted-foreground/70">{note}</p>}
     </Card>
   );
 }
@@ -518,7 +518,7 @@ function WeeklyBars({ values }: { values: number[] }) {
             className="w-full rounded-t bg-blue-500/80"
             style={{ height: `${Math.max(4, (value / max) * 80)}%` }}
           />
-          <span className="text-[9px] text-slate-400">
+          <span className="text-[9px] text-muted-foreground/70">
             {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"][index]}
           </span>
         </div>
@@ -548,7 +548,7 @@ function RevenueBars({
             style={{ height: `${(month.collected / max) * 100}%` }}
           />
           <div
-            className="w-3 rounded-t bg-slate-300"
+            className="w-3 rounded-t bg-muted-foreground/30"
             style={{ height: `${(month.outstanding / max) * 100}%` }}
           />
         </div>
@@ -607,26 +607,26 @@ export function UserDashboard({
       <div className="mt-4 grid gap-4 xl:grid-cols-[1.5fr_1fr]">
         <Card>
           <CardHeader icon={ListTodo} title="My Tasks" action={<ViewAll />} />
-          <div className="divide-y divide-slate-100">
+          <div className="divide-y divide-border/60">
             {data.tasks.map((task) => (
               <div key={task.id} className="flex items-center gap-3 px-5 py-4">
                 <input
                   type="checkbox"
-                  className="h-4 w-4 rounded border-slate-300"
+                  className="h-4 w-4 rounded border-input"
                   defaultChecked={task.completed}
                 />
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium text-slate-800">
+                  <p className="truncate text-sm font-medium text-foreground">
                     {task.title}
                   </p>
-                  <p className="mt-1 text-xs text-slate-400">
+                  <p className="mt-1 text-xs text-muted-foreground/70">
                     {task.matter} · {task.priority} priority
                   </p>
                 </div>
-                <span className="hidden text-xs text-slate-400 sm:block">
+                <span className="hidden text-xs text-muted-foreground/70 sm:block">
                   {task.due}
                 </span>
-                <ChevronRight className="h-4 w-4 text-slate-300" />
+                <ChevronRight className="h-4 w-4 text-muted-foreground/50" />
               </div>
             ))}
           </div>
@@ -643,21 +643,21 @@ export function UserDashboard({
             }
           />
           <div className="p-5">
-            <p className="text-3xl font-semibold text-slate-950">
+            <p className="text-3xl font-semibold text-foreground">
               {data.time.total}
             </p>
-            <p className="mt-1 text-xs text-slate-400">Total logged today</p>
+            <p className="mt-1 text-xs text-muted-foreground/70">Total logged today</p>
             <div className="mt-5 grid grid-cols-2 gap-3">
-              <div className="rounded-lg bg-slate-50 p-3">
-                <p className="text-xs text-slate-400">Billable</p>
+              <div className="rounded-lg bg-muted/50 p-3">
+                <p className="text-xs text-muted-foreground/70">Billable</p>
                 <p className="mt-1 font-semibold">{data.time.billable}</p>
               </div>
-              <div className="rounded-lg bg-slate-50 p-3">
-                <p className="text-xs text-slate-400">Non-billable</p>
+              <div className="rounded-lg bg-muted/50 p-3">
+                <p className="text-xs text-muted-foreground/70">Non-billable</p>
                 <p className="mt-1 font-semibold">{data.time.nonBillable}</p>
               </div>
             </div>
-            <p className="mt-5 text-xs font-medium text-slate-600">
+            <p className="mt-5 text-xs font-medium text-muted-foreground">
               Weekly Billable Hours
             </p>
             <WeeklyBars values={data.time.weeklyHours} />
@@ -720,34 +720,34 @@ export function AdminDashboard({
             icon={Wallet}
             title="Revenue"
             action={
-              <div className="flex gap-1 rounded-lg bg-slate-100 p-1 text-[10px]">
-                <button className="rounded-md bg-white px-2 py-1 shadow-sm">
+              <div className="flex gap-1 rounded-lg bg-muted p-1 text-[10px]">
+                <button className="rounded-md bg-card px-2 py-1 shadow-sm">
                   This Month
                 </button>
-                <button className="px-2 py-1 text-slate-500">
+                <button className="px-2 py-1 text-muted-foreground">
                   Last 3 Months
                 </button>
-                <button className="px-2 py-1 text-slate-500">This Year</button>
+                <button className="px-2 py-1 text-muted-foreground">This Year</button>
               </div>
             }
           />
           <div className="p-5">
-            <p className="text-2xl font-semibold text-slate-950">
+            <p className="text-2xl font-semibold text-foreground">
               {data.revenue.billed}
             </p>
-            <p className="text-xs text-slate-400">Total billed</p>
+            <p className="text-xs text-muted-foreground/70">Total billed</p>
             <div className="mt-4 grid grid-cols-2 gap-3">
               <div>
-                <p className="text-xs text-slate-400">Collected</p>
+                <p className="text-xs text-muted-foreground/70">Collected</p>
                 <p className="font-semibold">{data.revenue.collected}</p>
               </div>
               <div>
-                <p className="text-xs text-slate-400">Outstanding</p>
+                <p className="text-xs text-muted-foreground/70">Outstanding</p>
                 <p className="font-semibold">{data.revenue.outstanding}</p>
               </div>
             </div>
             <RevenueBars months={data.revenue.months} />
-            <div className="mt-3 flex justify-between text-[10px] text-slate-400">
+            <div className="mt-3 flex justify-between text-[10px] text-muted-foreground/70">
               {data.revenue.months.map((m) => (
                 <span key={m.label}>{m.label}</span>
               ))}
@@ -781,7 +781,7 @@ function DashboardShell({
   roleLabel: string;
 }) {
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900">
+    <div className="min-h-dvh bg-muted/50 text-foreground dark:bg-background">
       <aside className="fixed inset-y-0 left-0 hidden w-56 bg-[#09213f] text-white lg:block">
         <div className="flex h-16 items-center px-5 text-xl font-bold">
           <span className="mr-2 grid h-7 w-7 place-items-center rounded-md bg-blue-500">
@@ -806,7 +806,7 @@ function DashboardShell({
               className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm ${
                 i === 0
                   ? "bg-blue-600 text-white"
-                  : "text-slate-300 hover:bg-white/10"
+                  : "text-muted-foreground/50 hover:bg-card/10"
               }`}
             >
               <span className="h-2 w-2 rounded-full bg-current opacity-70" />
@@ -817,25 +817,25 @@ function DashboardShell({
       </aside>
 
       <main className="lg:pl-56">
-        <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b border-slate-200 bg-white/95 px-4 backdrop-blur sm:px-6">
+        <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b border-border bg-card/95 px-4 backdrop-blur sm:px-6">
           <div className="relative max-w-xl flex-1">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/70" />
             <input
-              className="w-full rounded-lg border border-slate-200 bg-slate-50 py-2 pl-9 pr-4 text-sm outline-none focus:border-blue-400"
+              className="w-full rounded-lg border border-border bg-muted/50 py-2 pl-9 pr-4 text-sm outline-none focus:border-blue-400"
               placeholder="Search matters, clients, or tasks..."
             />
           </div>
-          <button className="relative rounded-lg p-2 text-slate-500 hover:bg-slate-100">
+          <button className="relative rounded-lg p-2 text-muted-foreground hover:bg-muted">
             <span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-red-500" />
             ●
           </button>
           <div className="flex items-center gap-2 text-sm">
-            <div className="grid h-8 w-8 place-items-center rounded-full bg-blue-100 font-semibold text-blue-700">
+            <div className="grid h-8 w-8 place-items-center rounded-full bg-blue-100 dark:bg-blue-500/15 font-semibold text-blue-700 dark:text-blue-300">
               {userName.slice(0, 2).toUpperCase()}
             </div>
             <div className="hidden sm:block">
               <p className="font-medium">{userName}</p>
-              <p className="text-[10px] text-slate-400">{roleLabel}</p>
+              <p className="text-[10px] text-muted-foreground/70">{roleLabel}</p>
             </div>
           </div>
         </header>
@@ -858,9 +858,9 @@ function DashboardHeading({
         <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
           Good morning, {name} <span>👋</span>
         </h1>
-        <p className="mt-1 text-sm text-slate-500">{subtitle}</p>
+        <p className="mt-1 text-sm text-muted-foreground">{subtitle}</p>
       </div>
-      <p className="hidden text-xs text-slate-400 sm:block">Today</p>
+      <p className="hidden text-xs text-muted-foreground/70 sm:block">Today</p>
     </div>
   );
 }
@@ -877,7 +877,7 @@ function MatterTable({
       <CardHeader icon={BriefcaseBusiness} title={title} action={<ViewAll />} />
       <div className="overflow-x-auto">
         <table className="w-full text-left text-sm">
-          <thead className="bg-slate-50 text-[10px] uppercase text-slate-400">
+          <thead className="bg-muted/50 text-[10px] uppercase text-muted-foreground/70">
             <tr>
               <th className="px-5 py-3">Matter</th>
               <th className="px-3 py-3">Client</th>
@@ -885,15 +885,15 @@ function MatterTable({
               <th className="px-3 py-3">Due</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-border/60">
             {matters.map((m) => (
-              <tr key={m.id} className="hover:bg-slate-50">
+              <tr key={m.id} className="hover:bg-muted/50">
                 <td className="px-5 py-3 font-medium">{m.title}</td>
-                <td className="px-3 py-3 text-slate-500">{m.client}</td>
+                <td className="px-3 py-3 text-muted-foreground">{m.client}</td>
                 <td className="px-3 py-3">
                   <StatusBadge status={m.status} />
                 </td>
-                <td className="px-3 py-3 text-slate-500">{m.due}</td>
+                <td className="px-3 py-3 text-muted-foreground">{m.due}</td>
               </tr>
             ))}
           </tbody>
@@ -915,23 +915,23 @@ function DeadlineList({
         title="Upcoming Deadlines"
         action={<ViewAll />}
       />
-      <div className="divide-y divide-slate-100">
+      <div className="divide-y divide-border/60">
         {deadlines.map((d) => (
           <div key={d.id} className="flex items-center gap-3 px-5 py-4">
             <div
               className={`grid h-10 w-10 shrink-0 place-items-center rounded-lg text-[10px] font-semibold ${
                 d.urgent
-                  ? "bg-red-50 text-red-600"
-                  : "bg-slate-50 text-slate-500"
+                  ? "bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400"
+                  : "bg-muted/50 text-muted-foreground"
               }`}
             >
               {d.date}
             </div>
             <div className="min-w-0 flex-1">
               <p className="truncate text-sm font-medium">{d.title}</p>
-              <p className="truncate text-xs text-slate-400">{d.matter}</p>
+              <p className="truncate text-xs text-muted-foreground/70">{d.matter}</p>
             </div>
-            <ChevronRight className="h-4 w-4 text-slate-300" />
+            <ChevronRight className="h-4 w-4 text-muted-foreground/50" />
           </div>
         ))}
       </div>
@@ -949,15 +949,15 @@ function ActivityCard({
   return (
     <Card className="mt-4">
       <CardHeader icon={Clock3} title={title} action={<ViewAll />} />
-      <div className="divide-y divide-slate-100">
+      <div className="divide-y divide-border/60">
         {activity.map((a) => (
           <div key={a.id} className="flex gap-3 px-5 py-4">
             <div className="mt-1 h-2 w-2 rounded-full bg-blue-500" />
             <div className="flex-1">
               <p className="text-sm font-medium">{a.text}</p>
-              <p className="text-xs text-slate-400">{a.detail}</p>
+              <p className="text-xs text-muted-foreground/70">{a.detail}</p>
             </div>
-            <span className="text-xs text-slate-400">{a.time}</span>
+            <span className="text-xs text-muted-foreground/70">{a.time}</span>
           </div>
         ))}
       </div>
@@ -982,10 +982,10 @@ function MatterHealth({ data }: { data: AdminDashboardData["matterHealth"] }) {
               background: `conic-gradient(#22c55e 0deg 180deg, #3b82f6 180deg 240deg, #f59e0b 240deg 277deg, #cbd5e1 277deg 330deg, #8b5cf6 330deg 360deg)`,
             }}
           >
-            <div className="grid h-24 w-24 place-items-center rounded-full bg-white">
+            <div className="grid h-24 w-24 place-items-center rounded-full bg-card">
               <div className="text-center">
                 <p className="text-2xl font-semibold">{total}</p>
-                <p className="text-[10px] text-slate-400">Active Matters</p>
+                <p className="text-[10px] text-muted-foreground/70">Active Matters</p>
               </div>
             </div>
           </div>
@@ -993,13 +993,13 @@ function MatterHealth({ data }: { data: AdminDashboardData["matterHealth"] }) {
             {data.map((item) => (
               <div key={item.label} className="flex items-center gap-2 text-xs">
                 <span className="h-2 w-2 rounded-full bg-blue-500" />
-                <span className="w-20 text-slate-500">{item.label}</span>
+                <span className="w-20 text-muted-foreground">{item.label}</span>
                 <strong>{item.value}</strong>
               </div>
             ))}
           </div>
         </div>
-        <div className="mt-5 rounded-lg bg-red-50 px-3 py-2 text-xs font-medium text-red-600">
+        <div className="mt-5 rounded-lg bg-red-50 dark:bg-red-500/10 px-3 py-2 text-xs font-medium text-red-600 dark:text-red-400">
           ⚠ 5 matters require attention · View at-risk matters →
         </div>
       </div>
@@ -1017,7 +1017,7 @@ function WorkloadTable({
       <CardHeader icon={Users} title="Team Workload" action={<ViewAll />} />
       <div className="overflow-x-auto">
         <table className="w-full text-left text-sm">
-          <thead className="bg-slate-50 text-[10px] uppercase text-slate-400">
+          <thead className="bg-muted/50 text-[10px] uppercase text-muted-foreground/70">
             <tr>
               <th className="px-5 py-3">User</th>
               <th className="px-2 py-3">Matters</th>
@@ -1025,12 +1025,12 @@ function WorkloadTable({
               <th className="px-2 py-3">Billable Hours</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-border/60">
             {workload.map((u) => (
               <tr key={u.name}>
                 <td className="px-5 py-3">
                   <div className="flex items-center gap-2">
-                    <span className="grid h-7 w-7 place-items-center rounded-full bg-blue-100 text-[10px] font-semibold text-blue-700">
+                    <span className="grid h-7 w-7 place-items-center rounded-full bg-blue-100 dark:bg-blue-500/15 text-[10px] font-semibold text-blue-700 dark:text-blue-300">
                       {u.initials}
                     </span>
                     {u.name}
@@ -1059,13 +1059,13 @@ function TaskStatus({ data }: { data: AdminDashboardData["taskStatus"] }) {
       />
       <div className="p-5">
         <p className="text-2xl font-semibold">{total}</p>
-        <p className="text-xs text-slate-400">Total</p>
-        <div className="mt-5 h-3 overflow-hidden rounded-full bg-slate-100">
+        <p className="text-xs text-muted-foreground/70">Total</p>
+        <div className="mt-5 h-3 overflow-hidden rounded-full bg-muted">
           {data.map((item, i) => (
             <span
               key={item.label}
               className={`inline-block h-full ${
-                ["bg-emerald-500", "bg-blue-500", "bg-slate-300", "bg-red-500"][
+                ["bg-emerald-500", "bg-blue-500", "bg-muted-foreground/30", "bg-red-500"][
                   i
                 ]
               }`}
@@ -1076,7 +1076,7 @@ function TaskStatus({ data }: { data: AdminDashboardData["taskStatus"] }) {
         <div className="mt-4 grid grid-cols-2 gap-3">
           {data.map((item) => (
             <div key={item.label} className="text-xs">
-              <span className="text-slate-400">{item.label}</span>
+              <span className="text-muted-foreground/70">{item.label}</span>
               <strong className="ml-2">{item.value}</strong>
             </div>
           ))}

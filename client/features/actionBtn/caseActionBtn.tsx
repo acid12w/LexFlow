@@ -53,7 +53,7 @@ export function CaseActionBtn({
         <Link href={`tasks/${caseId}`}>Open matter</Link>
       </DropdownMenuItem>
       <DropdownMenuItem
-        className="text-red-600"
+        className="text-red-600 dark:text-red-400"
         onSelect={() => removeCase(caseId)}
       >
         Delete

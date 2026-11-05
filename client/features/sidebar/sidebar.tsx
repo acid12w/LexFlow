@@ -28,11 +28,13 @@ import {
   SidebarMenuButton,
   SidebarGroupLabel,
   SidebarGroupContent,
+  useSidebar,
 } from "@/components/ui/sidebar";
 
 import { Separator } from "@/components/ui/separator";
 
 import Image from "next/image";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
@@ -82,6 +84,7 @@ const navData = [
 
 export function AppSidebar() {
   const pathname = usePathname();
+  const { setOpenMobile } = useSidebar();
 
   return (
     <Sidebar>
@@ -91,7 +94,7 @@ export function AppSidebar() {
           height={150}
           width={150}
           alt="Logo"
-          className="object-contain mb-8"
+          className="object-contain mb-8 dark:brightness-0 dark:invert"
           priority
         />
       </SidebarHeader>
@@ -121,14 +124,17 @@ export function AppSidebar() {
                       className={cn(
                         "px-3 py-5 rounded-md text-sm font-medium transition-colors",
                         isActive
-                          ? "bg-[#E2F1FF] text-[#0088FF] border-[#0088FF] border"
-                          : "text-[#1a1c1e] hover:bg-[#E2F1FF] hover:text-[#0088FF]"
+                          ? "bg-[#E2F1FF] dark:bg-[#0088FF]/15 text-[#0088FF] border-[#0088FF] border"
+                          : "text-sidebar-foreground hover:bg-[#E2F1FF] dark:hover:bg-[#0088FF]/15 hover:text-[#0088FF]"
                       )}
                     >
-                      <a href={item.url}>
+                      <Link
+                        href={item.url}
+                        onClick={() => setOpenMobile(false)}
+                      >
                         <item.icon />
                         <span>{item.title}</span>
-                      </a>
+                      </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 );

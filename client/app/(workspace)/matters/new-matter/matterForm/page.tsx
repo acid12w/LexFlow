@@ -176,7 +176,7 @@ export default function MatterField({
 
             <button
               type="button"
-              className="w-full text-left flex justify-between items-center p-3 rounded-xl transition-all duration-150 border-2  border-[#0088FF] bg-[#E2F1FF] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="w-full text-left flex justify-between items-center p-3 rounded-xl transition-all duration-150 border-2  border-[#0088FF] bg-[#E2F1FF] dark:bg-[#0088FF]/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               <div className="flex justify-center">
                 <Avatar className="mr-4 h-10 w-10 shrink-0">
@@ -197,7 +197,7 @@ export default function MatterField({
                 </div>
               </div>
               <button
-                className="text-sm text-[#0473d4] cursor-pointer"
+                className="text-sm text-[#0473d4] dark:text-[#64B7FF] cursor-pointer"
                 onClick={onBack}
               >
                 Change
@@ -205,7 +205,7 @@ export default function MatterField({
             </button>
             <FieldSeparator />
             <div className="flex gap-4">
-              <span className="bg-blue-100 p-2 rounded-full">
+              <span className="bg-blue-100 dark:bg-blue-500/15 p-2 rounded-full">
                 <BiSolidBriefcase className="[&>svg]:size-12 fill-[#0088FF]" />
               </span>
               <h3>Case details</h3>
@@ -319,7 +319,7 @@ export default function MatterField({
               matter. Add and complete tasks to move the case through stages.
             </FieldDescription>
           </Field>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <Controller
               name="priority"
               control={form.control}
@@ -385,7 +385,7 @@ export default function MatterField({
           />
 
           <div className="flex gap-4">
-            <span className="bg-blue-100 p-2 rounded-full">
+            <span className="bg-blue-100 dark:bg-blue-500/15 p-2 rounded-full">
               <BiSolidBriefcase className="[&>svg]:size-12 fill-[#0088FF]" />
             </span>
             <h3>Billing details</h3>

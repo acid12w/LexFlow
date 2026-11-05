@@ -46,15 +46,15 @@ export const KanbanCard = ({ tasks }: KanbanCardProps) => {
   };
 
   return (
-    <div className="bg-white p-2.5 rounded shadow-md space-x-3 mb-3 flex flex-col gap-2">
+    <div className="bg-card p-2.5 rounded shadow-md space-x-3 mb-3 flex flex-col gap-2">
       <div className="flex justify-between mr-0">
         <p
           className={cn(
             "font-medium px-2 py-1 rounded-sm flex items-center gap-x-2 text-sm",
             {
-              "bg-[#ffbfbf] text-[#ff3838]": tasks.priority === "high",
-              "bg-[#E4C2FF] text-[#860ee8]": tasks.priority === "medium",
-              "bg-[#e3e5e4] text-[#5d5d5d]": tasks.priority === "low",
+              "bg-[#ffbfbf] dark:bg-[#ff3838]/15 text-[#ff3838]": tasks.priority === "high",
+              "bg-[#E4C2FF] dark:bg-[#860ee8]/20 text-[#860ee8] dark:text-[#c084fc]": tasks.priority === "medium",
+              "bg-[#e3e5e4] dark:bg-muted text-muted-foreground": tasks.priority === "low",
             }
           )}
         >
@@ -65,7 +65,7 @@ export const KanbanCard = ({ tasks }: KanbanCardProps) => {
       </div>
       <div className="border-b-2 ">
         <p className="font-bold">{tasks.title}</p>
-        <p className="text-sm text-gray-500 mb-2">
+        <p className="text-sm text-muted-foreground mb-2">
           {limitParagraph(tasks.description)}
         </p>
       </div>
@@ -77,16 +77,16 @@ export const KanbanCard = ({ tasks }: KanbanCardProps) => {
       )} */}
       <div className="flex justify-between items-center mr-0">
         <div className="flex gap-x-2">
-          <CalendarDays className="text-gray-500" />
-          <p className="text-gray-500">{tasks.dueDate}</p>
+          <CalendarDays className="text-muted-foreground" />
+          <p className="text-muted-foreground">{tasks.dueDate}</p>
         </div>
         <DateAlert date={tasks.endDate} />
       </div>
       {/* <div className="flex justify-between items-center">
         <div className="flex gap-x-2">
-          <MessageCircleMore className="text-gray-600" /> <p>16</p>
+          <MessageCircleMore className="text-muted-foreground" /> <p>16</p>
         </div>
-        <UserGroup className={"bg-blue-100 outline-blue-800"} />
+        <UserGroup className={"bg-blue-100 dark:bg-blue-500/15 outline-blue-800"} />
       </div> */}
     </div>
   );

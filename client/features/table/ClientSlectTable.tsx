@@ -233,8 +233,8 @@ export function ClientSelectDataTable({
 
   return (
     <div className="w-full">
-      <div className="flex justify-between items-center py-4">
-        <div className="flex gap-4">
+      <div className="flex flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-wrap gap-2 sm:gap-4">
           <Input
             placeholder="Search matter name..."
             value={
@@ -246,7 +246,7 @@ export function ClientSelectDataTable({
             className="max-w-sm"
           />
         </div>
-        <div className="flex gap-4">
+        <div className="flex flex-wrap gap-2 sm:gap-4">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="ml-auto">
@@ -321,12 +321,12 @@ export function ClientSelectDataTable({
           )}
         </Table>
       </div>
-      <div className="flex items-center justify-between px-2 mt-4">
+      <div className="mt-4 flex flex-col gap-3 px-2 sm:flex-row sm:items-center sm:justify-between">
         <div className="text-muted-foreground flex-1 text-sm">
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
           {table.getFilteredRowModel().rows.length} row(s) selected.
         </div>
-        <div className="flex items-center space-x-6 lg:space-x-8">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 lg:gap-x-8">
           <div className="flex items-center space-x-2">
             <p className="text-sm font-medium">Rows per page</p>
             <Select
@@ -349,7 +349,7 @@ export function ClientSelectDataTable({
               </SelectContent>
             </Select>
           </div>
-          <div className="flex w-[100px] items-center justify-center text-sm font-medium">
+          <div className="flex min-w-[100px] items-center justify-center text-sm font-medium">
             Page {table.getState().pagination.pageIndex + 1} of{" "}
             {table.getPageCount()}
           </div>

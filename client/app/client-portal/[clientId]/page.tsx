@@ -92,7 +92,7 @@ const ClientProgressPage = () => {
                   <div
                     className={cn(
                       "absolute top-3 left-[calc(50%+18px)] right-[-50%] h-4 -z-10 w-[140%]",
-                      index < currentStepIndex ? "bg-green-600" : "bg-green-200"
+                      index < currentStepIndex ? "bg-green-600" : "bg-green-200 dark:bg-green-500/25"
                     )}
                   />
                 )}
@@ -103,7 +103,7 @@ const ClientProgressPage = () => {
                     "font-bold w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-200",
                     isCompleted
                       ? "bg-green-600 text-white"
-                      : "border-green-600 border-2 text-green-800"
+                      : "border-green-600 border-2 text-green-800 dark:text-green-200"
                   )}
                 >
                   {isCompleted ? (
@@ -115,10 +115,10 @@ const ClientProgressPage = () => {
 
                 {/* Text Content */}
                 <div className="text-center mt-3">
-                  <h3 className="font-medium text-sm text-gray-900">
+                  <h3 className="font-medium text-sm text-foreground">
                     {step.title}
                   </h3>
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="text-xs text-muted-foreground mt-1">
                     {step.description}
                   </p>
                 </div>

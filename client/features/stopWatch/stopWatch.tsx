@@ -82,8 +82,8 @@ export const StopWatch: React.FC = () => {
   };
 
   return (
-    <div className="flex items-center gap-x-4">
-      <Timer className="size-10 text-[#64B7FF]" />
+    <div className="flex items-center gap-x-2 sm:gap-x-4">
+      <Timer className="hidden size-10 text-[#64B7FF] sm:block" />
       <div className="w-[70px]">
         <span className="text-xs">Time</span>
         <p>{formatTime()}</p>
@@ -108,8 +108,8 @@ export const StopWatch: React.FC = () => {
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2">
-                <div className="p-1 flex justify-center items-center bg-gray-200 outline-gray-800 outline-dashed rounded-full h-10 w-10">
-                  <Timer className="text-gray-600" size={25} />
+                <div className="p-1 flex justify-center items-center bg-border outline-muted-foreground outline-dashed rounded-full h-10 w-10">
+                  <Timer className="text-muted-foreground" size={25} />
                 </div>
                 Time entry
               </DialogTitle>

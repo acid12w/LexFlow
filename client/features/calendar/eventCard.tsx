@@ -12,14 +12,14 @@ interface EventCardProps {
 
 const statusColorMap: Record<CardStatus, string> = {
   // Matter Statuses
-  [MatterStatus.DONE]: "border-green-500 bg-green-50 text-green-700",
-  [MatterStatus.IN_PROGRESS]: "border-blue-500 bg-blue-50 text-blue-700",
-  [MatterStatus.AT_RISK]: "border-yellow-500 bg-yellow-50 text-yellow-700",
-  [MatterStatus.NOT_STARTED]: "border-yellow-500 bg-yellow-50 text-yellow-700",
+  [MatterStatus.DONE]: "border-green-500 bg-green-50 dark:bg-green-500/10 text-green-700 dark:text-green-300",
+  [MatterStatus.IN_PROGRESS]: "border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300",
+  [MatterStatus.AT_RISK]: "border-yellow-500 bg-yellow-50 dark:bg-yellow-500/10 text-yellow-700 dark:text-yellow-300",
+  [MatterStatus.NOT_STARTED]: "border-yellow-500 bg-yellow-50 dark:bg-yellow-500/10 text-yellow-700 dark:text-yellow-300",
 
   // Task Statuses
-  [TaskStatus.TODO]: "border-slate-500 bg-slate-50 text-slate-700",
-  [TaskStatus.IN_REVIEW]: "border-purple-500 bg-purple-50 text-purple-700",
+  [TaskStatus.TODO]: "border-muted-foreground/40 bg-muted/50 text-foreground/80",
+  [TaskStatus.IN_REVIEW]: "border-purple-500 bg-purple-50 dark:bg-purple-500/10 text-purple-700 dark:text-purple-300",
   // Map any remaining TaskStatus enums here...
 };
 

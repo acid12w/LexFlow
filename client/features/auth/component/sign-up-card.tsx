@@ -78,7 +78,7 @@ export const SignUpCard = () => {
   }
 
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)} className=" w-[70%] md:w-1/2">
+    <form onSubmit={form.handleSubmit(onSubmit)} className=" w-[88%] sm:w-[70%] md:w-1/2">
       <FieldSet>
         <FieldLegend className="">Create your account</FieldLegend>
         <FieldDescription>

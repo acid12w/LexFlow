@@ -219,11 +219,11 @@ export const getColumns = (
       return (
         <div
           className={cn("px-3 py-1 rounded-sm font-medium w-fit capitalize", {
-            "bg-[#d9fcf4] text-[#03a24e]": status === "DONE",
+            "bg-[#d9fcf4] dark:bg-[#00c496]/15 text-[#03a24e]": status === "DONE",
             "bg-[#E2F1FF] text-[#006bc9] dark:bg-[#006bc9] dark:text-[#E2F1FF]":
               status === "IN_PROGRESS",
-            "bg-[#E4C2FF] text-[#860ee8]": status === "IN_REVIEW",
-            "bg-[#fff4d3] text-[#e49101]": status === "TODO",
+            "bg-[#E4C2FF] dark:bg-[#860ee8]/20 text-[#860ee8] dark:text-[#c084fc]": status === "IN_REVIEW",
+            "bg-[#fff4d3] dark:bg-[#e49101]/15 text-[#e49101]": status === "TODO",
           })}
         >
           {formatStatus(status)}
@@ -291,8 +291,8 @@ export const getColumns = (
           className={cn("px-3 py-1 rounded-sm font-medium w-fit capitalize", {
             "bg-[#ffbfbf] text-[#ff3838] dark:bg-[#ff3838] dark:text-[#ffe0e0]":
               priority === "high",
-            "bg-[#E4C2FF] text-[#860ee8]": priority === "medium",
-            "bg-[#e3e5e4] text-[#5d5d5d]": priority === "low",
+            "bg-[#E4C2FF] dark:bg-[#860ee8]/20 text-[#860ee8] dark:text-[#c084fc]": priority === "medium",
+            "bg-[#e3e5e4] dark:bg-muted text-muted-foreground": priority === "low",
           })}
         >
           {priority}
@@ -311,7 +311,7 @@ export const getColumns = (
       return (
         <TaskUserGroup
           isEditing={isEditing}
-          className={"bg-blue-100 outline-blue-500"}
+          className={"bg-blue-100 dark:bg-blue-500/15 outline-blue-500"}
           row={row}
           table={table}
         />
@@ -402,8 +402,8 @@ export function TaskDataTable({
 
   return (
     <div className="w-full">
-      <div className="flex justify-between items-center py-4">
-        <div className="flex gap-4">
+      <div className="flex flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-wrap gap-2 sm:gap-4">
           <Input
             placeholder="Search task name..."
             value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
@@ -427,7 +427,7 @@ export function TaskDataTable({
             />
           )}
         </div>
-        <div className="flex gap-4">
+        <div className="flex flex-wrap gap-2 sm:gap-4">
           <div className="flex gap-2 items-center hover:text-blue-500">
             <Button
               variant="outline"
@@ -521,12 +521,12 @@ export function TaskDataTable({
           )}
         </Table>
       </div>
-      <div className="flex items-center justify-between px-2 mt-4">
+      <div className="mt-4 flex flex-col gap-3 px-2 sm:flex-row sm:items-center sm:justify-between">
         <div className="text-muted-foreground flex-1 text-sm">
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
           {table.getFilteredRowModel().rows.length} row(s) selected.
         </div>
-        <div className="flex items-center space-x-6 lg:space-x-8">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 lg:gap-x-8">
           <div className="flex items-center space-x-2">
             <p className="text-sm font-medium">Rows per page</p>
             <Select
@@ -549,7 +549,7 @@ export function TaskDataTable({
               </SelectContent>
             </Select>
           </div>
-          <div className="flex w-[100px] items-center justify-center text-sm font-medium">
+          <div className="flex min-w-[100px] items-center justify-center text-sm font-medium">
             Page {table.getState().pagination.pageIndex + 1} of{" "}
             {table.getPageCount()}
           </div>

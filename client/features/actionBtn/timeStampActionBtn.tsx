@@ -36,7 +36,7 @@ export function TimeStampActionBtn({ rowData }: TaskActionBtnProps) {
       </DropdownMenuItem> */}
 
       <DropdownMenuItem
-        className="text-red-600"
+        className="text-red-600 dark:text-red-400"
         onSelect={() => removeItem(caseId)}
       >
         Delete

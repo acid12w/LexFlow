@@ -38,20 +38,20 @@ export function DropdownMenuShortcuts() {
           <Link href="/setting/profile">
             <DropdownMenuItem>
               Setting
-              <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+              <DropdownMenuShortcut className="hidden sm:inline">⇧⌘P</DropdownMenuShortcut>
             </DropdownMenuItem>
           </Link>
           <Link href="/setting/users">
             <DropdownMenuItem>
               User management
-              <DropdownMenuShortcut>⌘M</DropdownMenuShortcut>
+              <DropdownMenuShortcut className="hidden sm:inline">⌘M</DropdownMenuShortcut>
             </DropdownMenuItem>{" "}
           </Link>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem className="cursor-pointer" onClick={handleLogout}>
           Log out
-          <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+          <DropdownMenuShortcut className="hidden sm:inline">⇧⌘Q</DropdownMenuShortcut>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

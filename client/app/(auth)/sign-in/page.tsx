@@ -12,13 +12,13 @@ import Link from "next/link";
 
 const Signin = () => {
   return (
-    <div className="bg-white dark:bg-gray-800 w-full flex py-8 md:py-0">
+    <div className="bg-card w-full min-h-dvh flex py-8 md:py-0">
       <div className="w-full md:w-1/2 flex flex-col justify-center items-center">
         <SignInCard />
-        <div className="mt-4 flex gap-4 flex-col w-[70%] md:w-1/2 text-center">
+        <div className="mt-4 flex gap-4 flex-col w-[88%] sm:w-[70%] md:w-1/2 text-center">
           <aside className="flex justify-center items-center gap-2">
             <span className="bg-border shrink w-24 h-px"></span>
-            <p className="text-sm text-gray-500 dark:text-white flex-none">
+            <p className="text-sm text-muted-foreground dark:text-white flex-none">
               Use your own email or
             </p>
             <span className="bg-border shrink w-24 h-px"></span>
@@ -32,7 +32,7 @@ const Signin = () => {
             </Button>
           </div>
           <aside>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-muted-foreground">
               Dont have a account ?{" "}
               <Link className="text-blue-500" href={"/sign-up"}>
                 Sign Up

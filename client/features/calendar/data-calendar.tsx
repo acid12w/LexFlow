@@ -54,7 +54,7 @@ const CustomToolBar = ({
   view,
 }: CustomToolBarProps) => {
   return (
-    <div className="flex justify-between items-center bg">
+    <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
       <div className="flex gap-x-2 items-center w-full lg:w-auto justify-center lg:justify-start">
         <Button
           onClick={() => {
@@ -87,7 +87,7 @@ const CustomToolBar = ({
           <ChevronRightIcon size={5} />
         </Button>
       </div>
-      <div className="flex gap-x-2 p-1 rounded-md">
+      <div className="flex justify-center gap-x-2 rounded-md p-1">
         {views.map((name) => (
           <Button
             key={name}
@@ -122,7 +122,7 @@ export const DataCalendar = ({ tasksData }: tasksDataProps) => {
   const [view, setView] = useState<any>(Views.MONTH); // Default view
 
   return (
-    <div className="py-4 bg" style={{ height: "700px" }}>
+    <div className="h-[600px] py-4 sm:h-[700px]">
       <Calendar
         localizer={localizer}
         date={value}

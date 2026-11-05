@@ -248,11 +248,11 @@ export function EditTaskForm({ isEditing }: { isEditing: boolean }) {
 
             <p
               className={cn(
-                "bg-[#d9fcf4] text-[#03a24e] font-medium px-2 py-1 rounded-sm flex items-center gap-x-2",
+                "bg-[#d9fcf4] dark:bg-[#00c496]/15 text-[#03a24e] font-medium px-2 py-1 rounded-sm flex items-center gap-x-2",
                 {
-                  "bg-[#d9fcf4] text-[#03a24e]": status === "complete",
-                  "bg-[#E2F1FF] text-[#006bc9]": status === "inprogress",
-                  "bg-[#fff4d3] text-[#e49101]": status === "not started",
+                  "bg-[#d9fcf4] dark:bg-[#00c496]/15 text-[#03a24e]": status === "complete",
+                  "bg-[#E2F1FF] dark:bg-[#0088FF]/15 text-[#006bc9] dark:text-[#64B7FF]": status === "inprogress",
+                  "bg-[#fff4d3] dark:bg-[#e49101]/15 text-[#e49101]": status === "not started",
                 }
               )}
             >
@@ -298,11 +298,11 @@ export function EditTaskForm({ isEditing }: { isEditing: boolean }) {
             </div>
             <p
               className={cn(
-                " bg-[#E2F1FF] text-[#006bc9] font-medium px-2 py-1 rounded-sm flex items-center gap-x-2",
+                " bg-[#E2F1FF] dark:bg-[#0088FF]/15 text-[#006bc9] dark:text-[#64B7FF] font-medium px-2 py-1 rounded-sm flex items-center gap-x-2",
                 {
-                  "bg-[#d9fcf4] text-[#03a24e]": status === "complete",
-                  "bg-[#E2F1FF] text-[#006bc9]": status === "inprogress",
-                  "bg-[#fff4d3] text-[#e49101]": status === "not started",
+                  "bg-[#d9fcf4] dark:bg-[#00c496]/15 text-[#03a24e]": status === "complete",
+                  "bg-[#E2F1FF] dark:bg-[#0088FF]/15 text-[#006bc9] dark:text-[#64B7FF]": status === "inprogress",
+                  "bg-[#fff4d3] dark:bg-[#e49101]/15 text-[#e49101]": status === "not started",
                 }
               )}
             >
@@ -314,7 +314,7 @@ export function EditTaskForm({ isEditing }: { isEditing: boolean }) {
               <SquareCheckBig size={20} />
               <p>Event Type</p>
             </div>
-            <p className="bg-[#fff4d3] text-[#e49101] rounded-sm px-3 py-1">
+            <p className="bg-[#fff4d3] dark:bg-[#e49101]/15 text-[#e49101] rounded-sm px-3 py-1">
               Court
             </p>
           </div>

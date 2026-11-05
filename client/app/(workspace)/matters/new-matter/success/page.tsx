@@ -7,7 +7,7 @@ export default function MatterSuccess() {
     <div className="flex flex-col gap-3 items-center">
       <Check className="bg-[#028d2b] p-4 text-white rounded-full h-20 w-20" />
       <h4 className="text-4xl font-bold ">Matter Created successfully</h4>
-      <p className="text-gray-500">Get started manging today</p>
+      <p className="text-muted-foreground">Get started manging today</p>
       <div className="flex gap-x-6 mt-6">
         <Link href="/matters">
           <Button>View matter</Button>

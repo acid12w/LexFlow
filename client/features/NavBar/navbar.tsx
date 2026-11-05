@@ -1,27 +1,21 @@
 "use client";
 
 import { StopWatch } from "../stopWatch/stopWatch";
-import { useUserCredentials } from "@/app/store/user-store";
+import { SidebarTrigger } from "@/components/ui/sidebar";
+import { ModeToggle } from "@/features/setting/component/mode-toggle";
 import { DropdownMenuShortcuts } from "@/features/drop-down/drop-down";
 
 export function NavigationMenuBar() {
-  const userData = useUserCredentials((state) => state?.user);
-
   return (
-    <nav className="border-b py-2 px-6 w-full bg-white">
-      <ul className=" w-full flex justify-between">
-        <li>
-          <StopWatch />
-        </li>
-        <li className=" flex items-center gap-2">
-          {/* <div>
-            <MdOutlineNotificationsNone className="text-2xl" />
-          </div> */}
-          <div>
-            <DropdownMenuShortcuts />
-          </div>
-        </li>
-      </ul>
+    <nav className="flex w-full items-center gap-2 border-b bg-background px-3 py-2 sm:px-6">
+      <SidebarTrigger className="shrink-0" />
+      <div className="min-w-0 flex-1 overflow-x-auto">
+        <StopWatch />
+      </div>
+      <div className="flex shrink-0 items-center gap-2">
+        <ModeToggle />
+        <DropdownMenuShortcuts />
+      </div>
     </nav>
   );
 }

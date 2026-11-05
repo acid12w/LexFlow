@@ -21,7 +21,7 @@ function AccountType() {
 
       <div className="flex gap-8">
         <Link href="/join-firm">
-          <div className="border-2 rounded-md p-4 hover:bg-[#E7F4FF] hover:text-[#279AFF] hover:border-[#279AFF] cursor-pointer">
+          <div className="border-2 rounded-md p-4 hover:bg-[#E7F4FF] dark:hover:bg-[#0088FF]/15 hover:text-[#279AFF] hover:border-[#279AFF] cursor-pointer">
             <p>
               Create a New Firm I'm setting
               <br /> up a new law practice
@@ -31,7 +31,7 @@ function AccountType() {
         </Link>
 
         <Link href="create-firm">
-          <div className="border-2 rounded-md p-4 hover:bg-[#E7F4FF] hover:text-[#279AFF] hover:border-[#279AFF] cursor-pointer">
+          <div className="border-2 rounded-md p-4 hover:bg-[#E7F4FF] dark:hover:bg-[#0088FF]/15 hover:text-[#279AFF] hover:border-[#279AFF] cursor-pointer">
             <p>
               Create a New Firm I'm setting
               <br /> up a new law practice

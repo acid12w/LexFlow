@@ -78,7 +78,7 @@ export function NewTimeForm({
     >
       <FieldGroup>
         {/* Display the current time at the top for visual feedback */}
-        <div className="mb-4 p-2 bg-slate-100 rounded text-center font-mono">
+        <div className="mb-4 p-2 bg-muted rounded text-center font-mono">
           Duration: {currentTime}
         </div>
 

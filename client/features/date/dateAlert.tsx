@@ -38,8 +38,8 @@ export const DateAlert = ({ date }: DateAlertProps) => {
       className={cn(
         "px-3 py-1 rounded-sm font-medium text-sm w-fit capitalize",
         daysLeft <= 3
-          ? "bg-[#ffeaea] text-[#fc3838]"
-          : "bg-gray-100 text-gray-500"
+          ? "bg-[#ffeaea] dark:bg-[#ff3838]/15 text-[#fc3838] dark:text-[#ff6b6b]"
+          : "bg-muted text-muted-foreground"
       )}
     >
       <p>{daysLeft <= 5 ? label : formattedShort}</p>

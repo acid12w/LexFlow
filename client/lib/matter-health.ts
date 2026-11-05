@@ -17,14 +17,14 @@ export const MATTER_STATUS_LABELS: Record<MatterStatus, string> = {
 export function matterStatusClassName(status: string) {
   switch (status) {
     case MATTER_STATUS.DONE:
-      return "bg-[#d9fcf4] text-[#03a24e]";
+      return "bg-[#d9fcf4] dark:bg-[#00c496]/15 text-[#03a24e]";
     case MATTER_STATUS.IN_PROGRESS:
       return "bg-[#E2F1FF] text-[#006bc9] dark:bg-[#006bc9] dark:text-[#E2F1FF]";
     case MATTER_STATUS.AT_RISK:
       return "bg-[#ffbfbf] text-[#ff3838] dark:bg-[#ff3838] dark:text-[#ffe0e0]";
     case MATTER_STATUS.NOT_STARTED:
     default:
-      return "bg-[#fff4d3] text-[#e49101]";
+      return "bg-[#fff4d3] dark:bg-[#e49101]/15 text-[#e49101]";
   }
 }
 

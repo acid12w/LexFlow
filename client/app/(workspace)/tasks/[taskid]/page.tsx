@@ -32,10 +32,10 @@ import { MATTER_STATUS, MATTER_STATUS_LABELS } from "@/lib/matter-health";
 
 // 1. Declare your layout design maps OUTSIDE the component rendering loops
 const STATUS_STYLES = {
-  IN_PROGRESS: { badge: "bg-[#E2F1FF] text-[#006bc9]", dot: "bg-[#006bc9]" },
-  NOT_STARTED: { badge: "bg-[#fff4d3] text-[#e49101]", dot: "bg-[#e49101]" },
-  DONE: { badge: "bg-[#d9fcf4] text-[#00c496]", dot: "bg-[#00c496]" },
-  AT_RISK: { badge: "bg-[#ffd2c2] text-[#e80e0e]", dot: "bg-[#e80e0e]" },
+  IN_PROGRESS: { badge: "bg-[#E2F1FF] dark:bg-[#0088FF]/15 text-[#006bc9] dark:text-[#64B7FF]", dot: "bg-[#006bc9]" },
+  NOT_STARTED: { badge: "bg-[#fff4d3] dark:bg-[#e49101]/15 text-[#e49101]", dot: "bg-[#e49101]" },
+  DONE: { badge: "bg-[#d9fcf4] dark:bg-[#00c496]/15 text-[#00c496]", dot: "bg-[#00c496]" },
+  AT_RISK: { badge: "bg-[#ffd2c2] dark:bg-[#ff3838]/15 text-[#e80e0e] dark:text-[#ff6b6b]", dot: "bg-[#e80e0e]" },
 } as const;
 
 type User = { id: string; [key: string]: unknown };
@@ -76,8 +76,8 @@ export default function TaskWorkspace() {
   // ✅ FIXED: Safely look up styles from the extracted status styling matrix block
   const statusKey = matterData?.data.status as keyof typeof STATUS_STYLES;
   const currentStyle = STATUS_STYLES[statusKey] || {
-    badge: "bg-gray-100 text-gray-700",
-    dot: "bg-gray-400",
+    badge: "bg-muted text-foreground/80",
+    dot: "bg-muted-foreground/50",
   };
 
   return (
@@ -120,7 +120,7 @@ export default function TaskWorkspace() {
               variant="outline"
               className={cn(
                 taskSwitcher === "spreadsheet"
-                  ? "bg-[#E2F1FF] text-[#0088FF] border-[#0088FF]"
+                  ? "bg-[#E2F1FF] dark:bg-[#0088FF]/15 text-[#0088FF] border-[#0088FF]"
                   : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
               )}
             >
@@ -131,7 +131,7 @@ export default function TaskWorkspace() {
               variant="outline"
               className={cn(
                 taskSwitcher === "kanban"
-                  ? "bg-[#E2F1FF] text-[#0088FF] border-[#0088FF]"
+                  ? "bg-[#E2F1FF] dark:bg-[#0088FF]/15 text-[#0088FF] border-[#0088FF]"
                   : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
               )}
             >
@@ -142,7 +142,7 @@ export default function TaskWorkspace() {
               variant="outline"
               className={cn(
                 taskSwitcher === "calendar"
-                  ? "bg-[#E2F1FF] text-[#0088FF] border-[#0088FF]"
+                  ? "bg-[#E2F1FF] dark:bg-[#0088FF]/15 text-[#0088FF] border-[#0088FF]"
                   : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
               )}
             >

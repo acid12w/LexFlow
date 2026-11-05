@@ -70,7 +70,7 @@ const ClientDetails = () => {
           {clientData?.data.clientMatters.response.map((matter: any) => (
             <div
               key={matter._id}
-              className="grid grid-cols-3 border rounded-md text-left p-4"
+              className="grid grid-cols-1 sm:grid-cols-3 border rounded-md text-left p-4"
             >
               <div className="p-2 justify-self-start text-center rounded">
                 <div className="">matter</div>
@@ -83,7 +83,7 @@ const ClientDetails = () => {
                 <span className={cn("w-3 h-3 rounded-full")} />
                 <p className="text-sm font-bold">{matter.status}</p>
               </div>
-              <div className="p-2 row-span-2 justify-self-end text-center rounded text-gray-500">
+              <div className="p-2 row-span-2 justify-self-end text-center rounded text-muted-foreground">
                 <Link href={`/tasks/${matter._id}`}>
                   <ArrowRight />
                 </Link>

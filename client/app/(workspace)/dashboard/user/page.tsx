@@ -239,7 +239,7 @@ function Card({
 }) {
   return (
     <section
-      className={`rounded-xl border border-slate-200 bg-white shadow-sm ${className}`}
+      className={`rounded-xl border border-border bg-card shadow-sm ${className}`}
     >
       {children}
     </section>
@@ -256,10 +256,10 @@ function CardHeader({
   action?: ReactNode;
 }) {
   return (
-    <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4">
-      <div className="flex items-center gap-2 font-semibold text-slate-900">
+    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border/60 px-5 py-4">
+      <div className="flex items-center gap-2 font-semibold text-foreground">
         {Icon && (
-          <Icon className="h-8 w-8 text-slate-700 bg-gray-100 outline-gray-800 outline-dashed p-2 rounded-full" />
+          <Icon className="h-8 w-8 text-foreground/80 bg-muted outline-muted-foreground outline-dashed p-2 rounded-full" />
         )}
         {title}
       </div>
@@ -270,7 +270,7 @@ function CardHeader({
 
 function ViewAll() {
   return (
-    <button className="text-xs font-medium text-blue-600 hover:text-blue-700">
+    <button className="text-xs font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300">
       View all →
     </button>
   );
@@ -278,16 +278,16 @@ function ViewAll() {
 
 function StatusBadge({ status }: { status: string }) {
   const styles: Record<string, string> = {
-    "In Progress": "bg-blue-50 text-blue-700",
-    "In Review": "bg-violet-50 text-violet-700",
-    "At Risk": "bg-red-50 text-red-700",
-    "Not Started": "bg-slate-100 text-slate-600",
-    Completed: "bg-emerald-50 text-emerald-700",
+    "In Progress": "bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300",
+    "In Review": "bg-violet-50 dark:bg-violet-500/10 text-violet-700 dark:text-violet-300",
+    "At Risk": "bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-300",
+    "Not Started": "bg-muted text-muted-foreground",
+    Completed: "bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
   };
   return (
     <span
       className={`rounded-full px-2 py-1 text-[11px] font-medium ${
-        styles[status] ?? "bg-slate-100 text-slate-600"
+        styles[status] ?? "bg-muted text-muted-foreground"
       }`}
     >
       {status}
@@ -311,20 +311,20 @@ function StatCard({
   return (
     <Card className="p-4">
       <div className="flex items-start justify-between">
-        <div className="rounded-lg bg-blue-50 p-2 text-blue-600">
+        <div className="rounded-lg bg-blue-50 dark:bg-blue-500/10 p-2 text-blue-600 dark:text-blue-400">
           <Icon className="h-4 w-4" />
         </div>
         {danger && (
-          <span className="rounded-full bg-red-50 px-2 py-1 text-[10px] font-medium text-red-600">
+          <span className="rounded-full bg-red-50 dark:bg-red-500/10 px-2 py-1 text-[10px] font-medium text-red-600 dark:text-red-400">
             Attention
           </span>
         )}
       </div>
-      <p className="mt-4 text-xs text-slate-500">{label}</p>
-      <p className="mt-1 text-2xl font-semibold tracking-tight text-slate-950">
+      <p className="mt-4 text-xs text-muted-foreground">{label}</p>
+      <p className="mt-1 text-2xl font-semibold tracking-tight text-foreground">
         {value}
       </p>
-      {note && <p className="mt-1 text-[11px] text-slate-400">{note}</p>}
+      {note && <p className="mt-1 text-[11px] text-muted-foreground/70">{note}</p>}
     </Card>
   );
 }
@@ -357,7 +357,7 @@ function WeeklyBars({ values }: { values: any[] }) {
               className="w-full rounded-t bg-blue-500 transition-all duration-300"
               style={{ height: `${calculatedHeight}px` }}
             />
-            <span className="text-[9px] text-slate-400">{shortDay}</span>
+            <span className="text-[9px] text-muted-foreground/70">{shortDay}</span>
           </div>
         );
       })}
@@ -413,7 +413,7 @@ export default function UserDashboard({
         name={data.userName}
         subtitle="Here's what's happening with your work today."
       />
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
         <StatCard
           icon={BriefcaseBusiness}
           label="My Matters"
@@ -444,26 +444,26 @@ export default function UserDashboard({
       <div className="mt-4 grid gap-4 xl:grid-cols-[1.5fr_1fr]">
         <Card>
           <CardHeader icon={ListTodo} title="My Tasks" action={<ViewAll />} />
-          <div className="divide-y divide-slate-100">
+          <div className="divide-y divide-border/60">
             {TasksData.map((task: DashboardTask, index: number) => (
               <div key={index} className="flex items-center gap-3 px-5 py-4">
                 <input
                   type="checkbox"
-                  className="h-4 w-4 rounded border-slate-300"
+                  className="h-4 w-4 rounded border-input"
                   defaultChecked={task.status === "DONE"}
                 />
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium text-slate-800">
+                  <p className="truncate text-sm font-medium text-foreground">
                     {task.title}
                   </p>
-                  <p className="mt-1 text-xs text-slate-400">
+                  <p className="mt-1 text-xs text-muted-foreground/70">
                     {task.priority} priority
                   </p>
                 </div>
-                <span className="hidden text-xs text-slate-400 sm:block">
+                <span className="hidden text-xs text-muted-foreground/70 sm:block">
                   {task.endDate}
                 </span>
-                <ChevronRight className="h-4 w-4 text-slate-300" />
+                <ChevronRight className="h-4 w-4 text-muted-foreground/50" />
               </div>
             ))}
           </div>
@@ -480,25 +480,25 @@ export default function UserDashboard({
             }
           />
           <div className="p-5">
-            <p className="text-3xl font-semibold text-slate-950">
+            <p className="text-3xl font-semibold text-foreground">
               {timeData.summary.grandTotal}
             </p>
-            <p className="mt-1 text-xs text-slate-400">Total logged today</p>
+            <p className="mt-1 text-xs text-muted-foreground/70">Total logged today</p>
             <div className="mt-5 grid grid-cols-2 gap-3">
-              <div className="rounded-lg bg-slate-50 p-3">
-                <p className="text-xs text-slate-400">Billable</p>
+              <div className="rounded-lg bg-muted/50 p-3">
+                <p className="text-xs text-muted-foreground/70">Billable</p>
                 <p className="mt-1 font-semibold">
                   {timeData.summary.totalBillable}
                 </p>
               </div>
-              <div className="rounded-lg bg-slate-50 p-3">
-                <p className="text-xs text-slate-400">Non-billable</p>
+              <div className="rounded-lg bg-muted/50 p-3">
+                <p className="text-xs text-muted-foreground/70">Non-billable</p>
                 <p className="mt-1 font-semibold">
                   {timeData.summary.totalNonBillable}
                 </p>
               </div>
             </div>
-            <p className="mt-5 text-xs font-medium text-slate-600">
+            <p className="mt-5 text-xs font-medium text-muted-foreground">
               Weekly Billable Hours
             </p>
             <WeeklyBars values={weeklytime} />
@@ -526,7 +526,7 @@ function DashboardShell({
   roleLabel: string;
 }) {
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900">
+    <div className="min-h-dvh bg-muted/50 text-foreground dark:bg-background">
       <main className="">
         <div className="mx-auto max-w-[1450px] p-4 sm:p-6">{children}</div>
       </main>
@@ -547,9 +547,9 @@ function DashboardHeading({
         <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
           Good morning, {name} <span>👋</span>
         </h1>
-        <p className="mt-1 text-sm text-slate-500">{subtitle}</p>
+        <p className="mt-1 text-sm text-muted-foreground">{subtitle}</p>
       </div>
-      <p className="hidden text-xs text-slate-400 sm:block">Today</p>
+      <p className="hidden text-xs text-muted-foreground/70 sm:block">Today</p>
     </div>
   );
 }
@@ -560,7 +560,7 @@ function MatterTable({ title, matters }: { title: string; matters: any[] }) {
       <CardHeader icon={BriefcaseBusiness} title={title} action={<ViewAll />} />
       <div className="overflow-x-auto">
         <table className="w-full text-left text-sm">
-          <thead className="bg-slate-50 text-[10px] uppercase text-slate-400">
+          <thead className="bg-muted/50 text-[10px] uppercase text-muted-foreground/70">
             <tr>
               <th className="px-5 py-3">Matter</th>
               <th className="px-3 py-3">Client</th>
@@ -568,15 +568,15 @@ function MatterTable({ title, matters }: { title: string; matters: any[] }) {
               <th className="px-3 py-3">Due</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-border/60">
             {matters.map((m, index) => (
-              <tr key={index} className="hover:bg-slate-50">
+              <tr key={index} className="hover:bg-muted/50">
                 <td className="px-5 py-3 font-medium">{m.title}</td>
-                <td className="px-3 py-3 text-slate-500">{m.client}</td>
+                <td className="px-3 py-3 text-muted-foreground">{m.client}</td>
                 <td className="px-3 py-3">
                   <StatusBadge status={m.status} />
                 </td>
-                <td className="px-3 py-3 text-slate-500">{m.due}</td>
+                <td className="px-3 py-3 text-muted-foreground">{m.due}</td>
               </tr>
             ))}
           </tbody>
@@ -594,7 +594,7 @@ function DeadlineList({ deadlines }: { deadlines: any[] }) {
         title="Upcoming Deadlines"
         action={<ViewAll />}
       />
-      <div className="divide-y divide-slate-100">
+      <div className="divide-y divide-border/60">
         {deadlines.map((d, index) => {
           const islast = index === deadlines.length - 1;
           return (
@@ -605,21 +605,21 @@ function DeadlineList({ deadlines }: { deadlines: any[] }) {
               <div
                 className={`grid h-10 w-10 shrink-0 place-items-center rounded-lg text-[10px] font-semibold ${
                   d.urgent
-                    ? "bg-red-50 text-red-600"
-                    : "bg-slate-50 text-slate-500"
+                    ? "bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400"
+                    : "bg-muted/50 text-muted-foreground"
                 }`}
               >
                 {d.date}
               </div>
               <div className="min-w-0 flex-1 ml-4">
                 <p className="truncate text-sm font-medium">{d.title}</p>
-                <p className="truncate text-xs text-slate-400">{d.matter}</p>
+                <p className="truncate text-xs text-muted-foreground/70">{d.matter}</p>
               </div>
-              <ChevronRight className="h-4 w-4 text-slate-300" />
+              <ChevronRight className="h-4 w-4 text-muted-foreground/50" />
 
               <div
                 className={cn(
-                  "absolute top-2 left-[70px] h-[83%] z-10 w-0.5 bg-gray-200",
+                  "absolute top-2 left-[70px] h-[83%] z-10 w-0.5 bg-border",
                 )}
               />
             </div>
@@ -640,23 +640,23 @@ function ActivityCard({
   const iconClass = "size-[40px] rounded-full p-2";
   const ActivityIconMap: Record<string, React.ReactNode> = {
     TASK_MGMT: (
-      <ScrollText className={`${iconClass} bg-amber-100 text-amber-400`} />
+      <ScrollText className={`${iconClass} bg-amber-100 dark:bg-amber-500/15 text-amber-400`} />
     ),
     CASE_MGMT: (
-      <BriefcaseBusiness className={`${iconClass} bg-blue-100 text-blue-500`} />
+      <BriefcaseBusiness className={`${iconClass} bg-blue-100 dark:bg-blue-500/15 text-blue-500`} />
     ),
     TIME_TRACKER_MGMT: (
-      <Timer className={`${iconClass} bg-emerald-100 text-emerald-500`} />
+      <Timer className={`${iconClass} bg-emerald-100 dark:bg-emerald-500/15 text-emerald-500`} />
     ),
   };
   const fallbackIcon = (
-    <Activity className={`${iconClass} bg-slate-100 text-slate-400`} />
+    <Activity className={`${iconClass} bg-muted text-muted-foreground/70`} />
   );
 
   return (
     <Card className="mt-4">
       <CardHeader icon={Activity} title={title} action={<ViewAll />} />
-      <div className="divide-y divide-slate-100">
+      <div className="divide-y divide-border/60">
         {activity.map((a, index) => {
           const icon = ActivityIconMap[a.category] ?? fallbackIcon;
           const islast = index === activity.length - 1;
@@ -667,7 +667,7 @@ function ActivityCard({
                 {!islast && (
                   <div
                     className={cn(
-                      "absolute top-10 right-[19px] h-[83%] z-10 w-0.5 bg-gray-200",
+                      "absolute top-10 right-[19px] h-[83%] z-10 w-0.5 bg-border",
                     )}
                   />
                 )}
@@ -675,9 +675,9 @@ function ActivityCard({
 
               <div className="flex-1">
                 {/* <p className="text-sm font-medium">{a.metadata.actionTitle}</p> */}
-                <p className="text-xs text-slate-400">{a.description}</p>
+                <p className="text-xs text-muted-foreground/70">{a.description}</p>
               </div>
-              <span className="text-xs text-slate-400">{a.createdAt}</span>
+              <span className="text-xs text-muted-foreground/70">{a.createdAt}</span>
             </div>
           );
         })}

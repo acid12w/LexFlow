@@ -111,7 +111,7 @@ function JoinFirm() {
 
   return (
     <main className="flex min-h-screen items-center justify-center">
-      <form onSubmit={form.handleSubmit(onSubmit)} className="w-[70%] md:w-1/3">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="w-[88%] sm:w-[70%] md:w-1/3">
         <FieldSet>
           <FieldLegend>Activate Your Account</FieldLegend>
 

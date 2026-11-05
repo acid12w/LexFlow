@@ -12,11 +12,11 @@ export const CommentComponent = () => {
           </Avatar>
           <div>
             <p>Liam Rubican</p>
-            <p className="text-xs text-gray-400">28 mintues ago</p>
+            <p className="text-xs text-muted-foreground/70">28 mintues ago</p>
           </div>
         </div>
         <div>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-muted-foreground">
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi hic
             pariatur maiores! Quam veniam dicta ut, praesentium sit aut
             adipisci.

@@ -41,15 +41,15 @@ export default function SettingNavigation({
   const userData = useUserCredentials((state) => state?.user);
 
   return (
-    <main className="flex h-screen">
-      <ul className="flex justify-center flex-col gap-4 p-4">
-        <h1 className="text-2xl">Setting</h1>
-        <Separator />
+    <main className="flex min-h-dvh flex-col md:flex-row">
+      <ul className="flex flex-wrap items-center gap-x-4 gap-y-2 p-4 md:flex-col md:items-start md:justify-center md:gap-4">
+        <h1 className="w-full text-2xl md:w-auto">Setting</h1>
+        <Separator className="hidden md:block" />
         <li
           className={cn(
             pathname.startsWith("/setting/profile")
               ? "text-[#0088FF] underline"
-              : "text-gray-800"
+              : "text-foreground"
           )}
         >
           <Link href={"/setting/profile"}>profile</Link>
@@ -59,7 +59,7 @@ export default function SettingNavigation({
             className={cn(
               pathname.startsWith("/setting/users")
                 ? "text-[#0088FF] underline"
-                : "text-gray-800"
+                : "text-foreground"
             )}
           >
             <Link href={"/setting/users"}>users</Link>
@@ -69,7 +69,7 @@ export default function SettingNavigation({
           className={cn(
             pathname.startsWith("/setting/prefrences")
               ? "text-[#0088FF] underline"
-              : "text-gray-800"
+              : "text-foreground"
           )}
         >
           <Link href={"/setting/prefrences"}>prefrences</Link>

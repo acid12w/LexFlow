@@ -35,7 +35,7 @@ export default function MatterWorkspace({
 
   return (
     <>
-      <div className="w-full flex flex-row justify-between border-b px-2 py-4">
+      <div className="flex w-full flex-col gap-4 border-b px-3 py-4 sm:flex-row sm:justify-between sm:px-4">
         <div className="flex flex-col gap-3">
           <BreadcrumbWithCustomSeparator pathnameProps={pathname} />
 
@@ -47,7 +47,7 @@ export default function MatterWorkspace({
                 onClick={() => router.push("/dashboard/user")}
                 className={cn(
                   pathname === "/dashboard/user"
-                    ? "bg-[#E2F1FF] text-[#0088FF] border-[#0088FF]"
+                    ? "bg-[#E2F1FF] dark:bg-[#0088FF]/15 text-[#0088FF] border-[#0088FF]"
                     : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
                 )}
                 variant="outline"
@@ -58,7 +58,7 @@ export default function MatterWorkspace({
                 onClick={() => router.push("/dashboard/firm")}
                 className={cn(
                   pathname === "/dashboard/firm"
-                    ? "bg-[#E2F1FF] text-[#0088FF] border-[#0088FF]"
+                    ? "bg-[#E2F1FF] dark:bg-[#0088FF]/15 text-[#0088FF] border-[#0088FF]"
                     : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
                 )}
                 variant="outline"

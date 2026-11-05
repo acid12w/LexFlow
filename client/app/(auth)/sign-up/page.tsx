@@ -10,20 +10,20 @@ import Link from "next/link";
 
 const SignUpPage = () => {
   return (
-    <div className="bg-white dark:bg-gray-800 w-full flex py-8 md:py-0">
+    <div className="bg-card w-full min-h-dvh flex py-8 md:py-0">
       <div className="w-full md:w-1/2 flex flex-col justify-center items-center">
-        <Suspense fallback={<div className="w-[70%] md:w-1/2">Loading...</div>}>
+        <Suspense fallback={<div className="w-[88%] sm:w-[70%] md:w-1/2">Loading...</div>}>
           <SignUpCard />
         </Suspense>
-        <div className="mt-4 flex gap-4 flex-col w-[70%] md:w-1/2 text-center">
+        <div className="mt-4 flex gap-4 flex-col w-[88%] sm:w-[70%] md:w-1/2 text-center">
           <aside className="flex justify-center items-center gap-2">
             <span className="bg-border shrink w-24 h-px"></span>
-            <p className="text-sm text-gray-500 flex-none">or</p>
+            <p className="text-sm text-muted-foreground flex-none">or</p>
             <span className="bg-border shrink w-24 h-px"></span>
           </aside>
 
           <aside>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-muted-foreground">
               Already have an Account ?{" "}
               <Link className="text-blue-500" href={"/sign-in"}>
                 Sign In

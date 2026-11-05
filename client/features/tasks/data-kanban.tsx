@@ -129,12 +129,12 @@ export const DataKanban = ({ data }: DataKanbanProps) => {
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <div className="flex overflow-x-auto mt-5">
+      <div className="mt-5 flex snap-x snap-mandatory overflow-x-auto pb-2">
         {boards.map((board) => {
           return (
             <div
               key={board}
-              className="flex-1 mx-2 bg-[#F7F9FD] p-3 rounded-md min-w-[200px]"
+              className="mx-2 min-w-[80%] flex-1 snap-start rounded-md bg-muted/50 p-3 sm:min-w-[240px]"
             >
               <KanbanColumnHeader
                 board={board}

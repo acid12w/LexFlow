@@ -30,8 +30,8 @@ function TaskModal({
       <DialogContent className="sm:max-w-[590px]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <div className="p-1 flex justify-center items-center bg-gray-200 outline-gray-800 outline-dashed rounded-full h-10 w-10">
-              <TbSubtask className=" text-gray-600 " size={25} />
+            <div className="p-1 flex justify-center items-center bg-border outline-muted-foreground outline-dashed rounded-full h-10 w-10">
+              <TbSubtask className=" text-muted-foreground " size={25} />
             </div>
             Create Task
           </DialogTitle>

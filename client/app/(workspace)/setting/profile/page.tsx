@@ -155,7 +155,7 @@ const Profile = () => {
 
       {/* Header Banner Block */}
       <div
-        className="w-full h-32 p-5 rounded-2xl flex items-center justify-center bg-cover bg-center bg-no-repeat border-gray-200 border relative"
+        className="w-full h-32 p-5 rounded-2xl flex items-center justify-center bg-cover bg-center bg-no-repeat border-border border relative"
         style={{ backgroundImage: `url(${image1.src})` }}
       >
         <div className="absolute -bottom-8 left-6"></div>
@@ -165,10 +165,10 @@ const Profile = () => {
         {/* ==================== FORM 1: PERSONAL INFORMATION ==================== */}
         <form
           onSubmit={handleUpdatePersonal}
-          className="w-full h-max p-5 rounded-2xl flex flex-col gap-y-4 bg-white border-gray-200 border shadow-sm"
+          className="w-full h-max p-5 rounded-2xl flex flex-col gap-y-4 bg-card border-border border shadow-sm"
         >
           <div className="flex justify-between items-center">
-            <h4 className="font-bold text-xl text-slate-800">
+            <h4 className="font-bold text-xl text-foreground">
               Personal Information
             </h4>
             {isEditToggle.personal ? (
@@ -204,7 +204,7 @@ const Profile = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <div className="space-y-1">
-              <Label className="text-gray-400">Username</Label>
+              <Label className="text-muted-foreground/70">Username</Label>
               {isEditToggle.personal ? (
                 <Input
                   value={personalData.userName}
@@ -216,23 +216,23 @@ const Profile = () => {
                   }
                 />
               ) : (
-                <p className="font-medium text-slate-900 px-1">
+                <p className="font-medium text-foreground px-1">
                   {userData?.userName ?? "No data available"}
                 </p>
               )}
             </div>
 
             <div className="space-y-1">
-              <Label className="text-gray-400">Role</Label>
+              <Label className="text-muted-foreground/70">Role</Label>
               <Input
                 value={personalData.role}
                 disabled
-                className="bg-slate-50 text-slate-500"
+                className="bg-muted/50 text-muted-foreground"
               />
             </div>
 
             <div className="space-y-1">
-              <Label className="text-gray-400">First Name</Label>
+              <Label className="text-muted-foreground/70">First Name</Label>
               {isEditToggle.personal ? (
                 <Input
                   value={personalData.firstName}
@@ -244,14 +244,14 @@ const Profile = () => {
                   }
                 />
               ) : (
-                <p className="font-medium text-slate-900 px-1">
+                <p className="font-medium text-foreground px-1">
                   {userData?.profile?.firstName ?? "No data available"}
                 </p>
               )}
             </div>
 
             <div className="space-y-1">
-              <Label className="text-gray-400">Last Name</Label>
+              <Label className="text-muted-foreground/70">Last Name</Label>
               {isEditToggle.personal ? (
                 <Input
                   value={personalData.lastName}
@@ -263,14 +263,14 @@ const Profile = () => {
                   }
                 />
               ) : (
-                <p className="font-medium text-slate-900 px-1">
+                <p className="font-medium text-foreground px-1">
                   {userData?.profile?.lastName ?? "No data available"}
                 </p>
               )}
             </div>
 
             <div className="space-y-1">
-              <Label className="text-gray-400">Email</Label>
+              <Label className="text-muted-foreground/70">Email</Label>
               {isEditToggle.personal ? (
                 <Input
                   type="email"
@@ -283,14 +283,14 @@ const Profile = () => {
                   }
                 />
               ) : (
-                <p className="font-medium text-slate-900 px-1">
+                <p className="font-medium text-foreground px-1">
                   {userData?.profile?.email ?? "No data available"}
                 </p>
               )}
             </div>
 
             <div className="space-y-1">
-              <Label className="text-gray-400">Phone Number</Label>
+              <Label className="text-muted-foreground/70">Phone Number</Label>
               {isEditToggle.personal ? (
                 <Input
                   value={personalData.phone}
@@ -302,7 +302,7 @@ const Profile = () => {
                   }
                 />
               ) : (
-                <p className="font-medium text-slate-900 px-1">
+                <p className="font-medium text-foreground px-1">
                   {userData?.profile?.phone ?? "No data available"}
                 </p>
               )}
@@ -313,10 +313,10 @@ const Profile = () => {
         {/* ==================== FORM 2: PRACTICE DETAILS ==================== */}
         <form
           onSubmit={handleUpdatePractice}
-          className="w-full h-max p-5 rounded-2xl flex flex-col gap-y-4 bg-slate-50 border-gray-200 border shadow-sm"
+          className="w-full h-max p-5 rounded-2xl flex flex-col gap-y-4 bg-muted/50 border-border border shadow-sm"
         >
           <div className="flex justify-between items-center">
-            <h4 className="font-bold text-xl text-slate-800">
+            <h4 className="font-bold text-xl text-foreground">
               Practice Details
             </h4>
             {isEditToggle.practice ? (
@@ -349,14 +349,14 @@ const Profile = () => {
             )}
           </div>
           <div className="flex flex-col gap-y-2">
-            <Label className="text-gray-400">
+            <Label className="text-muted-foreground/70">
               Assigned Practice Focus Areas
             </Label>
             <InputTags
               value={values}
               onChange={setValues}
               placeholder="Enter values, comma separated..."
-              className="max-w-[500px] bg-white"
+              className="max-w-[500px] bg-card"
             />
           </div>
         </form>
@@ -364,10 +364,10 @@ const Profile = () => {
         {/* ==================== FORM 3: BILLING CONFIGURATIONS ==================== */}
         <form
           onSubmit={handleUpdateBilling}
-          className="w-full h-max p-5 rounded-2xl flex flex-col gap-y-4 bg-white border-gray-200 border shadow-sm"
+          className="w-full h-max p-5 rounded-2xl flex flex-col gap-y-4 bg-card border-border border shadow-sm"
         >
           <div className="flex justify-between items-center">
-            <h4 className="font-bold text-xl text-slate-800">
+            <h4 className="font-bold text-xl text-foreground">
               Billing parameters
             </h4>
             {isEditToggle.billing ? (
@@ -402,10 +402,10 @@ const Profile = () => {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-1">
-              <Label className="text-gray-400">Default Hourly Rate (USD)</Label>
+              <Label className="text-muted-foreground/70">Default Hourly Rate (USD)</Label>
               {isEditToggle.billing ? (
                 <div className="relative max-w-[200px]">
-                  <span className="absolute left-3 top-2.5 text-slate-400 text-sm">
+                  <span className="absolute left-3 top-2.5 text-muted-foreground/70 text-sm">
                     $
                   </span>
                   <Input
