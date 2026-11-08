@@ -16,10 +16,10 @@ import { initializeCronJobs } from "./cron/schedular.js";
 
 // Without this, login succeeds but every protected request fails with 401
 if (!process.env.JWT_SECRET) {
-  throw new Error("JWT_SECRET is not set");
+  throw new Error("JWT_SECRET is not set"); 
 }
 
-const app = express();
+const app = express(); 
 const port = process.env.PORT ?? "8080";
 
 // Browser origin allowed by CORS; must match the client's origin exactly
